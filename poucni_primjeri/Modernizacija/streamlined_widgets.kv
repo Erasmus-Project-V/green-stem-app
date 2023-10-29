@@ -1,0 +1,43 @@
+
+
+<TopMenu>:
+    size_hint: 1,0.2
+    pos_hint: {"center_x":0.5,"center_y":0.9}
+    MDLabel:
+        id: top_bar_title
+        halign: "center"
+        font_size: 30
+        pos_hint: {"center_x":0.5,"center_y":0.6}
+        text: root.DefaultText
+    MDIconButton:
+        icon: "home"
+        id: top_bar_button
+        icon_size: "80sp"
+        pos_hint: {"center_x":0.1,"center_y":0.6}
+        on_release:
+            root.go_home()
+
+
+<ColorPick@MDBoxLayout>:
+    orientation: "horizontal"
+    size_hint: 1,0.2
+    MDLabel:
+        text: "Pick your color"
+        halign: "center"
+    MDLabel:
+        text: "WIP"
+
+
+<Grapher>:
+    MDRelativeLayout:
+        pos_hint: {"center_x":0.5,"center_y":0.45}
+        size_hint: 1,0.8
+        ColorPick:
+            pos_hint: {"center_y":0.8}
+        ColorPick:
+            pos_hint: {"center_y":0.7}
+
+
+
+
+

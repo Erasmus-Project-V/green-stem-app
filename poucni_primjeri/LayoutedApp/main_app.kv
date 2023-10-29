@@ -1,0 +1,17 @@
+# File name: hello2.kv
+#:kivy 1.9.0
+# ROOT= <WIDGET>, SELF= SELF
+
+<CustomButton@Button>:
+    text: "CLICKME"
+
+
+<EncapsulatingBoxLayout>:
+    orientation: root.orientation
+    Label:
+        text: 'note the orientation!'
+    Label:
+        text: 'or dont....'
+    CustomButton:
+        on_release: root.button_clicked()
+

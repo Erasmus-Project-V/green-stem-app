@@ -1,0 +1,42 @@
+#:import FadeSlideTransition kivymd.uix.transition.MDFadeSlideTransition
+
+
+
+MGAScreenManager:
+    id: manager
+    transition: FadeSlideTransition()
+    ScreenOne:
+    ScreenTwo:
+
+
+<ScreenOne>:
+    name: "startScreen"
+    canvas:
+        Color:
+            rgba: app.theme_cls.primary_color
+        Rectangle:
+            source: "images/start_background.jpg"
+            pos: self.pos
+            size: self.size
+
+    MDFloatLayout:
+        ImageButton:
+            pos_hint: {"center_x":0.5,"center_y":0.7}
+            size_hint: 0.6,0.3
+            source: "images/cool_icon.png"
+        MDFillRoundFlatButton:
+            pos_hint: {"center_x":0.5,"center_y":0.15}
+            size_hint: 0.8,0.15
+            font_size: 60
+            text: "Activate"
+            on_release:
+                root.manager.current = "mainScreen"
+
+<ScreenTwo>:
+    name: "mainScreen"
+    md_bg_color: app.theme_cls.colors["Red"]['100']
+
+    MDFloatLayout:
+        TopMenu:
+        Grapher:
+

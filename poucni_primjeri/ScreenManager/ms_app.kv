@@ -1,0 +1,19 @@
+# File name: ms_app.kv
+#:import FadeTransition kivy.uix.screenmanager.FadeTransition
+<ComicScreenManager>:
+    transition: FadeTransition()
+    color_picker: _color_picker
+    ComicCreator:
+    ColorPickerScreen:
+        name: 'cps'
+        ColorPicker:
+            id: _color_picker
+            color: 0,.3,.6,1
+            Button:
+                text: "Select"
+                pos_hint: {'center_x': .75, 'y': .05}
+                size_hint: None, None
+                size: 150, 50
+                on_press:
+                    root.current = 'comicscreen'
+                    root.callup()
