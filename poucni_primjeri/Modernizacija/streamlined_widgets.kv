@@ -18,14 +18,19 @@
             root.go_home()
 
 
-<ColorPick@MDBoxLayout>:
+<ColorPick>:
     orientation: "horizontal"
     size_hint: 1,0.2
     MDLabel:
         text: "Pick your color"
         halign: "center"
-    MDLabel:
-        text: "WIP"
+        size_hint: 0.3,0.35
+    Button:
+        background_color: root.current_color
+        size_hint: 0.3,0.35
+        on_press:
+            root.change_color()
+
 
 
 <Grapher>:
@@ -33,9 +38,36 @@
         pos_hint: {"center_x":0.5,"center_y":0.45}
         size_hint: 1,0.8
         ColorPick:
+            id: pick_one
             pos_hint: {"center_y":0.8}
         ColorPick:
+            id: pick_two
             pos_hint: {"center_y":0.7}
+        MDLabel:
+            halign: "center"
+            pos_hint: {"center_y":0.55}
+            text: "Folder path"
+        MDTextField:
+            pos_hint: {"center_y":0.5}
+        TextInput:
+            size_hint: 0.2,0.05
+            pos_hint: {"center_y":0.4,"center_x":0.35}
+            multiline: False
+        TextInput:
+            size_hint: 0.2,0.05
+            pos_hint: {"center_y":0.4,"center_x":0.65}
+            multiline: False
+        MDRelativeLayout:
+            id: rl
+            size_hint: 0.6,0.3
+            pos_hint: {"center_y":0.2,"center_x":0.5}
+            canvas:
+                Color:
+                    rgba: (1,1,1,1)
+                Rectangle:
+                    size: rl.size
+                    pos: 0,0
+
 
 
 
