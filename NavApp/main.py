@@ -27,13 +27,10 @@ class FitnessApp(MDApp):
         return MainScreenManager()
 
 
-load_list = ["/authentication/sign_up_screen/sign_up_screen.kv",
-             "/authentication/log_in_screen/log_in_screen.kv",
-             "/activity/home_screen/home_screen.kv",
-             "/activity/activity_screen/activity_screen.kv"]
+load_list = import_list_kv
 
 for fname in load_list:
-    Builder.load_file(f"screens{fname}")
+    Builder.load_file(fname.replace("\\","/")   )
 
 Builder.load_file("core.kv")
 
