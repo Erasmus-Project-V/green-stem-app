@@ -1,5 +1,8 @@
-from kivy.uix.screenmanager import Screen
+from kivymd.uix.screen import MDScreen
 
 
-class SignUpScreen(Screen):
-    pass
+class SignUpScreen(MDScreen):
+
+    def __init__(self, **kw):
+        super().__init__(**kw)
+

@@ -3,7 +3,32 @@
 
 <LogInScreen>:
     name: "lgn"
-    id: sgn
+    id: lgn
+
+    FitImage:
+        source: "assets/images/auth_background.png"
+        size_hint_y: 0.57 / app.ratio * 2.1
+        size_hint_x: 1
+        pos_hint: {"top": 1}
+
     MDBoxLayout:
+        orientation: "horizontal"
+        md_bg_color: (1,1,1,0)
+        size_hint: (0.35,0.05)
+        pos_hint: {"top" : 0.95}
+        MDRelativeLayout:
+            MDLabel:
+                text: "__"
+                font_size: 64
+                color: app.primary_colors["light_blue"]
+                halign: "center"
+                pos_hint: {"y":0.15}
+            MDLabel:
+                text: "Log in"
+                font_name: app.fonts["white_text"]
+                halign: "center"
+
         MDLabel:
-            text: "LogIn"
+            text: "Sign up"
+            font_name: app.fonts["white_text"]
+            halign: "center"
