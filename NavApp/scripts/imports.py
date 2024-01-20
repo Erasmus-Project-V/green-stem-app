@@ -3,7 +3,7 @@ from kivy.uix.screenmanager import ScreenManager
 from kivymd.app import MDApp
 from kivy.lang import Builder
 
-
+import re
 import os
 
 import_list_kv = []
@@ -38,7 +38,7 @@ def build_importer():
 def seek(cd):
     directories = os.listdir(cd)
     for dir in directories:
-        if "_screen" in dir:
+        if re.search("(_screen)|(_widget)", dir):
             base = cd + "\\" + dir
             if not os.listdir(base):
                 return
@@ -55,8 +55,9 @@ if __name__ == "__main__":
     build_importer()
 else:
     search_dir = os.getcwd()
-    print("Please start from main")
+    print(f"Starting from {os.getcwd() + __name__}")
     print(os.getcwd() + "\\screens")
     seek(search_dir+ "\\screens")
+    seek(search_dir + "\\custom_widgets")
     build_importer()
 
