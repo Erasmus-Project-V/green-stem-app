@@ -35,3 +35,23 @@
 
     MDBoxLayout:
         TemplateWidget:
+    
+    MDBoxLayout:
+        orientation: 'vertical'
+        size_hint: (1,0.5)
+        spacing: 20
+        padding: 10
+        OvalBlueButtonWidget:
+            text: "Button"
+            pos_hint: {'center_x': 0.5}
+            size_hint: (0.5, 0.5)
+        
+        OvalBlueButtonWidget:
+            text: "Button"
+            pos_hint: {'center_x': 0.5}
+            size_hint: (0.5, 0.5)
+    
+    MDBoxLayout:
+        InputWidget:
+            place_holder_text: "Something"
+            is_password: True

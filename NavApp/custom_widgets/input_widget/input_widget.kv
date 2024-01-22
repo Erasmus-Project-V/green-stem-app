@@ -1,0 +1,10 @@
+#File name: button_widget.kv
+
+<InputWidget>:
+    MDTextField:
+        hint_text: "color_mode = 'custom'"
+        color_mode: 'custom'
+        hint_text: root.place_holder_text
+        password: root.is_password
+        line_color_focus: [1, 0, 1, 1]
+        background_color: (1,0,0,1)

@@ -1,0 +1,17 @@
+#:import utils kivy.utils
+
+<OvalBlueButtonWidget@Button>
+    background_color: (0,0,0,0,0)
+    background_normal: ''
+    
+    halign: 'center'
+    valign: 'bottom'
+    text_size: self.size
+    font_name: app.fonts["white_text"]
+    canvas.before:
+        Color: 
+            rgb: app.primary_colors["light_blue"]
+        RoundedRectangle:
+            size: self.size[0], 60
+            pos: self.pos
+            radius: [35]
