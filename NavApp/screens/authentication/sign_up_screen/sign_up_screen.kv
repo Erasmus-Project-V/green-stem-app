@@ -4,5 +4,15 @@
 <SignUpScreen>:
     name: "sgn"
     id: sgn
+
+    FitImage:
+        source: "assets/images/sgnp_background.png"
+        size_hint_y: 0.57 / app.ratio * 2.1
+        size_hint_x: 1
+        pos_hint: {"top": 1}
+
+    TopMenuWidget:
+        login: 0
+
     MDBoxLayout:
-        MDLabel:
+        TemplateWidget:

@@ -1,0 +1,44 @@
+#File name: top_menu_widget.kv
+
+<TopMenuWidget>:
+    id: top
+    orientation: "horizontal"
+    md_bg_color: (1,1,1,0)
+    size_hint: (0.35,0.05)
+    pos_hint: {"top" : 0.95}
+    login: 1
+    MDRelativeLayout:
+        MDLabel:
+            id: us0
+            text: "___"
+            opacity: root.login
+            color: app.primary_colors["light_blue"]
+            font_size: 40
+
+            halign: "center"
+            pos_hint: {"y":-0.2}
+        Button:
+            name: "lgn"
+            text: "Log in"
+            font_name: app.fonts["sans_semi_bold"]
+            halign: "center"
+            background_color: (0,0,0,0)
+            on_press:
+                root.button_pressed(self)
+    MDRelativeLayout:
+        MDLabel:
+            id: us1
+            text: "___"
+            font_size: 40
+            opacity: 1-root.login
+            color: app.primary_colors["light_blue"]
+            halign: "center"
+            pos_hint: {"y":-0.2}
+        Button:
+            name: "sgn"
+            text: "Sign Up"
+            font_name: app.fonts["sans_semi_bold"]
+            halign: "center"
+            background_color: (0,0,0,0)
+            on_press:
+                root.button_pressed(self)

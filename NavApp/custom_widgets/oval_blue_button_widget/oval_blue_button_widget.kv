@@ -1,17 +1,28 @@
 #:import utils kivy.utils
 
-<OvalBlueButtonWidget@Button>
-    background_color: (0,0,0,0,0)
-    background_normal: ''
-    
-    halign: 'center'
-    valign: 'bottom'
-    text_size: self.size
-    font_name: app.fonts["white_text"]
-    canvas.before:
-        Color: 
-            rgb: app.primary_colors["light_blue"]
-        RoundedRectangle:
-            size: self.size[0], 60
-            pos: self.pos
-            radius: [35]
+<OvalBlueButtonWidget>:
+    md_bg_color: (0,0,1,0)
+    size_hint:(0.4,0.1)
+    release_func: root.clicked
+    MDFillRoundFlatButton:
+        ripple_alpha: 0.5
+        ripple_color: app.primary_colors["dark_grey"]
+        style: "filled"
+        md_bg_color: app.primary_colors["light_blue"]
+        size: (125*1.3,50*1.3)
+        pos_hint: {"center_x":0.5,"center_y":0.5}
+        on_release:
+            root.release_func(self)
+    MDLabel:
+        text: "Log in"
+        pos_hint: {"center_x":0.45,"center_y":0.5}
+        color: app.primary_colors["black"]
+        font_name: app.fonts["sans_semi_bold"]
+        halign:"center"
+    Image:
+        source: "assets/images/chevron_right.png"
+        pos_hint: {"center_x":0.7,"center_y":0.5}
+        opacity: 0.7
+        size_hint: (0.4,0.4)
+
+
