@@ -1,5 +1,6 @@
 from kivy import Config
 
+
 Config.set('graphics', 'width', '390')
 Config.set('graphics', 'height', '780')
 
@@ -11,6 +12,7 @@ try:
 except ImportError:
     raise ImportError("There might be a problem with import generator!")
 
+# from scripts.__gen__imports__ import *
 
 class MainScreenManager(ScreenManager):
 
