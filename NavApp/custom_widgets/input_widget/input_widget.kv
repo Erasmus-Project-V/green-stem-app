@@ -1,10 +1,34 @@
 #File name: button_widget.kv
 
+
 <InputWidget>:
+    size_hint: (1,0.5)
+    is_password: False
+    ips: 0 if root.is_password == False else 1
     MDTextField:
-        hint_text: "color_mode = 'custom'"
-        color_mode: 'custom'
-        hint_text: root.place_holder_text
+        id: text_field
+        mode: "line"
+        font_name: app.fonts["sans_regular"]
+        line_color_focus: app.primary_colors["dark_grey"]
+        line_color_normal: app.primary_colors["dark_grey"]
+        text_color_normal: app.primary_colors["light_grey"]
+        text_color_focus: app.primary_colors["light_grey"]
+        hint_text: root.placeholder_text
+        font_size: 30
+        hint_text_color_focus: (0,0,0,1)
+        hint_text_color_normal: (1,1,1,1)
+        font_name_hint_text: app.fonts["sans_regular"]
+        md_bg_color: (0,0,0,0)
         password: root.is_password
-        line_color_focus: [1, 0, 1, 1]
-        background_color: (1,0,0,1)
+    MDIconButton:
+        icon: "eye-off"
+        ripple_alpha: 0.1
+        ripple_color: app.primary_colors["dark_grey"]
+        pos_hint: {"center_y": .5}
+        pos: text_field.width - self.width + dp(8), 0
+        theme_text_color: "Hint"
+        disabled: not root.is_password
+        opacity: root.ips
+        on_release:
+            self.icon = "eye" if self.icon == "eye-off" else "eye-off"
+            text_field.password = False if text_field.password is True else True

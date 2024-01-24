@@ -30,13 +30,17 @@ class MainScreenManager(ScreenManager):
         key = args[-2]
         print(f"pressed {key}")
         if key in map(str, self.screen_refs.keys()):
-            self.current = self.screen_refs[int(key)]
+            self.goto_screen(self.screen_refs[int(key)])
+
+    def goto_screen(self, scrn):
+        self.current = scrn
 
 
 class FitnessApp(MDApp):
 
     def __init__(self):
         super().__init__()
+        self.theme_cls.theme_style = "Dark"
         self.primary_colors = {
             "black": (28 / 255, 28 / 255, 30 / 255, 1),
             "white": (255 / 255, 255 / 255, 255 / 255, 1),
@@ -49,14 +53,13 @@ class FitnessApp(MDApp):
             "orange": (231 / 255, 100 / 255, 27 / 255, 1)
         }
         self.fonts = {
-            "white_text": "assets/fonts/OpenSans_SemiBold.ttf"
+            "sans_semi_bold": "assets/fonts/OpenSans_SemiBold.ttf",
+            "sans_regular": "assets/fonts/OpenSans_Regular.ttf"
         }
         self.size = Window.size
         self.ratio = self.size[1] / self.size[0]
 
     def build(self):
-        self.theme_cls.theme_style = "Dark"
-
         return MainScreenManager()
 
 

@@ -11,47 +11,34 @@
         size_hint_x: 1
         pos_hint: {"top": 1}
 
-    MDBoxLayout:
-        orientation: "horizontal"
-        md_bg_color: (1,1,1,0)
-        size_hint: (0.35,0.05)
-        pos_hint: {"top" : 0.95}
-        MDRelativeLayout:
-            MDLabel:
-                text: "__"
-                font_size: 64
-                color: app.primary_colors["light_blue"]
-                halign: "center"
-                pos_hint: {"y":0.15}
-            MDLabel:
-                text: "Log in"
-                font_name: app.fonts["white_text"]
-                halign: "center"
+    TopMenuWidget:
+        login: 1
 
-        MDLabel:
-            text: "Sign up"
-            font_name: app.fonts["white_text"]
-            halign: "center"
+    MDRelativeLayout:
+        size_hint: (0.85,0.2)
+        pos_hint: {"center_x":0.5,"center_y":0.275}
+        MDStackLayout:
+            padding: (0,0,0,0)
+            spacing: (0,20)
+            pos_hint: {"center_x":0.5,"center_y":0.5}
+            InputWidget:
+                id: email_text
+                placeholder_text: " Email ili username"
+            InputWidget:
+                id: password_text
+                placeholder_text: " Lozinka"
+                is_password: True
+        MDTextButton:
+            text: "Zaboravili ste lozinku?"
+            halign: "right"
+            font_size: 15
+            color: app.primary_colors["light_blue"]
+            pos_hint: {"center_x":0.8,"center_y":-0.15}
+            on_release:
+                root.forgotten_password()
 
-    MDBoxLayout:
-        TemplateWidget:
-    
-    MDBoxLayout:
-        orientation: 'vertical'
-        size_hint: (1,0.5)
-        spacing: 20
-        padding: 10
-        OvalBlueButtonWidget:
-            text: "Button"
-            pos_hint: {'center_x': 0.5}
-            size_hint: (0.5, 0.5)
-        
-        OvalBlueButtonWidget:
-            text: "Button"
-            pos_hint: {'center_x': 0.5}
-            size_hint: (0.5, 0.5)
-    
-    MDBoxLayout:
-        InputWidget:
-            place_holder_text: "Something"
-            is_password: True
+    OvalBlueButtonWidget:
+        pos_hint: {"center_x":0.7,"center_y":0.075}
+        release_func:
+            root.validate_login
+

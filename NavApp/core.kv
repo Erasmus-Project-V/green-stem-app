@@ -1,8 +1,10 @@
 # File name: main_frame.kv
-
+#:import FadeTransition kivy.uix.screenmanager.FadeTransition
 
 <MainScreenManager>:
+    transition: FadeTransition()
     id: manager
+    name: "manager"
     SettingsScreen:
     SignUpScreen:
     LogInScreen:
