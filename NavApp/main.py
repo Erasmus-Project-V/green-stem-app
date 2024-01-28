@@ -24,6 +24,7 @@ class MainScreenManager(ScreenManager):
         self.window_subroutines()
 
     def window_subroutines(self):
+        ##ENABLED
         Window.bind(on_key_down=self.key_pressed)
 
     def key_pressed(self, *args):
@@ -50,11 +51,13 @@ class FitnessApp(MDApp):
             "placeholder": (72 / 255, 33 / 255, 183 / 255, 1),
             "light_grey": (174 / 255, 174 / 255, 174 / 255, 1),
             "green": (103 / 255, 201 / 255, 95 / 255, 1),
-            "orange": (231 / 255, 100 / 255, 27 / 255, 1)
+            "orange": (231 / 255, 100 / 255, 27 / 255, 1),
+            "error_color": (255/255, 36/255, 36/255,1)
         }
         self.fonts = {
             "sans_semi_bold": "assets/fonts/OpenSans_SemiBold.ttf",
-            "sans_regular": "assets/fonts/OpenSans_Regular.ttf"
+            "sans_regular": "assets/fonts/OpenSans_Regular.ttf",
+            "actor_regular": "assets/fonts/Actor_Regular.ttf"
         }
         self.size = Window.size
         self.ratio = self.size[1] / self.size[0]

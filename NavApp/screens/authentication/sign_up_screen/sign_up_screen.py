@@ -15,18 +15,19 @@ class SignUpScreen(MDScreen):
 
         if "" in (email,password, username):
             print("Please input something!")
+            self.ids["new_user_name_text"].enter_error_mode("Upiši username!")
             return
-        elif len(email) > 50 or len(password) > 50:
-            print("email/password too long!")
+        elif len(email) > 24 or len(password) > 64 or len(username) > 32:
+            print("username/email/password too long!")
             return
         if password != password_repeat:
             print("Passwords are not matching")
             return
-        log, is_good = self.send_new_user(email,password)
+        log, is_good = self.send_new_user(username,email,password)
         print(log)
         if is_good:
-            self.manager.goto_screen("hme")
+            self.manager.goto_screen("sss")
         
-    def send_new_user(self,email,password):
+    def send_new_user(self,uname,email,password):
         # šalje se email i password u backend te se onda dalje ide s tim
         return "login info recieved from backend",True
