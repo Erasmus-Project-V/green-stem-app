@@ -1,0 +1,20 @@
+#Dynamically generated, listing: 18 imports
+from NavApp.screens.statistics.monthly_activity_screen.monthly_activity_screen import MonthlyActivityScreen
+from NavApp.screens.statistics.daily_activity_screen.daily_activity_screen import DailyActivityScreen
+from NavApp.screens.statistics.weekly_activity_screen.weekly_activity_screen import WeeklyActivityScreen
+from NavApp.screens.activity.home_screen.home_screen import HomeScreen
+from NavApp.screens.activity.activity_screen.activity_screen import ActivityScreen
+from NavApp.screens.authentication.forgot_password_screen.forgot_password_screen import ForgotPasswordScreen
+from NavApp.screens.authentication.log_in_screen.log_in_screen import LogInScreen
+from NavApp.screens.authentication.second_sign_up_screen.second_sign_up_screen import SecondSignUpScreen
+from NavApp.screens.authentication.sign_up_screen.sign_up_screen import SignUpScreen
+from NavApp.screens.other.settings_screen.settings_screen import SettingsScreen
+from NavApp.screens.other.profile_screen.profile_screen import ProfileScreen
+from NavApp.screens.other.profile_edit_screen.profile_edit_screen import ProfileEditScreen
+from NavApp.custom_widgets.oval_blue_button_widget.oval_blue_button_widget import OvalBlueButtonWidget
+from NavApp.custom_widgets.button_widget.button_widget import ButtonWidget
+from NavApp.custom_widgets.top_return_button_widget.top_return_button_widget import TopReturnButtonWidget
+from NavApp.custom_widgets.input_widget.input_widget import InputWidget
+from NavApp.custom_widgets.authentication.top_menu_widget.top_menu_widget import TopMenuWidget
+from NavApp.custom_widgets.template_widget.template_widget import TemplateWidget
+#End of imports
