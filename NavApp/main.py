@@ -1,12 +1,10 @@
 import os
 from kivy import Config
 
-
-
 Config.set('graphics', 'width', '390')
 Config.set('graphics', 'height', '780')
 
-if os.name == 'nt':
+if os.name == 'nt' or "linux":
     from scripts.imports import *
 else:
     from scripts.mac_imports import *
