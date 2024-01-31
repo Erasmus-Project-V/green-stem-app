@@ -27,9 +27,10 @@ def build_importer():
         return
     print(import_list_py)
 
-    with open("scripts/__gen__imports__.py","w") as gpi:
+    with open("NavApp/scripts/__gen__imports__.py","w") as gpi:
         gpi.write(f"#Dynamically generated, listing: {len(import_list_py)} imports\n")
         for import_statement in import_list_py:
+            import_statement = import_statement.replace('green_stem_app.NavApp.', "")
             gpi.write(import_statement+"\n")
         gpi.write(f"#End of imports\n")
         gpi.close()
@@ -51,13 +52,13 @@ def seek(cd):
 
 
 if __name__ == "__main__":
-    seek(os.getcwd().removesuffix("scripts") + "screens")
+    seek(os.getcwd().removesuffix("scripts") + "/NavApp/screens")
     build_importer()
 else:
     search_dir = os.getcwd()
     print(f"Starting from {os.getcwd() + __name__}")
-    print(os.getcwd() + "/screens")
-    seek(search_dir+ "/screens")
-    seek(search_dir + "/custom_widgets")
+    print(os.getcwd() + "/NavApp/screens")
+    seek(search_dir+ "/NavApp/screens")
+    seek(search_dir + "/NavApp/custom_widgets")
     build_importer()
 

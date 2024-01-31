@@ -1,0 +1,31 @@
+#File name: second_sign_up_screen.kv
+
+
+<SecondSignUpScreen>:
+    name: "sss"
+    id: sss
+
+    TopReturnButtonWidget:
+        release_func: root.return_to_signup
+
+
+    MDStackLayout:
+        md_bg_color: (1,1,1,0)
+        size_hint: (0.8,0.2)
+        pos_hint: {"center_x":0.5,"center_y":0.825}
+        MDLabel:
+            size_hint: (1,0.25)
+            text: "Podaci koje samo ti vidiš"
+            halign: "center"
+            font_size: 30
+            font_name: app.fonts["actor_regular"]
+        MDLabel:
+            size_hint: (1,0.3)
+            text: "Kako bi bolje izračunali potrošnju kalorija"
+            halign: "center"
+            font_size: 20
+            font_name: app.fonts["actor_regular"]
+    OvalBlueButtonWidget:
+        pos_hint: {"center_x":0.7,"center_y":0.075}
+        button_text: "Dalje"
+

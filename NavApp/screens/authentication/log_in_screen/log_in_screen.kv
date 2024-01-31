@@ -23,7 +23,7 @@
             pos_hint: {"center_x":0.5,"center_y":0.5}
             InputWidget:
                 id: email_text
-                placeholder_text: " Email ili username"
+                placeholder_text: " Username ili email"
             InputWidget:
                 id: password_text
                 placeholder_text: " Lozinka"
@@ -39,6 +39,7 @@
 
     OvalBlueButtonWidget:
         pos_hint: {"center_x":0.7,"center_y":0.075}
+        button_text: "Log In"
         release_func:
             root.validate_login
 

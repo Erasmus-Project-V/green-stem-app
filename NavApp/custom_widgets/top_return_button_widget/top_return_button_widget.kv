@@ -1,0 +1,21 @@
+<TopReturnButtonWidget>:
+    size_hint: (0.1,0.1)
+    md_bg_color: (1,1,1,0)
+    pos_hint: {"center_y":0.9,"center_x":0.1}
+    release_func: root.placeholder
+    MDIconButton:
+        pos_hint: {"center_x": 0.5, "center_y":0.5}
+        icon: "chevron-left"
+        theme_icon_color: "Custom"
+        icon_size: 64
+        icon_color: app.primary_colors["white"]
+        ripple_alpha: 0.01
+    MDIconButton:
+        pos_hint: {"center_x": 0.5, "center_y":0.5}
+        icon_size: 64
+        ripple_alpha: 0.01
+        icon: "chevron-left-circle"
+        theme_icon_color: "Custom"
+        icon_color: app.primary_colors["black"]
+        on_release: root.release_func(self)
+
