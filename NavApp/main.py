@@ -1,10 +1,15 @@
+import os
 from kivy import Config
+
 
 
 Config.set('graphics', 'width', '390')
 Config.set('graphics', 'height', '780')
 
-from scripts.imports import *
+if os.name == 'nt':
+    from scripts.imports import *
+else:
+    from scripts.mac_imports import *
 
 # ovo će importati novostvoreni file!
 try:
