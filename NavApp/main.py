@@ -4,6 +4,7 @@ from kivy import Config
 Config.set('graphics', 'width', '390')
 Config.set('graphics', 'height', '780')
 
+print(os.name)
 if os.name == 'nt' or "linux":
     from scripts.imports import *
 else:
