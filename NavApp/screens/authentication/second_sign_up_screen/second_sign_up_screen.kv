@@ -25,7 +25,31 @@
             halign: "center"
             font_size: 20
             font_name: app.fonts["actor_regular"]
+
+    MDRelativeLayout:
+        id: changeable
+        size_hint: (0.6,0.6)
+        pos_hint: {"center_x":0.5,"center_y":0.5}
+        Image:
+            id: selector
+            opacity: 0.0
+            pos_hint: {"center_x":0.5,"center_y":0.45}
+            source: "assets/images/selector.png"
+            size_hint: (0.45,0.45)
+        MDLabel:
+            id: desc_text
+            opacity: 0.0
+            text: "Null"
+            pos_hint: {"center_x":0.5,"center_y":0.7}
+            font_size: 60
+            halign: "center"
+            font_name:  app.fonts["actor_regular"]
+            color: app.primary_colors["light_grey"]
+
+
+
     OvalBlueButtonWidget:
         pos_hint: {"center_x":0.7,"center_y":0.075}
         button_text: "Dalje"
+        release_func: root.next_phase
 

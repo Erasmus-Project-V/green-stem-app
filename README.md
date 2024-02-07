@@ -4,19 +4,55 @@ molim vas iz dna duše klonirajte si ovaj repo
 i skinite intellij idea ultimate na svoja 
 kućna računala kako bi mogli biti standardizirani
 
-U poučni primjeri će se dodavati upravo to,
->nekak ću ih sortirati, ili po sastancima, ili po
-temi, knjigu cu isto droppat
+### Sadržaj
+1. Requirements
+<br>
+2. Definicije
+<br>
+3. Metodologija
+<br>
 
 
-### Some pretty useful stuff
-
-<img src="poucni_primjeri/LayoutedApp/img_1.png" alt="ha no internet!">
-<img src="poucni_primjeri/LayoutedApp/img.png" alt="top secret text found">
 
 
+## Requirements:
+Python 3.11 or newer
+<br>
+KivyMD 1.2.0
+<br>
+requests
+<br>
+os
 
-## botttom text
+## Definicije
+### scripts:
+<p>
+imports.py: 
+modul za generaciju importa svih zasebnih ekrana/widgeta
+u smislenom redoslijedu, ne prčkati. Da bi radilo
+svi ekrani moraju poštovati metodologiju navedenu
+u Metodologija/Novi ekrani/widgeti
+<br>
+Navodnici: Dvostruki!
+<br>
+</p>
 
-P.S. koristite **python 3.11**, kivy još nije fully 3.12
-compatible pa ćemo sve raditi na 3.11
+## Metodologija
+<p>
+Općenito:
+<br>
+Moduli: mala slova, underscores 
+<br>
+Navodnici: Dvostruki!
+<br>
+Svi schedulani eventi sa Clock metodom
+se po defaultu gase pri promjeni ekrana,
+radi spasenja jadnog cpu-a, pale se 
+na ulazu u screen 
+</p>
+
+<p>
+Skripte:
+<br>
+
+</p>
