@@ -38,6 +38,8 @@ class MainScreenManager(ScreenManager):
         Window.bind(on_key_down=self.key_pressed)
 
     def key_pressed(self, *args):
+        #DISABLED
+        return
         key = args[-2]
         print(f"pressed {key}")
         if key in map(str, self.screen_refs.keys()):
@@ -50,6 +52,8 @@ class MainScreenManager(ScreenManager):
         scrn_ref = self.get_screen(scrn)
         if hasattr(scrn_ref, "start_repeatable_intervals"):
             scrn_ref.start_repeatable_intervals()
+        if hasattr(scrn_ref, "start_up_screen"):
+            scrn_ref.start_up_screen()
         self.current = scrn
 
 

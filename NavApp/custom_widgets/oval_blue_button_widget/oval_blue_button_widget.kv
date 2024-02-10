@@ -7,6 +7,7 @@
     button_dims: (125*1.3,50*1.3) if root.type == "half" else (250*1.3,50*1.3)
     button_text: "Sample"
     button_bg_color: app.primary_colors["light_blue"]
+    button_disabled: False
     release_func: root.clicked
     button_name: "None"
     button_ripple: 1
@@ -17,6 +18,7 @@
         style: "filled"
         md_bg_color: root.button_bg_color
         size: root.button_dims
+        disabled: root.button_disabled
         pos_hint: {"center_x":0.5,"center_y":0.5}
         name: root.button_name
         on_release:

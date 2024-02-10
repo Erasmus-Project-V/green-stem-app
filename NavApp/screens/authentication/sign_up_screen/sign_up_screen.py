@@ -1,5 +1,7 @@
+from kivy.network.urlrequest import UrlRequest
 from kivymd.uix.screen import MDScreen
 import requests
+
 
 class SignUpScreen(MDScreen):
 
@@ -29,7 +31,6 @@ class SignUpScreen(MDScreen):
         #     self.manager.goto_screen("sss")
 
     def send_new_user(self, username, email, password):
-        # šalje se email i password u backend te se onda dalje ide s tim
         payload = {
             "username": username,
             "email": email,
@@ -37,7 +38,13 @@ class SignUpScreen(MDScreen):
             "passwordConfirm": password,
             "emailVisibility": True,
         }
-        resp = requests.post("http://localhost:8090/api/collections/users/records", json=payload)
-        print(resp.json())
 
-        return "login info recieved from backend", True
+        UrlRequest(url="http://localhost:8090/api/collections/users/auth-with-password", req_body=payload,
+                   on_success=lambda a, b: self.successful_sign_up(a, b),
+                   on_error=lambda a, b: self.error_sign_up(a, b))
+
+    def successful_sign_up(self,thread,text):
+        pass
+
+    def error_sign_up(self,thread,text):
+        pass
