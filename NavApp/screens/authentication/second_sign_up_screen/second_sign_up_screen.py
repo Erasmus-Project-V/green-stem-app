@@ -14,12 +14,14 @@ class SecondSignUpScreen(MDScreen):
         self.desc_text = None
         self.progress_button = None
         self.side_label = None
+        self.return_button = None
         self.active = None
         self.widgets = {}
-        self.phase_ref = {1: self.disable_progression,
+        self.phase_ref = {1: self.activate_gender,
                           2: self.activate_selector,
                           3: self.start_weight,
-                          4: self.activate_selector}
+                          4: self.activate_selector,
+                          5: self.finalize_sign_up}
         self.content_data_ref = {1: "gender", 2: "age", 3: "weight", 4: "height"}
         self.content_data = {
             "gender": None,
@@ -47,9 +49,8 @@ class SecondSignUpScreen(MDScreen):
         self.side_label = self.ids["side_text"]
         self.desc_text = self.ids["desc_text"]
         self.progress_button = self.ids["progress_button"]
-        self.selector.opacity = 0.0
-        self.desc_text.opacity = 0.0
-        self.side_label.opacity = 0.0
+        self.return_button = self.ids["rtb"]
+        self.disable_progression()
         self.activate_current()
 
     def activate_current(self):
@@ -60,13 +61,20 @@ class SecondSignUpScreen(MDScreen):
             self.active = self.widgets[self.phase]
             self.changeable.add_widget(self.active)
             self.active.start_repeatable_intervals()
-            self.phase_ref[self.phase]()
+        self.phase_ref[self.phase]()
 
     def activate_selector(self):
         self.selector.opacity = 1.0
         self.desc_text.opacity = 0.0
         self.side_label.opacity = 1.0
         self.side_label.text = "cm" if self.phase == 4 else "Age"
+        self.return_button.opacity = 1.0
+
+    def activate_gender(self):
+        self.return_button.opacity = 0.0
+        self.selector.opacity = 0.0
+        self.desc_text.opacity = 0.0
+        self.side_label.opacity = 0.0
 
     def start_weight(self):
         self.desc_text.opacity = 1.0
@@ -75,18 +83,24 @@ class SecondSignUpScreen(MDScreen):
         self.selector.opacity = 0.0
         self.widgets[self.phase].bind_to_scroll(self.update_label)
 
-    def next_phase(self, btn):
+    def finalize_sign_up(self):
+        print(self.content_data)
+        keys = list(self.widgets.keys())
+        for i in keys:
+            self.widgets[i].clear_widgets()
+            del self.widgets[i]
+        self.manager.goto_screen("hme")
+
+
+    def prev_phase(self, btn):
+        if self.phase > 1:
+            self.next_phase(btn, dp=-1)
+
+    def next_phase(self, btn, dp=1):
 
         self.content_data[self.content_data_ref[self.phase]] = self.active.get_selected_value()
-        self.phase += 1
+        self.phase += dp
         self.activate_current()
-        if self.phase > 4:
-            print(self.content_data)
-            keys = list(self.widgets.keys())
-            for i in keys:
-                self.widgets[i].clear_widgets()
-                del self.widgets[i]
-            self.manager.goto_screen("hme")
 
     def return_to_signup(self, button):
         self.manager.goto_screen("sgn")

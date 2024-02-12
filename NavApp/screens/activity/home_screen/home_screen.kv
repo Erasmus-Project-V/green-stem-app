@@ -4,8 +4,12 @@
 <HomeScreen>:
     name: "hme"
     id: hme
+    SwipeableImageWidget:
+        size_hint: (1,1)
+        pos_hint: {"center_x":0.5,"center_y":0.5}
+        source: "assets/images/home/home_planinarenje_1.png"
     MDBoxLayout:
-        MDLabel:
-            text: "Home Screen"
-    BottomNavWidget:
-    TemplateWidget:
+        orientation: "horizontal"
+        md_bg_color: app.primary_colors["black"]
+        pos_hint: {"center_x":0.5,"center_y":0.05}
+        size_hint: (1,0.1)

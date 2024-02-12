@@ -38,8 +38,6 @@ class MainScreenManager(ScreenManager):
         Window.bind(on_key_down=self.key_pressed)
 
     def key_pressed(self, *args):
-        #DISABLED
-        return
         key = args[-2]
         print(f"pressed {key}")
         if key in map(str, self.screen_refs.keys()):
