@@ -1,5 +1,9 @@
+import re
+
+from kivy.network.urlrequest import UrlRequest
 from kivymd.uix.screen import MDScreen
 import requests
+
 
 class SignUpScreen(MDScreen):
 
@@ -7,29 +11,47 @@ class SignUpScreen(MDScreen):
         super().__init__(**kw)
 
     def create_new_user(self, button):
-        print("Creating a new user")
-        username = self.ids["new_user_name_text"].return_text()
-        email = self.ids["new_email_text"].return_text()
-        password = self.ids["new_password_text"].return_text()
-        password_repeat = self.ids["new_password_repeat_text"].return_text()
 
-        if "" in (email, password, username):
-            print("Please input something!")
-            self.ids["new_user_name_text"].enter_error_mode("Upiši username!")
+        username = self.ids["new_user_name_text"]
+        email = self.ids["new_email_text"]
+        password = self.ids["new_password_text"]
+        password_repeat = self.ids["new_password_repeat_text"]
+
+        pass_holder = None
+        is_good = 0
+
+        for comp in (username, email, password,password_repeat):
+            comp_text = comp.return_text()
+            if comp.name == "password":
+                pass_holder = comp
+            if len(comp_text) < 4:
+                comp.enter_error_mode(f"{comp.name.capitalize()} je prazan ili prekratak!")
+                continue
+            elif len(comp_text) > 24:
+                comp.enter_error_mode(f"{comp.name.capitalize()} je predugačak!")
+                continue
+            elif comp.name == "password_repeat":
+                if pass_holder.return_text() != comp_text:
+                    pass_holder.enter_error_mode(f"Šifre se ne poklapaju!")
+                    comp.enter_error_mode("Šifre se ne poklapaju!")
+                else:
+                    is_good += 1
+                    pass_holder.exit_error_mode()
+                    comp.exit_error_mode()
+                continue
+            if comp.name == "email":
+                if not re.match(".+@.+\..+",comp_text):
+                    comp.enter_error_mode("Email nije ispravno napisan!")
+                    continue
+            is_good += 1
+            comp.exit_error_mode()
+        if is_good < 4:
             return
-        elif len(email) > 24 or len(password) > 64 or len(username) > 32:
-            print("username/email/password too long!")
-            return
-        if password != password_repeat:
-            print("Passwords are not matching")
-            return
-        log, is_good = self.send_new_user(username, email, password)
-        print(log)
-        # if is_good:
-        #     self.manager.goto_screen("sss")
+        self.send_new_user(username, email, password)
+        self.ids["signup_button"].button_disabled = True
+
 
     def send_new_user(self, username, email, password):
-        # šalje se email i password u backend te se onda dalje ide s tim
         payload = {
             "username": username,
             "email": email,
@@ -37,7 +59,17 @@ class SignUpScreen(MDScreen):
             "passwordConfirm": password,
             "emailVisibility": True,
         }
-        resp = requests.post("http://localhost:8090/api/collections/users/records", json=payload)
-        print(resp.json())
 
-        return "login info recieved from backend", True
+        UrlRequest(url="http://localhost:8090/api/collections/users/auth-with-password", req_body=payload,
+                   on_success=lambda a, b: self.successful_sign_up(a, b),
+                   on_error=lambda a, b: self.error_sign_up(a, b))
+
+    def successful_sign_up(self, thread, text):
+        print(text)
+        self.ids["signup_button"].button_disabled = False
+
+
+    def error_sign_up(self, thread, text):
+        print(text)
+        self.ids["signup_button"].button_disabled = False
+

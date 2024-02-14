@@ -1,50 +1,60 @@
-import requests
-from kivy.core.window import Window
 from kivy.storage.jsonstore import JsonStore
 from kivymd.uix.screen import MDScreen
+from kivy.network.urlrequest import UrlRequest
 
 
 class LogInScreen(MDScreen):
+    max_email_len = 32
+    max_password_len = 64
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
     def validate_login(self, button):
-        print("login validation....")
-        email = self.ids["email_text"].return_text()
-        password = self.ids["password_text"].return_text()
-        ## OVO TREBA LJEPŠE NAPISATI!!!!!!!!!!!!!!!!!!!!!
-        if len(email) > 50 or len(password) > 50 or "" in (email, password):
-            if len(password) > 50:
-                self.ids["password_text"].enter_error_mode("Lozinka je predugačka!")
-            elif not password:
-                self.ids["password_text"].enter_error_mode("Upiši lozinku!")
-            if len(email) > 50:
-                self.ids["email_text"].enter_error_mode("Email je predugačak!")
-            elif not email:
-                self.ids["email_text"].enter_error_mode("Upiši Email!")
+
+        email = self.ids["email_text"]
+        password = self.ids["password_text"]
+        email_text = email.return_text()
+        password_text = password.return_text()
+        e_len = len(email_text)
+        p_len = len(password_text)
+
+        # nije najljepše ali funkcionira
+        if not 0 < e_len < self.max_email_len or not 0 < p_len < self.max_password_len:
+            if p_len > self.max_password_len:
+                password.enter_error_mode("Lozinka je predugačka!")
+            elif not p_len:
+                password.enter_error_mode("Upiši lozinku!")
+            if e_len > self.max_email_len:
+                email.enter_error_mode("Email je predugačak!")
+            elif not e_len:
+                email.enter_error_mode("Upiši Email!")
             return
-        log, is_good = self.send_login(email, password)
-        print(log)
-        if is_good:
-            self.manager.goto_screen("hme")
+
+        print("sending")
+        print(button)
+        self.ids["login_button"].button_disabled = True
+        self.send_login(email_text, password_text)
 
     def send_login(self, email, password):
         payload = {
             "identity": email,
             "password": password,
         }
-        resp = requests.post("http://localhost:8090/api/collections/users/auth-with-password", json=payload)
-        jso = resp.json()
-        print(jso)
-        if not resp.ok:
-            return
 
-        store = JsonStore("fitness_tracker.json")
-        store.put("access_token", token=jso.get('token'))
+        UrlRequest(url="http://localhost:8090/api/collections/users/auth-with-password", req_body=payload,
+                   on_success=lambda a, b: self.successful_sign_in(a, b),
+                   on_error=lambda a, b: self.error_sign_in(a, b))
 
-        return "login info recieved from backend", True
+    def successful_sign_in(self, thread, text):
+        self.ids["login_button"].button_disabled = False
+        print(text)
+        self.manager.goto_screen("hme")
+
+    def error_sign_in(self, thread, text):
+        print("error", text)
+        ## u budućnosti napraviti popup custom widget koji će reći da nema konekcije?
+        self.ids["login_button"].button_disabled = False
 
     def forgotten_password(self):
-        print("password forgotten...")
         self.manager.goto_screen("fgp")

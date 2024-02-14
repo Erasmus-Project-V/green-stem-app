@@ -22,24 +22,29 @@
             spacing: (0,10)
             pos_hint: {"center_x":0.5,"center_y":1.25}
             InputWidget:
+                name: "username"
                 id: new_user_name_text
                 is_checkbox: True
                 placeholder_text: "Username"
                 font_size: 20
             InputWidget:
+                name: "email"
                 is_checkbox: True
                 id: new_email_text
                 placeholder_text: "Email"
             InputWidget:
+                name: "password"
                 id: new_password_text
                 placeholder_text: "Lozinka"
                 is_password: True
             InputWidget:
+                name: "password_repeat"
                 id: new_password_repeat_text
                 placeholder_text: "Lozinka ponovno"
                 is_password: True
 
     OvalBlueButtonWidget:
+        id: signup_button
         pos_hint: {"center_x":0.7,"center_y":0.075}
         button_text: "Sign Up"
         release_func:

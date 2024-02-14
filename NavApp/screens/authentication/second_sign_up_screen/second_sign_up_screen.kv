@@ -6,7 +6,9 @@
     id: sss
 
     TopReturnButtonWidget:
-        release_func: root.return_to_signup
+        id: rtb
+        opacity: 0.0
+        release_func: root.prev_phase
 
 
     MDStackLayout:
@@ -45,11 +47,20 @@
             halign: "center"
             font_name:  app.fonts["actor_regular"]
             color: app.primary_colors["light_grey"]
+        MDLabel:
+            id: side_text
+            opacity: 1.0
+            text: "Age"
+            pos_hint: {"center_x":0.85,"center_y":0.45}
+            font_size: 30
+            halign: "center"
+            font_name:  app.fonts["actor_regular"]
+            color: app.primary_colors["light_grey"]
 
 
 
     OvalBlueButtonWidget:
+        id: progress_button
         pos_hint: {"center_x":0.7,"center_y":0.075}
         button_text: "Dalje"
         release_func: root.next_phase
-

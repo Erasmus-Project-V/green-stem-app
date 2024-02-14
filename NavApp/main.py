@@ -50,6 +50,8 @@ class MainScreenManager(ScreenManager):
         scrn_ref = self.get_screen(scrn)
         if hasattr(scrn_ref, "start_repeatable_intervals"):
             scrn_ref.start_repeatable_intervals()
+        if hasattr(scrn_ref, "start_up_screen"):
+            scrn_ref.start_up_screen()
         self.current = scrn
 
 

@@ -4,8 +4,9 @@ from kivymd.uix.relativelayout import MDRelativeLayout
 class GenderSelectorWidget(MDRelativeLayout):
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.selected = "none"
+        self.bindable = kwargs["bindable"] if "bindable" in kwargs else None
 
     def gender_selected(self, btn):
         btn.md_bg_color = self.blue_container
@@ -23,6 +24,14 @@ class GenderSelectorWidget(MDRelativeLayout):
             self.ids["label_male"].color = "white"
         btn.selected = 1
         self.selected = btn.name
+        if self.bindable:
+            self.bindable()
 
-    def get_selected(self):
+    def get_selected_value(self):
         return self.selected
+
+    def start_repeatable_intervals(self):
+        pass
+
+    def stop_repeatable_intervals(self):
+        pass
