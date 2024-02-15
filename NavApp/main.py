@@ -6,19 +6,19 @@ Config.set('graphics', 'width', '390')
 Config.set('graphics', 'height', '780')
 
 print(os.name)
-if os.name == 'nt' or "linux":
+if os.name == 'nt' or os.name == "linux":
     from scripts.imports import *
 else:
     from scripts.mac_imports import *
 
 # ovo će importati novostvoreni file!
-try:
-    from scripts.__gen__imports__ import *
-except ImportError:
-    raise ImportError("There might be a problem with import generator!")
+# try:
+#     from scripts.__gen__imports__ import *
+# except ImportError:
+#     raise ImportError("There might be a problem with import generator!")
 
 
-# from scripts.__gen__imports__ import *
+from scripts.__gen__imports__ import *
 
 class MainScreenManager(ScreenManager):
 

@@ -1,0 +1,2 @@
+class BottomNavWidget():
+    pass
