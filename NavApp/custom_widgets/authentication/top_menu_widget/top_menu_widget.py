@@ -1,7 +1,7 @@
 from kivy.properties import ColorProperty
 from kivymd.uix.boxlayout import MDBoxLayout
-from NavApp.scripts.utilities import find_manager
-
+# from NavApp.scripts.utilities import find_manager
+from scripts.utilities import find_manager
 class TopMenuWidget(MDBoxLayout):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

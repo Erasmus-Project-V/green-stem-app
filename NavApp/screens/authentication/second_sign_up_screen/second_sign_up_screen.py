@@ -1,7 +1,7 @@
 from kivymd.uix.screen import MDScreen
-from NavApp.custom_widgets.authentication.gender_selector_widget.gender_selector_widget import GenderSelectorWidget
-from NavApp.custom_widgets.authentication.age_selector_widget.age_selector_widget import AgeSelectorWidget
-from NavApp.custom_widgets.authentication.weight_selector_widget.weight_selector_widget import WeightSelectorWidget
+from custom_widgets.authentication.gender_selector_widget.gender_selector_widget import GenderSelectorWidget
+from custom_widgets.authentication.age_selector_widget.age_selector_widget import AgeSelectorWidget
+from custom_widgets.authentication.weight_selector_widget.weight_selector_widget import WeightSelectorWidget
 
 
 class SecondSignUpScreen(MDScreen):
