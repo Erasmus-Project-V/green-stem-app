@@ -71,7 +71,9 @@ class FitnessApp(MDApp):
             "darker_grey": (44 / 255, 44 / 255, 46 / 255, 1),
             "green": (103 / 255, 201 / 255, 95 / 255, 1),
             "orange": (231 / 255, 100 / 255, 27 / 255, 1),
-            "error_color": (255 / 255, 36 / 255, 36 / 255, 1)
+            "error_color": (255 / 255, 36 / 255, 36 / 255, 1),
+            "stop_button_red": (210 / 255, 103 / 255, 103 / 255, 1),
+            "light_blue_opacity": (95 / 255, 163 / 255, 201 / 255, 0.8)
         }
         self.fonts = {
             "sans_semi_bold": "assets/fonts/OpenSans_SemiBold.ttf",
