@@ -1,0 +1,30 @@
+#:import utils kivy.utils
+#File name: pause_play_button_widget.kv
+
+<PausePlayButtonWidget>:
+    md_bg_color: (0,0,1,0)
+    size_hint:(0.4,0.1)
+    button_dims: (dp(45*1.3),dp(40*1.3))
+    button_text: "Sample"
+    button_bg_color: app.primary_colors["green"] if root.button_type == "play" else  app.primary_colors["stop_button_red"]
+    button_disabled: False
+    release_func: root.clicked
+    button_name: "None"
+    button_ripple: 1
+    MDFillRoundFlatButton:
+        id: btn_in
+        ripple_alpha: 0.5 * root.button_ripple
+        ripple_color: app.primary_colors["dark_grey"]
+        style: "filled"
+        md_bg_color: root.button_bg_color
+        size: root.button_dims
+        disabled: root.button_disabled
+        pos_hint: {"center_x":0.5,"center_y":0.5}
+        name: root.button_name
+        on_release:
+            root.release_func(self)
+    Image:
+        source: f"assets/images/{root.button_type}_button_icon.png"
+        pos_hint: {"center_x":0.52,"center_y":0.5} if root.button_type == "play" else {"center_x":0.5,"center_y":0.5}
+        opacity: 0.9
+        size_hint: (0.4,0.4) if root.button_type == "play" or root.button_type == "pause" else (0.3,0.3)
