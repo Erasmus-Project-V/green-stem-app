@@ -4,7 +4,7 @@ from kivy.properties import StringProperty
 
 class PausePlayButtonWidget(MDRelativeLayout):
     center_pos = {"center_x": 0.5, "center_y": 0.5}
-    button_type = StringProperty("start")
+    button_type = StringProperty("play")
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
