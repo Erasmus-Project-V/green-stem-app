@@ -4,6 +4,48 @@
 <ActivityScreen>:
     name: "act"
     id: act
-    MDBoxLayout:
-        MDLabel:
-            text: "Activity Screen"
+    FitImage:
+        source: "assets/images/roll_1.png"
+        size_hint_y: 1 / app.ratio * 2.1
+        size_hint_x: 1
+        pos_hint: {"top": 1}
+        color: (1, 1, 1, 0.5)
+
+    MDRelativeLayout:
+        size_hint: (1,1)
+        pos_hint: {"center_x":0.5,"center_y":0.5}
+
+        QuantityDisplayWidget:
+            pos_hint: {"center_x":0.5,"center_y":0.8}
+            dimension: "medium"
+
+        QuantityDisplayWidget:
+            pos_hint: {"center_x":0.27,"center_y":0.53}
+            dimension: "small"
+            title: "TIME"
+            quantity: "00:05:50"
+
+        QuantityDisplayWidget:
+            pos_hint: {"center_x":0.73,"center_y":0.53}
+            dimension: "small"
+            title: "TEMPO"
+            quantity: "3"
+
+        QuantityDisplayWidget:
+            pos_hint: {"center_x":0.27,"center_y":0.32}
+            dimension: "small"
+            title: "CALORIES"
+            quantity: "588"
+
+        QuantityDisplayWidget:
+            pos_hint: {"center_x":0.73,"center_y":0.32}
+            dimension: "small"
+
+        PausePlayButtonWidget:
+            pos_hint: {"center_x":0.4,"center_y":0.1}
+            button_type: "play"
+
+        PausePlayButtonWidget:
+            pos_hint: {"center_x":0.6,"center_y":0.1}
+            button_type: "stop"
+
