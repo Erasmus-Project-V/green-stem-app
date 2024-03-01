@@ -8,7 +8,7 @@ class BottomNavWidget(MDRelativeLayout):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.screen_map = {"home_button": "hme", "stats_button": "das", "social_button": "hme", "account_button": "pfs"}
+        self.screen_map = {"home_button": "hme", "stats_button": "man", "social_button": "hme", "account_button": "pfs"}
 
     def selector_pressed(self, selector):
         manager = find_manager(self, )
