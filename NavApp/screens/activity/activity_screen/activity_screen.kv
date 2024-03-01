@@ -5,40 +5,47 @@
     name: "act"
     id: act
     FitImage:
-        source: "assets/images/roll_1.png"
-        size_hint_y: 1 / app.ratio * 2.1
-        size_hint_x: 1
-        pos_hint: {"top": 1}
-        color: (1, 1, 1, 0.5)
+        id: image_container
+        source: "assets/images/home/home_trcanje_1.png" ""
+        size_hint: (1.2,1)
+        opacity: .25
+        pos_hint: {"center_x": 0.5,"center_y":0.5}
 
     MDRelativeLayout:
         size_hint: (1,1)
         pos_hint: {"center_x":0.5,"center_y":0.5}
 
         QuantityDisplayWidget:
-            pos_hint: {"center_x":0.5,"center_y":0.8}
+            id: ac1
+            title: "KM"
+            quantity: "1.5"
+            pos_hint: {"center_x":0.5,"center_y":0.825}
             dimension: "medium"
 
         QuantityDisplayWidget:
-            pos_hint: {"center_x":0.27,"center_y":0.53}
+            id: ac2
+            pos_hint: {"center_x":0.25,"center_y":0.55}
             dimension: "small"
             title: "TIME"
             quantity: "00:05:50"
 
         QuantityDisplayWidget:
-            pos_hint: {"center_x":0.73,"center_y":0.53}
+            id: ac3
+            pos_hint: {"center_x":0.75,"center_y":0.55}
             dimension: "small"
             title: "TEMPO"
             quantity: "3"
 
         QuantityDisplayWidget:
-            pos_hint: {"center_x":0.27,"center_y":0.32}
+            id: ac4
+            pos_hint: {"center_x":0.25,"center_y":0.32}
             dimension: "small"
             title: "CALORIES"
             quantity: "588"
 
         QuantityDisplayWidget:
-            pos_hint: {"center_x":0.73,"center_y":0.32}
+            id: ac5
+            pos_hint: {"center_x":0.75,"center_y":0.32}
             dimension: "small"
 
         PausePlayButtonWidget:

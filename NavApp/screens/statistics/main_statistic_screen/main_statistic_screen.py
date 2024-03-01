@@ -1,5 +1,5 @@
 from kivy.uix.screenmanager import Screen
 
 
-class MainActivityScreen(Screen):
+class MainStatisticScreen(Screen):
     pass

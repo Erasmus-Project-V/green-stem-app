@@ -5,10 +5,8 @@ from kivy.metrics import dp
 from kivy.properties import StringProperty
 from kivy.uix.gesturesurface import GestureSurface, GestureContainer
 from kivy.uix.image import Image
-from kivy.uix.screenmanager import Screen
+from kivy.uix.screenmanager import Screen, SlideTransition, FadeTransition
 from kivy.multistroke import Recognizer, MultistrokeGesture, Candidate
-from kivymd.uix.fitimage import FitImage
-from kivymd.uix.relativelayout import MDRelativeLayout
 
 
 class HomeScreen(Screen):
@@ -99,8 +97,18 @@ class HomeScreen(Screen):
         self.gesture_locked = False
         self.start_button.button_disabled = False
 
-    def start_activity_clicked(self, button):
+    def start_activity_clicked(self, btn):
+        self.manager.transition = SlideTransition()
+        self.manager.transition.direction = "left"
         self.manager.goto_screen("act")
+        self.manager.transition = FadeTransition()
+
+    def reset_images(self, a):
+        self.start_button.button_disabled = False
+        self.first_image_container.pos_hint["center_y"] = 0.5
+        self.first_image_container.size_hint = (1.2, 1)
+        self.second_image_container.pos_hint["center_y"] = 0.5
+        self.second_image_container.size_hint = (1.2, 1)
 
     def get_current_activity(self):
         return self.current_activity

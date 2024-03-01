@@ -6,6 +6,7 @@
     md_bg_color: (1,1,1,0)
     size_hint: (0.35,0.05)
     pos_hint: {"top" : 0.95}
+    font_ref: app.fonts["sans_semi_bold"]
     login: 1
     MDRelativeLayout:
         MDLabel:
@@ -14,7 +15,6 @@
             opacity: root.login
             color: app.primary_colors["light_blue"]
             font_size: 40
-
             halign: "center"
             pos_hint: {"y":-0.2}
         Button:
