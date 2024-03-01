@@ -1,6 +1,7 @@
 import os
 from kivy import Config
 from kivy.clock import Clock
+from kivy.uix.gesturesurface import GestureSurface
 
 Config.set('graphics', 'width', '390')
 Config.set('graphics', 'height', '780')
@@ -26,6 +27,7 @@ class MainScreenManager(ScreenManager):
         super().__init__(**kwargs)
         print(self.screen_names)
         self.current = "lgn"
+        self.dimensions = (Config.get("graphics","width"),Config.get("graphics","height"))
         self.running_processes = []
         self.screen_refs = {i: self.screen_names[i] for i in range(len(self.screen_names))}
         self.window_subroutines()
@@ -60,8 +62,9 @@ class FitnessApp(MDApp):
     def __init__(self):
         super().__init__()
         self.theme_cls.theme_style = "Dark"
+        print(self.theme_cls.bg_dark)
         self.primary_colors = {
-            "black": (28 / 255, 28 / 255, 30 / 255, 1),
+            "black": (28/255, 28/255, 28/255, 1),
             "white": (255 / 255, 255 / 255, 255 / 255, 1),
             "light_blue": (95 / 255, 163 / 255, 201 / 255, 1),
             "dark_blue": (22 / 255, 91 / 255, 129 / 255, 1),
@@ -71,14 +74,13 @@ class FitnessApp(MDApp):
             "darker_grey": (44 / 255, 44 / 255, 46 / 255, 1),
             "green": (103 / 255, 201 / 255, 95 / 255, 1),
             "orange": (231 / 255, 100 / 255, 27 / 255, 1),
-            "error_color": (255 / 255, 36 / 255, 36 / 255, 1),
-            "stop_button_red": (210 / 255, 103 / 255, 103 / 255, 1),
-            "light_blue_opacity": (95 / 255, 163 / 255, 201 / 255, 0.8)
+            "error_color": (255 / 255, 36 / 255, 36 / 255, 1)
         }
         self.fonts = {
             "sans_semi_bold": "assets/fonts/OpenSans_SemiBold.ttf",
             "sans_regular": "assets/fonts/OpenSans_Regular.ttf",
-            "actor_regular": "assets/fonts/Actor_Regular.ttf"
+            "actor_regular": "assets/fonts/Actor_Regular.ttf",
+            "advent_regular": "assets/fonts/AdventPro_Regular.ttf"
         }
         self.size = Window.size
         self.ratio = self.size[1] / self.size[0]

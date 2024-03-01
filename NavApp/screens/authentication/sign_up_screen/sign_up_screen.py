@@ -20,7 +20,7 @@ class SignUpScreen(MDScreen):
         pass_holder = None
         is_good = 0
 
-        for comp in (username, email, password,password_repeat):
+        for comp in (username, email, password, password_repeat):
             comp_text = comp.return_text()
             if comp.name == "password":
                 pass_holder = comp
@@ -40,7 +40,7 @@ class SignUpScreen(MDScreen):
                     comp.exit_error_mode()
                 continue
             if comp.name == "email":
-                if not re.match(".+@.+\..+",comp_text):
+                if not re.match(".+@.+\..+", comp_text):
                     comp.enter_error_mode("Email nije ispravno napisan!")
                     continue
             is_good += 1
@@ -49,7 +49,6 @@ class SignUpScreen(MDScreen):
             return
         self.send_new_user(username, email, password)
         self.ids["signup_button"].button_disabled = True
-
 
     def send_new_user(self, username, email, password):
         payload = {
@@ -68,8 +67,6 @@ class SignUpScreen(MDScreen):
         print(text)
         self.ids["signup_button"].button_disabled = False
 
-
     def error_sign_up(self, thread, text):
         print(text)
         self.ids["signup_button"].button_disabled = False
-

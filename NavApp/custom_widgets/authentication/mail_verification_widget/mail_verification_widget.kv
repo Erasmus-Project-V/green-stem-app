@@ -1,0 +1,15 @@
+#File name: mail_verification_widget.kv
+
+<MailVerificationWidget>:
+    size_hint: (1,1)
+    pos_hint: {"center_x":0.5,"center_y":0.5}
+    grey_container: app.primary_colors["darker_grey"]
+    blue_container: app.primary_colors["light_blue"]
+    MDLabel:
+        text: "top"
+        pos_hint: {"center_x":0.5,"center_y":0.5}
+    MDLabel:
+        text: "helper"
+        pos_hint: {"center_x":0.5,"center_y":0.25}
+    OvalBlueButtonWidget:
+        button_text: "Odvedi me do E-maila"

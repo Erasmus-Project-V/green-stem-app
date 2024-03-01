@@ -19,7 +19,9 @@ class InputWidget(MDRelativeLayout):
         self.field.bind(text=self.text_change)
 
     def check_text(self,widget,text):
+        # ovdje implementat da text ne overshoota
         return
+
 
     def return_text(self):
         return self.field.text

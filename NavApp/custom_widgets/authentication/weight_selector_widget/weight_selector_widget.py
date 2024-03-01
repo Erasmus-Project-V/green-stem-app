@@ -1,8 +1,7 @@
+from kivy.metrics import dp
 from kivymd.effects.roulettescroll import RouletteScrollEffect
 from kivymd.uix.label import MDLabel
-from kivymd.uix.relativelayout import MDRelativeLayout
 from NavApp.custom_widgets.authentication.selector_behavior_widget.selector_behavior_widget import *
-from NavApp.scripts.utilities import find_manager
 
 
 class WeightSelectorWidget(SelectorBehaviorWidget):
@@ -11,14 +10,14 @@ class WeightSelectorWidget(SelectorBehaviorWidget):
         self.do_scroll_y = False
         self.do_scroll_x = True
         self.button_num = 200
-        self.component_width = 20
-        self.component_height = 58.5
+        self.component_width = dp(20)
+        self.component_height = dp(58.5)
 
         super().__init__(**kwargs)
 
         self.widget_type = (MDLabel, {"text": "|", "halign": "center",
                                       "pos_hint": {"center_x": 0.5, "center_y": 0.5},
-                                      "size_hint": (1, 1), "font_size": 80,
+                                      "size_hint": (1, 1), "font_size": dp(80),
                                       "text_color": self.blue_color_container
             , "theme_text_color": "Custom"})
 

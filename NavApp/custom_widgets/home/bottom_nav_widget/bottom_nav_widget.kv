@@ -1,17 +1,56 @@
+#File name: bottom_nav_widget.kv
+
 <BottomNavWidget>:
-    MDBottomNavigation:
-        MDBottomNavigationItem:
-            name: 'screen 1'
-            icon: "home"
-
-        MDBottomNavigationItem:
-            name: 'screen 2'
-            icon: "equalizer"
-        
-        MDBottomNavigationItem:
-            name: 'screen 3'
-            icon: "account-multiple"
-
-        MDBottomNavigationItem:
-            name: 'screen 4'
-            icon: "account-multiple"
+    selected: 1
+    orientation: "horizontal"
+    pos_hint: {"center_x":0.5,"center_y":0.05}
+    md_bg_color: app.primary_colors["black"]
+    size_hint: (1,0.15)
+    MDIconButton:
+        name: "home_button"
+        id: home
+        pos_hint: {"center_x":0.10,"center_y":0.5}
+        ripple_alpha: 0.0
+        icon: "home"
+        icon_size: "40dp"
+        theme_icon_color: "Custom"
+        icon_color: app.primary_colors["white"] if root.selected == 1 else app.primary_colors["dark_grey"]
+        on_release:
+            root.selector_pressed(self)
+    MDIconButton:
+        name: "stats_button"
+        id: stats
+        pos_hint: {"center_x":0.367,"center_y":0.5}
+        ripple_alpha: 0.0
+        icon: "finance"
+        theme_icon_color: "Custom"
+        icon_size: "40dp"
+        icon_color: app.primary_colors["white"] if root.selected == 2 else app.primary_colors["dark_grey"]
+        on_release:
+            root.selector_pressed(self)
+    MDIconButton:
+        name: "social_button"
+        id: social
+        pos_hint: {"center_x":0.634,"center_y":0.5}
+        ripple_alpha: 0.0
+        icon: "account-multiple"
+        theme_icon_color: "Custom"
+        icon_size: "40dp"
+        icon_color: app.primary_colors["white"] if root.selected == 3 else app.primary_colors["dark_grey"]
+        on_release:
+            root.selector_pressed(self)
+    MDIconButton:
+        name: "account_button"
+        id: account
+        pos_hint: {"center_x":0.90,"center_y":0.5}
+        ripple_alpha: 0.0
+        icon: "circle-outline"
+        theme_icon_color: "Custom"
+        icon_size: "64dp"
+        icon_color: app.primary_colors["white"] if root.selected == 4 else app.primary_colors["darker_grey"]
+        on_release:
+            root.selector_pressed(self)
+    Image:
+        pos_hint: {"center_x":0.90,"center_y":0.5}
+        source: "assets/images/sample_profile_picture.png"
+        size_hint: (0.1,0.5)

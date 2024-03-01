@@ -8,12 +8,14 @@ from NavApp.scripts.utilities import find_manager
 
 
 class SelectorBehaviorWidget(ScrollView):
+    # MUST DEFINE
     enumerate: bool
     enumeration_min: int
     button_num: int = 10
     component_width: float | int
     component_height: float | int
     widget_type: tuple = None
+    build_auto: bool = True
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -28,7 +30,8 @@ class SelectorBehaviorWidget(ScrollView):
             self.encase_kwargs = {"height": self.component_height, "size_hint": (1, None)}
         self.components = list()
         self.selected_value = 0
-        Clock.schedule_once(self.build_self, 0.01)
+        if self.build_auto:
+            Clock.schedule_once(self.build_self, 0.01)
 
     def re_argument(self, **kwargs):
         for key, value in kwargs.items():

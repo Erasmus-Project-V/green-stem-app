@@ -12,20 +12,21 @@
         button_ripple: 0
         button_text: ""
         size_hint: (0.5,0.5)
-        button_dims: (dp(250),dp(250))
+        button_dims: (dp(200),dp(200))
         button_bg_color: root.grey_container
         pos_hint: {"center_x":0.5,"center_y":0.25}
         release_func: root.gender_selected
         MDIcon:
             id: icon_male
             pos_hint: {"center_x": 0.5, "center_y":0.6}
-            font_size: dp(128)
+            font_size: dp(100)
             icon: "gender-male"
             theme_icon_color: "Custom"
             color: app.primary_colors["white"]
         MDLabel:
             id: label_male
             text: "Male"
+            font_size: dp(18)
             halign: "center"
             font_name: app.fonts["sans_regular"]
             pos_hint: {"center_x": 0.5, "center_y":0.25}
@@ -40,19 +41,20 @@
         button_text: ""
         button_bg_color: app.primary_colors["darker_grey"]
         size_hint: (0.5,0.5)
-        button_dims: (dp(250),dp(250))
+        button_dims: (dp(200),dp(200))
         pos_hint: {"center_x":0.5,"center_y":0.75}
         release_func: root.gender_selected
         MDIcon:
             id: icon_female
             pos_hint: {"center_x": 0.5, "center_y":0.6}
-            font_size: dp(128)
+            font_size: dp(100)
             icon: "gender-female"
             theme_icon_color: "Custom"
             icon_color: app.primary_colors["black"]
         MDLabel:
             id: label_female
             text: "Female"
+            font_size: dp(18)
             halign: "center"
             font_name: app.fonts["sans_regular"]
             pos_hint: {"center_x": 0.5, "center_y":0.25}

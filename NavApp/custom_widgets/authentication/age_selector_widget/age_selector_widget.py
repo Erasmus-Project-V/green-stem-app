@@ -1,3 +1,4 @@
+from kivy.metrics import dp
 from kivymd.effects.roulettescroll import RouletteScrollEffect
 from kivymd.uix.label import MDLabel
 from kivymd.uix.relativelayout import MDRelativeLayout
@@ -10,13 +11,13 @@ class AgeSelectorWidget(SelectorBehaviorWidget):
 
         self.do_scroll_x = False
         self.do_scroll_y = True
-        self.component_height = 58.5
-        self.component_width = 20
+        self.component_height = dp(58.5)
+        self.component_width = dp(20)
         super().__init__(**kwargs)
         self.button_num = 40
         self.widget_type = (MDLabel, {"text": "Null", "halign": "center",
                                       "pos_hint": {"center_x": 0.5, "center_y": 0.5},
-                                      "size_hint": (1, 1), "font_size": 80})
+                                      "size_hint": (1, 1), "font_size": dp(80)})
         self.enumerate = True
         self.enumeration_min = 11
 
