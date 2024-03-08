@@ -24,6 +24,14 @@
             id: swipe_image
             pos_hint: {"center_x":0.5,"center_y":0.18}
         MDLabel:
+            id: top_text
+            pos_hint: {"center_x":0.5,"center_y":0.9}
+            halign: "center"
+            text: "NULL"
+            font_size: dp(20)
+            font_name: app.fonts["sans_regular"]
+            color: app.primary_colors["light_grey"]
+        MDLabel:
             id: crosshair_left
             halign: "center"
             text: "|"

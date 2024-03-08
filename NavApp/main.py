@@ -1,7 +1,6 @@
 import os
 from kivy import Config
-from kivy.clock import Clock
-from kivy.uix.gesturesurface import GestureSurface
+from NavApp.scripts.user_manager import UserManager
 
 Config.set('graphics', 'width', '390')
 Config.set('graphics', 'height', '780')
@@ -21,16 +20,19 @@ else:
 
 from scripts.__gen__imports__ import *
 
+
 class MainScreenManager(ScreenManager):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         print(self.screen_names)
+        self.active_user = UserManager()
         self.current = "lgn"
-        self.dimensions = (Config.get("graphics","width"),Config.get("graphics","height"))
+        self.dimensions = (Config.get("graphics", "width"), Config.get("graphics", "height"))
         self.running_processes = []
         self.screen_refs = {i: self.screen_names[i] for i in range(len(self.screen_names))}
         self.window_subroutines()
+        self.key_history = ["-"]
 
     def add_process(self, ref):
         self.running_processes.append(ref)
@@ -40,10 +42,12 @@ class MainScreenManager(ScreenManager):
         Window.bind(on_key_down=self.key_pressed)
 
     def key_pressed(self, *args):
-        key = args[-2]
-        print(f"pressed {key}")
-        if key in map(str, self.screen_refs.keys()):
-            self.goto_screen(self.screen_refs[int(key)])
+        self.key_history.append(args[-2])
+        if len(self.key_history) > 100:
+            self.key_history = self.key_history[-3:]
+        print(f"pressed {self.key_history[-1]}")
+        if self.key_history[-1] in map(str, self.screen_refs.keys()) and self.key_history[-2]=="ı":
+            self.goto_screen(self.screen_refs[int(self.key_history[-1])])
 
     def goto_screen(self, scrn):
         for event in self.running_processes:
@@ -64,7 +68,7 @@ class FitnessApp(MDApp):
         self.theme_cls.theme_style = "Dark"
         print(self.theme_cls.bg_dark)
         self.primary_colors = {
-            "black": (28/255, 28/255, 28/255, 1),
+            "black": (28 / 255, 28 / 255, 28 / 255, 1),
             "white": (255 / 255, 255 / 255, 255 / 255, 1),
             "light_blue": (95 / 255, 163 / 255, 201 / 255, 1),
             "dark_blue": (22 / 255, 91 / 255, 129 / 255, 1),

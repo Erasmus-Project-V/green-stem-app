@@ -8,8 +8,11 @@
     button_text: "Sample"
     button_bg_color: app.primary_colors["green"] if root.button_type == "play" else  app.primary_colors["orange"]
     button_disabled: False
-    release_func: root.clicked
+    press_func: root.pressed
+    release_func: root.button_released
+    hold_func: root.hold_complete
     button_name: "None"
+    button_icon: root.button_type
     button_ripple: 1
     MDFillRoundFlatButton:
         id: btn_in
@@ -21,10 +24,12 @@
         disabled: root.button_disabled
         pos_hint: {"center_x":0.5,"center_y":0.5}
         name: root.button_name
+        on_press:
+            root.press_func(self)
         on_release:
             root.release_func(self)
-    Image:
-        source: f"assets/images/{root.button_type}_button_icon.png"
-        pos_hint: {"center_x":0.52,"center_y":0.5} if root.button_type == "play" else {"center_x":0.5,"center_y":0.5}
-        opacity: 0.9
-        size_hint: (0.4,0.4) if root.button_type == "play" or root.button_type == "pause" else (0.3,0.3)
+            root.release_inline(self)
+    MDIcon:
+        pos_hint: {"center_x":0.5,"center_y":0.5}
+        icon_size: dp(64)
+        icon: root.button_icon

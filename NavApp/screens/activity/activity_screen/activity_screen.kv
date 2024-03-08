@@ -49,10 +49,17 @@
             dimension: "small"
 
         PausePlayButtonWidget:
+            id: play_button
             pos_hint: {"center_x":0.4,"center_y":0.1}
             button_type: "play"
+            hold_func: root.placeholder
+            release_func: root.button_released
+
 
         PausePlayButtonWidget:
+            id: stop_button
             pos_hint: {"center_x":0.6,"center_y":0.1}
             button_type: "stop"
+            hold_func: root.quit_activity
+            release_func: root.finish_activity
 

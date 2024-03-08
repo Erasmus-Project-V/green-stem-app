@@ -1,14 +1,15 @@
+import json
 import re
 
 from kivy.network.urlrequest import UrlRequest
 from kivymd.uix.screen import MDScreen
-import requests
 
 
 class SignUpScreen(MDScreen):
 
     def __init__(self, **kw):
         super().__init__(**kw)
+        self.user_id = None
 
     def create_new_user(self, button):
 
@@ -51,22 +52,48 @@ class SignUpScreen(MDScreen):
         self.ids["signup_button"].button_disabled = True
 
     def send_new_user(self, username, email, password):
-        payload = {
-            "username": username,
-            "email": email,
-            "password": password,
-            "passwordConfirm": password,
+        # napraviti client
+        self.payload = {
+            "username": username.return_text(),
+            "email": email.return_text(),
+            "password": password.return_text(),
+            "passwordConfirm": password.return_text(),
             "emailVisibility": True,
         }
 
-        UrlRequest(url="http://localhost:8090/api/collections/users/auth-with-password", req_body=payload,
-                   on_success=lambda a, b: self.successful_sign_up(a, b),
-                   on_error=lambda a, b: self.error_sign_up(a, b))
+        self.manager.active_user.send_request(path="/api/collections/users/records",
+                                              method="POST",
+                                              body=json.dumps(self.payload),
+                                              error_func=self.error_sign_up,
+                                              success_func=self.successful_sign_up)
 
-    def successful_sign_up(self, thread, text):
-        print(text)
+    def successful_sign_up(self, thread, response_text):
+        self.user_id = response_text["id"]
+        new_payload = {
+            "identity": self.payload["username"],
+            "password": self.payload["password"]
+        }
+
+        self.manager.active_user.send_request(path="/api/collections/users/auth-with-password",
+                                              method="POST",
+                                              body=json.dumps(new_payload),
+                                              error_func=self.error_sign_up,
+                                              success_func=self.successful_post_sign_up)
+
+        self.manager.active_user.send_request(path="/api/collections/users/request-verification",
+                                              method="POST",
+                                              body=json.dumps({
+                                                  "email": self.payload["email"]
+                                              }),
+                                              success_func=lambda a, b: print("sucess! (mail verification request)"),
+                                              error_func=self.error_sign_up,
+                                              )
+
+    def successful_post_sign_up(self, thread, response_text):
+        self.manager.active_user.write_user_data(response_text["token"], response_text["record"])
         self.ids["signup_button"].button_disabled = False
+        self.manager.goto_screen("sss")
 
-    def error_sign_up(self, thread, text):
-        print(text)
+    def error_sign_up(self, thread, response_text):
+        print(f"error: {response_text} {thread}")
         self.ids["signup_button"].button_disabled = False

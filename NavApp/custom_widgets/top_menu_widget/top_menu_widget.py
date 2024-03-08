@@ -15,7 +15,9 @@ class TopMenuWidget(MDBoxLayout):
 
     def build_unit(self,screen_ref,text):
         unit = Button(name=screen_ref,text=text,
-                      font_name=self.font_ref)
+                      font_name=self.font_ref,
+                      background_color= (0,0,0,0)
+        )
         sub = MDLabel(text= "____",
                       font_size=dp(24))
         wrapper = MDRelativeLayout()

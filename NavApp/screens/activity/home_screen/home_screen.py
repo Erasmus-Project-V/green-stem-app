@@ -32,8 +32,10 @@ class HomeScreen(Screen):
         self.first_image_container = None
         self.second_image_container = None
         self.start_button = None
+        self.top_text_widget = None
 
-        Clock.schedule_once(self.further_build, 0.01)
+        self.is_built = False
+        self.event = Clock.schedule_once(self.further_build, 0)
 
     def further_build(self, dt):
 
@@ -44,11 +46,24 @@ class HomeScreen(Screen):
         self.first_image_container = self.ids["first_image_container"]
         self.second_image_container = self.ids["second_image_container"]
         self.start_button = self.ids["start_button"]
+        self.top_text_widget = self.ids["top_text"]
 
         self.image_swiper.component_width = dp(self.manager.dimensions[0])
         self.image_swiper.encase_kwargs["width"] = dp(self.manager.dimensions[0]) / 3
         self.image_swiper.build_self(None)
         self.second_image_container.opacity = 0
+        self.is_built = True
+
+    def start_up_screen(self):
+        if not self.is_built:
+            self.event.cancel()
+            self.further_build(0)
+        self.set_up_user_data()
+
+    def set_up_user_data(self):
+        username = self.manager.active_user.get_user_attribute("username")
+        if username:
+            self.top_text_widget.text = f"Hello, {username}!"
 
     def handle_gesture_complete(self, surface, container: GestureContainer):
         if self.gesture_locked:

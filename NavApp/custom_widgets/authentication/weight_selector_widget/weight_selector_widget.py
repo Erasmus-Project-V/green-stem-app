@@ -15,16 +15,16 @@ class WeightSelectorWidget(SelectorBehaviorWidget):
 
         super().__init__(**kwargs)
 
+        self.widget_type = None
+        self.enumerate = False
+        self.enumeration_min = 30
+
+    def build_self(self, null):
         self.widget_type = (MDLabel, {"text": "|", "halign": "center",
                                       "pos_hint": {"center_x": 0.5, "center_y": 0.5},
                                       "size_hint": (1, 1), "font_size": dp(80),
                                       "text_color": self.blue_color_container
             , "theme_text_color": "Custom"})
-
-        self.enumerate = False
-        self.enumeration_min = 30
-
-    def build_self(self, null):
         self.layout.bind(minimum_width=self.layout.setter('width'))
         self.effect_x = RouletteScrollEffect(anchor=4, interval=4)
         super().build_self()

@@ -23,6 +23,17 @@ KivyMD 1.2.0
 requests
 <br>
 os
+<br>
+time
+<br>
+Pillow
+<br>
+webbrowser
+<br>
+time
+<br>
+
+<br>
 
 ## Definicije
 ### scripts:
@@ -32,6 +43,12 @@ modul za generaciju importa svih zasebnih ekrana/widgeta
 u smislenom redoslijedu, ne prčkati. Da bi radilo
 svi ekrani moraju poštovati metodologiju navedenu
 u Metodologija/Novi ekrani/widgeti
+<br>
+utilities.py:
+Korisne stvari u smislu kivy-a
+find_manager(start) -> pronalazi glavni screen manager iz
+bilo kojeg dijela projekta
+
 <br>
 Navodnici: Dvostruki!
 <br>
@@ -48,7 +65,8 @@ Navodnici: Dvostruki!
 Svi schedulani eventi sa Clock metodom
 se po defaultu gase pri promjeni ekrana,
 radi spasenja jadnog cpu-a, pale se 
-na ulazu u screen 
+na ulazu u screen - treba opisati metode
+koje to actually rade though (napravljene su)
 </p>
 
 <p>

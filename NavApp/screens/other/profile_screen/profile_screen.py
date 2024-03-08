@@ -2,4 +2,7 @@ from kivy.uix.screenmanager import Screen
 
 
 class ProfileScreen(Screen):
-    pass
+
+    def sign_out(self, button):
+        self.manager.active_user.erase_user_data()
+        self.manager.goto_screen("lgn")
