@@ -18,7 +18,7 @@ kućna računala kako bi mogli biti standardizirani
 ## Requirements:
 Python 3.11 or newer
 <br>
-KivyMD 1.2.0
+KivyMD==1.2.0
 <br>
 requests
 <br>

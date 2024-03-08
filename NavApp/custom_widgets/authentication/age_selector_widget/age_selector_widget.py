@@ -2,7 +2,7 @@ from kivy.metrics import dp
 from kivymd.effects.roulettescroll import RouletteScrollEffect
 from kivymd.uix.label import MDLabel
 from kivymd.uix.relativelayout import MDRelativeLayout
-from NavApp.custom_widgets.authentication.selector_behavior_widget.selector_behavior_widget import SelectorBehaviorWidget
+from custom_widgets.authentication.selector_behavior_widget.selector_behavior_widget import SelectorBehaviorWidget
 
 
 class AgeSelectorWidget(SelectorBehaviorWidget):

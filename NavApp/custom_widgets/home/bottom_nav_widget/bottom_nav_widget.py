@@ -1,6 +1,6 @@
 from kivymd.uix.relativelayout import MDRelativeLayout
 
-from NavApp.scripts.utilities import find_manager
+from scripts.utilities import find_manager
 
 
 class BottomNavWidget(MDRelativeLayout):

@@ -3,9 +3,9 @@ from kivy.metrics import dp
 from kivymd.effects.roulettescroll import RouletteScrollEffect
 from kivymd.uix.label import MDLabel
 
-from NavApp.custom_widgets.authentication.selector_behavior_widget.selector_behavior_widget import \
+from custom_widgets.authentication.selector_behavior_widget.selector_behavior_widget import \
     SelectorBehaviorWidget
-from NavApp.scripts.utilities import find_manager
+from scripts.utilities import find_manager
 
 
 class SwipeableImageWidget(SelectorBehaviorWidget):

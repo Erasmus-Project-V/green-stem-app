@@ -4,7 +4,7 @@ from kivy.uix.widget import Widget
 from kivymd.uix.gridlayout import MDGridLayout
 from kivymd.uix.relativelayout import MDRelativeLayout
 
-from NavApp.scripts.utilities import find_manager
+from scripts.utilities import find_manager
 
 
 class SelectorBehaviorWidget(ScrollView):

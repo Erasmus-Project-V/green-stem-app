@@ -4,7 +4,6 @@ from kivy.uix.button import Button
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.label import MDLabel
 from kivymd.uix.relativelayout import MDRelativeLayout
-# from NavApp.scripts.utilities import find_manager
 from scripts.utilities import find_manager
 
 
