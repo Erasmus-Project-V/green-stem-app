@@ -2,7 +2,7 @@ import json
 import os
 
 from kivy.network.urlrequest import UrlRequest
-from NavApp.scripts.activity_manager import ActivityManager
+from scripts.activity_manager import ActivityManager
 
 
 class UserManager:

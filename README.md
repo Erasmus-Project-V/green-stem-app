@@ -24,13 +24,13 @@ requests
 <br>
 os
 <br>
-time
-<br>
 Pillow
 <br>
 webbrowser
 <br>
 time
+<br>
+plyer
 <br>
 
 <br>

@@ -5,7 +5,7 @@ from kivy.utils import platform
 from kivy.animation import Animation
 from kivy.clock import Clock
 from kivy.uix.screenmanager import Screen
-from NavApp.scripts.activity_manager import ActivityManager, Activity
+from scripts.activity_manager import ActivityManager, Activity
 
 
 class ActivityScreen(Screen):
@@ -102,17 +102,19 @@ class ActivityScreen(Screen):
             self.active_activity = self.activity_manager.add_new_activity(self.activities[self.current_activity])
             self.active_activity.start_activity(time.localtime(), time.perf_counter())
         self.last_ping = time.perf_counter()
+        self.last_location = None
         self.activity_event = Clock.schedule_interval(self.update_activity, 1)
 
     def update_location(self, **kwargs):
         lat = kwargs["lat"]
         lon = kwargs["lon"]
+        self.last_location = [lat,lon]
         self.update_location_widget(lat, lon)
 
     def update_activity(self, dt=0):
         self.dt = round(time.perf_counter() - self.last_ping, 5)
         self.last_ping = time.perf_counter()
-        self.active_activity.update_activity(self.dt, ["lokacija"])
+        self.active_activity.update_activity(self.dt, self.last_location)
         print(self.dt, self.active_activity.elapsed_time_active)
         self.update_time_widget(self.active_activity.elapsed_time_active)
 
