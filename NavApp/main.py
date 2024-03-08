@@ -1,6 +1,6 @@
 import os
 from kivy import Config
-from NavApp.scripts.user_manager import UserManager
+from scripts.user_manager import UserManager
 
 Config.set('graphics', 'width', '390')
 Config.set('graphics', 'height', '780')

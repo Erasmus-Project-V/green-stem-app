@@ -1,4 +1,5 @@
 import time
+from math import sin, cos, acos
 
 
 class ActivityManager:
@@ -29,7 +30,8 @@ class Activity:
         self.elapsed_time_active = 0
         self.elapsed_time_total = 0
 
-        self.location_series = []
+        self.active_location_series = []
+        self.passive_location_series = []
         self.speed_series = []
         self.total_distance = 0
 
@@ -38,9 +40,22 @@ class Activity:
                            start_date.tm_hour, start_date.tm_min, start_date.tm_sec]
         self.start_time = start_time
 
+    def calculate_distance_from_longitude(self, coord2, coord1):
+        distance = abs(acos(
+            sin(coord1[0]) * sin(coord2[0]) + cos(coord1[0]) * cos(coord2[0]) * cos(coord2[1] - coord1[1]) * 6371))
+        return distance
+
     def update_activity(self, dt, location_ping, ):
         self.elapsed_time_active += dt
-        self.location_series.append(location_ping)
+        if location_ping:
+            self.active_location_series.append((self.elapsed_time_active, location_ping))
+            self.passive_location_series.append((self.elapsed_time_active, location_ping))
+        if self.active_location_series:
+            dist = self.calculate_distance_from_longitude(self.active_location_series[-1], self.active_location_series[-2])
+            self.total_distance += dist
+
+    def reset_active_location(self):
+        self.active_location_series = []
 
     def stop_activity(self, end_time):
         self.elapsed_time_total = end_time - self.start_time

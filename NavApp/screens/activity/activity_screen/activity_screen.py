@@ -5,7 +5,7 @@ from kivy.utils import platform
 from kivy.animation import Animation
 from kivy.clock import Clock
 from kivy.uix.screenmanager import Screen
-from scripts.activity_manager import ActivityManager, Activity
+from NavApp.scripts.activity_manager import ActivityManager, Activity
 
 
 class ActivityScreen(Screen):
@@ -27,7 +27,7 @@ class ActivityScreen(Screen):
 
     def further_build(self, dt):
         self.activity_manager = self.manager.active_user.activity_manager
-        self.active_activity = None
+        self.active_activity: Activity = None
         self.image_container = self.ids["image_container"]
         self.activity_containers = [
             self.ids["ac1"],
@@ -47,7 +47,6 @@ class ActivityScreen(Screen):
         self.set_up_preset()
         if platform == "android":
             gps.configure(on_location=self.update_location)
-            gps.start()
 
     def placeholder(self, *args):
         pass
@@ -103,12 +102,21 @@ class ActivityScreen(Screen):
             self.active_activity.start_activity(time.localtime(), time.perf_counter())
         self.last_ping = time.perf_counter()
         self.last_location = None
+        if platform == "android":
+            gps.start(1)
         self.activity_event = Clock.schedule_interval(self.update_activity, 1)
+
+    def __pause_activity(self, dt=0):
+        if platform == "android":
+            gps.stop()
+        self.activity_event.cancel()
+        self.active_activity.reset_active_location()
+        self.update_activity()
 
     def update_location(self, **kwargs):
         lat = kwargs["lat"]
         lon = kwargs["lon"]
-        self.last_location = [lat,lon]
+        self.last_location = [lat, lon]
         self.update_location_widget(lat, lon)
 
     def update_activity(self, dt=0):
@@ -116,18 +124,12 @@ class ActivityScreen(Screen):
         self.last_ping = time.perf_counter()
         self.active_activity.update_activity(self.dt, self.last_location)
         print(self.dt, self.active_activity.elapsed_time_active)
-        self.update_time_widget(self.active_activity.elapsed_time_active)
+        self.update_widgets(self.active_activity.elapsed_time_active,
+                            self.active_activity.total_distance)
 
-    def update_location_widget(self, latitude, longitude):
-        self.activity_containers[2].quantity = f"lat: {latitude} lon: {longitude}"
-        print(latitude,longitude)
-
-    def update_time_widget(self, elapsed_time):
+    def update_widgets(self, elapsed_time,elapsed_distance):
         self.activity_containers[1].quantity = time.strftime('%H:%M:%S', time.gmtime(round(elapsed_time)))
-
-    def __pause_activity(self, dt=0):
-        self.activity_event.cancel()
-        self.update_activity()
+        self.activity_containers[2].quantity = str(elapsed_distance)
 
     def finish_activity(self, button):
         if self.active_activity:
