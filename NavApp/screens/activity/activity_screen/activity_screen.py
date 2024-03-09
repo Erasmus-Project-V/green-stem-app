@@ -5,7 +5,7 @@ from kivy.utils import platform
 from kivy.animation import Animation
 from kivy.clock import Clock
 from kivy.uix.screenmanager import Screen
-from NavApp.scripts.activity_manager import ActivityManager, Activity
+from scripts.activity_manager import ActivityManager, Activity
 
 
 class ActivityScreen(Screen):
@@ -116,6 +116,7 @@ class ActivityScreen(Screen):
     def update_location(self, **kwargs):
         lat = kwargs["lat"]
         lon = kwargs["lon"]
+        print(f"Lat: {lat}, Lon: {lon}")
         self.last_location = [lat, lon]
         self.update_location_widget(lat, lon)
 
@@ -130,6 +131,7 @@ class ActivityScreen(Screen):
     def update_widgets(self, elapsed_time,elapsed_distance):
         self.activity_containers[1].quantity = time.strftime('%H:%M:%S', time.gmtime(round(elapsed_time)))
         self.activity_containers[2].quantity = str(elapsed_distance)
+        print(f"Elapsted distance: {str(elapsed_distance)}")
 
     def finish_activity(self, button):
         if self.active_activity:

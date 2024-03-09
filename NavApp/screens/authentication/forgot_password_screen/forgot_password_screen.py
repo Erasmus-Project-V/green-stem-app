@@ -9,7 +9,7 @@ from kivy.core.window import Window
 
 import sys
 
-from NavApp.custom_widgets.input_widget.input_widget import InputWidget
+from custom_widgets.input_widget.input_widget import InputWidget
 
 sys.path.append('/NavApp/custom_widgets')
 
