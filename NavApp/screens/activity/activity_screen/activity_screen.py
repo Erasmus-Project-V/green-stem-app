@@ -118,7 +118,6 @@ class ActivityScreen(Screen):
         lon = kwargs["lon"]
         print(f"Lat: {lat}, Lon: {lon}")
         self.last_location = [lat, lon]
-        self.update_location_widget(lat, lon)
 
     def update_activity(self, dt=0):
         self.dt = round(time.perf_counter() - self.last_ping, 5)
@@ -136,7 +135,14 @@ class ActivityScreen(Screen):
     def finish_activity(self, button):
         if self.active_activity:
             print("finalizing activity...")
+            payload = self.active_activity.stop_activity(time.perf_counter())
+            self.send_activity_to_base(payload)
             self.active_activity = None
+
+    def send_activity_to_base(self,payload):
+        ##self.manager.active_user.send_request()
+        ## tu napisi request, izmjeni payload tho
+        pass
 
     def quit_activity(self, button):
         self.manager.goto_screen("hme")
