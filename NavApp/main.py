@@ -1,24 +1,23 @@
 import os
 from kivy import Config
-from scripts.user_manager import UserManager
+from kivy.uix.screenmanager import ScreenManager
 
+from scripts.user_manager import UserManager
 Config.set('graphics', 'width', '390')
 Config.set('graphics', 'height', '780')
 
 print(os.name)
-if os.name == 'nt' or os.name == "linux":
-    from scripts.imports import *
-else:
-    from scripts.mac_imports import *
+from scripts.imports import *
+
 
 # ovo će importati novostvoreni file!
 # try:
-#     from scripts.__gen__imports__ import *
+#     from __gen__imports__ import *
 # except ImportError:
 #     raise ImportError("There might be a problem with import generator!")
 
 
-from scripts.__gen__imports__ import *
+from __gen__imports__ import *
 
 
 class MainScreenManager(ScreenManager):
