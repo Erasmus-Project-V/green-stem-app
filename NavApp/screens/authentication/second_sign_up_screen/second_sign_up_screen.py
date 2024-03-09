@@ -5,7 +5,7 @@ from kivymd.uix.screen import MDScreen
 from custom_widgets.authentication.gender_selector_widget.gender_selector_widget import GenderSelectorWidget
 from custom_widgets.authentication.age_selector_widget.age_selector_widget import AgeSelectorWidget
 from custom_widgets.authentication.weight_selector_widget.weight_selector_widget import WeightSelectorWidget
-from NavApp.custom_widgets.authentication.mail_verification_widget.mail_verification_widget import \
+from custom_widgets.authentication.mail_verification_widget.mail_verification_widget import \
     MailVerificationWidget
 
 
