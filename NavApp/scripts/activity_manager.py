@@ -1,6 +1,6 @@
+import json
 import time
 from math import sin, cos, acos
-
 
 class ActivityManager:
     def __init__(self, user_id):
@@ -51,14 +51,27 @@ class Activity:
             self.active_location_series.append((self.elapsed_time_active, location_ping))
             self.passive_location_series.append((self.elapsed_time_active, location_ping))
         if self.active_location_series:
-            dist = self.calculate_distance_from_longitude(self.active_location_series[-1], self.active_location_series[-2])
+            dist = self.calculate_distance_from_longitude(self.active_location_series[-1],
+                                                          self.active_location_series[-2])
             self.total_distance += dist
 
     def reset_active_location(self):
         self.active_location_series = []
+        ## trebalo bi naznaciti da je lokacija shifted!
 
     def stop_activity(self, end_time):
         self.elapsed_time_total = end_time - self.start_time
+        payload = self.wrap_self()
+        return payload
+
+    def wrap_self(self):
+        payload = {
+            "active_time": self.elapsed_time_active,
+            "total_distance": self.total_distance,
+            "locations_active": self.active_location_series,
+            "locations_passive": self.passive_location_series
+        }
+        return json.dumps(payload)
 
     def calculate_average_speed(self):
         pass
