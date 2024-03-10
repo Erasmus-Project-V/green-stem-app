@@ -1,4 +1,5 @@
 import json
+import math
 import time
 from math import sin, cos, acos
 
@@ -41,8 +42,19 @@ class Activity:
         self.start_time = start_time
 
     def calculate_distance_from_longitude(self, coord2, coord1):
-        distance = abs(acos(
-            sin(coord1[0]) * sin(coord2[0]) + cos(coord1[0]) * cos(coord2[0]) * cos(coord2[1] - coord1[1]) * 6371))
+        if not coord2 or not coord1:
+            return 0
+        print(f"coords: {coord2} , {coord1}")
+        lat1 = math.radians(coord1[0])
+        lat2 = math.radians(coord2[0])
+        lon1 = math.radians(coord1[1])
+        lon2 = math.radians(coord2[1])
+        deltaPhi = lat2 - lat1
+        deltaLambda = lon2-lon1
+        a = math.sin(deltaPhi/2) ** 2 + math.cos(lat1) * math.cos(lat2) * (math.sin(deltaLambda/2) ** 2)
+        c = 2 * math.atan2(math.sqrt(a),math.sqrt(1-a))
+        distance = round(6371 * abs(c),4)
+        print(distance)
         return distance
 
     def update_activity(self, dt, location_ping, ):
@@ -50,9 +62,9 @@ class Activity:
         if location_ping:
             self.active_location_series.append((self.elapsed_time_active, location_ping))
             self.passive_location_series.append((self.elapsed_time_active, location_ping))
-        if self.active_location_series:
-            dist = self.calculate_distance_from_longitude(self.active_location_series[-1],
-                                                          self.active_location_series[-2])
+        if len(self.active_location_series)>=2:
+            dist = self.calculate_distance_from_longitude(self.active_location_series[-1][1],
+                                                          self.active_location_series[-2][1])
             self.total_distance += dist
 
     def reset_active_location(self):

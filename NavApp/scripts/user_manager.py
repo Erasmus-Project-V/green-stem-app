@@ -4,6 +4,7 @@ import os
 from kivy.network.urlrequest import UrlRequest
 from scripts.activity_manager import ActivityManager
 
+DEBUG = True
 
 class UserManager:
     MAIN_ADDRESS = "https://api.green-stem.eu"
@@ -20,6 +21,11 @@ class UserManager:
         self.activity_manager = None
 
     def load_user_data(self):
+        if DEBUG:
+            self.write_user_data("NONE", {"username":"admin","email":"admin@gmail.co1",
+                                                                "id":"12345","verified":True,
+                                                                "weight":80,"height":180,"age":20,"gender":"male"})
+            return True
         if not os.path.isfile(self.SAVE_ADDRESS):
             return False
         user_file = open(self.SAVE_ADDRESS, "r")
@@ -36,6 +42,7 @@ class UserManager:
         print(f"User data: {user_data}")
         self.user_id = user_data["id"]
         self.activity_manager = ActivityManager(self.user_id)
+        print(self.activity_manager)
         self.save_user_data()
 
     def save_user_data(self):

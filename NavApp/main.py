@@ -1,10 +1,12 @@
 import os
 from kivy import Config
 from kivy.uix.screenmanager import ScreenManager
-
+from kivy.utils import platform
 from scripts.user_manager import UserManager
-Config.set('graphics', 'width', '390')
-Config.set('graphics', 'height', '780')
+print(f"platform is: {platform}")
+if not platform == "android":
+    Config.set('graphics', 'width', '390')
+    Config.set('graphics', 'height', '780')
 
 print(os.name)
 from scripts.imports import *
