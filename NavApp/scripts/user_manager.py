@@ -4,7 +4,7 @@ import os
 from kivy.network.urlrequest import UrlRequest
 from scripts.activity_manager import ActivityManager
 
-DEBUG = True
+DEBUG = False
 
 class UserManager:
     MAIN_ADDRESS = "https://api.green-stem.eu"
@@ -56,7 +56,8 @@ class UserManager:
             user_file.write(savedata)
 
     def overwrite_user_data(self, user_data):
-        if user_data["username"] != self.user_data["username"]:
+        print(user_data.get("username"))
+        if user_data.get("username") != self.user_data["username"] and user_data.get("username"):
             raise RuntimeError("Trying to overwrite but users do not match!")
         for key in user_data.keys():
             self.user_data[key] = user_data[key]

@@ -139,8 +139,9 @@ class ActivityScreen(Screen):
     def __pause_activity(self, dt=0):
         self.update_activity()
         self.activity_event.cancel()
-        gps.stop()
-        self.active_activity.reset_active_location()
+        if platform == "android":
+            gps.stop()
+            self.active_activity.reset_active_location()
 
     def update_location(self, **kwargs):
         lat = kwargs["lat"]
