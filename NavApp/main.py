@@ -2,15 +2,19 @@ import os
 from kivy import Config
 from kivy.uix.screenmanager import ScreenManager
 from kivy.utils import platform
+from kivymd.uix.screenmanager import MDScreenManager
+from kivy.core.window import Window
 from scripts.user_manager import UserManager
+
 print(f"platform is: {platform}")
 if not platform == "android":
     Config.set('graphics', 'width', '390')
     Config.set('graphics', 'height', '780')
+    # temporary \/
+    Window.size = (390,780)
 
 print(os.name)
 from scripts.imports import *
-
 
 # ovo će importati novostvoreni file!
 # try:
@@ -22,7 +26,7 @@ from scripts.imports import *
 from __gen__imports__ import *
 
 
-class MainScreenManager(ScreenManager):
+class MainScreenManager(MDScreenManager):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -47,7 +51,7 @@ class MainScreenManager(ScreenManager):
         if len(self.key_history) > 100:
             self.key_history = self.key_history[-3:]
         print(f"pressed {self.key_history[-1]}")
-        if self.key_history[-1] in map(str, self.screen_refs.keys()) and self.key_history[-2]=="ı":
+        if self.key_history[-1] in map(str, self.screen_refs.keys()) and self.key_history[-2] == "ı":
             self.goto_screen(self.screen_refs[int(self.key_history[-1])])
 
     def goto_screen(self, scrn):

@@ -1,14 +1,17 @@
 import time
 
 from kivymd.uix.dialog import MDDialog
-from plyer import gps
+from kivymd.uix.screen import MDScreen
+from plyer import gps,accelerometer
 from kivy.utils import platform
 from kivy.animation import Animation
 from kivy.clock import Clock
-from kivy.uix.screenmanager import Screen
 from scripts.activity_manager import ActivityManager, Activity
 
-class ActivityScreen(Screen):
+MIN_MEASURE_DISTANCE = 5
+
+
+class ActivityScreen(MDScreen):
     current_background = "assets/images/home/home_*_1.png"
     activity_manager: ActivityManager
     active_activity: Activity
@@ -42,7 +45,9 @@ class ActivityScreen(Screen):
         self.stop_button = self.ids["stop_button"]
         if platform == "android":
             gps.configure(on_location=self.update_location,
-                              on_status=self.on_auth_status)
+                          on_status=self.on_auth_status)
+            accelerometer.enable()
+            print(accelerometer.acceleration)
 
     def on_auth_status(self, general_status, status_message):
         if general_status == "provider_enabled":
@@ -51,12 +56,11 @@ class ActivityScreen(Screen):
             self.open_gps_access_popup()
 
     def open_gps_access_popup(self):
-        dialog = MDDialog(title="GPS Error",text="Please enable GPS to continue!")
-        dialog.size_hint = [.8,.8]
-        dialog.pos_hint = {"center_x":.5,"center_y":.5}
+        dialog = MDDialog(title="GPS Error", text="Please enable GPS to continue!")
+        dialog.size_hint = [.8, .8]
+        dialog.pos_hint = {"center_x": .5, "center_y": .5}
         dialog.bind(on_dismiss=lambda *args: self.quit_activity)
         dialog.open()
-
 
     def start_up_screen(self):
         home_screen = self.manager.get_screen("hme")
@@ -66,17 +70,17 @@ class ActivityScreen(Screen):
         self.set_up_preset()
         if platform == "android":
             # nemam pojma otkud se android importa, ne ici instalirati!!!
-            from android.permissions import Permission,request_permissions
+            from android.permissions import Permission, request_permissions
             print("imported!")
+
             def callback(permission, results):
                 if not False in results:
                     print("Got all permissions!")
                 else:
                     self.open_gps_access_popup()
+
             request_permissions([Permission.ACCESS_COARSE_LOCATION,
-                                 Permission.ACCESS_FINE_LOCATION],callback)
-
-
+                                 Permission.ACCESS_FINE_LOCATION], callback)
 
     def placeholder(self, *args):
         pass
@@ -133,7 +137,7 @@ class ActivityScreen(Screen):
         self.last_ping = time.perf_counter()
         self.last_location = None
         if platform == "android":
-            gps.start(minTime=1000,minDistance=0)
+            gps.start(minTime=1000, minDistance=MIN_MEASURE_DISTANCE)
         self.activity_event = Clock.schedule_interval(self.update_activity, 1)
 
     def __pause_activity(self, dt=0):
@@ -157,7 +161,7 @@ class ActivityScreen(Screen):
         self.update_widgets(self.active_activity.elapsed_time_active,
                             self.active_activity.total_distance)
 
-    def update_widgets(self, elapsed_time,elapsed_distance):
+    def update_widgets(self, elapsed_time, elapsed_distance):
         self.activity_containers[1].quantity = time.strftime('%H:%M:%S', time.gmtime(round(elapsed_time)))
         self.activity_containers[2].quantity = str(elapsed_distance)
         if self.last_location:
@@ -168,16 +172,9 @@ class ActivityScreen(Screen):
     def finish_activity(self, button):
         if self.active_activity:
             print("finalizing activity...")
-            payload = self.active_activity.stop_activity(time.perf_counter())
-            print(payload
-)
-            self.send_activity_to_base(payload)
+            self.reset_containers(self.presets[self.activity_presets[self.current_activity]])
+            self.active_activity.stop_activity(time.perf_counter())
             self.active_activity = None
-
-    def send_activity_to_base(self,payload):
-        ##self.manager.active_user.send_request()
-        ## tu napisi request, izmjeni payload tho
-        pass
 
     def quit_activity(self, button=None, *args):
         self.manager.goto_screen("hme")

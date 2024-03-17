@@ -1,8 +1,14 @@
 import json
 import os
 
+import plyer
+from kivy import platform
+from kivy.clock import Clock
 from kivy.network.urlrequest import UrlRequest
 from scripts.activity_manager import ActivityManager
+from scripts.sql_manager import SQLManager
+from plyer import wifi
+
 
 DEBUG = False
 
@@ -19,6 +25,8 @@ class UserManager:
         self.user_id = None
         self.user_data = {}
         self.activity_manager = None
+        self.sql_manager = None
+        self.wifi_check_event = None
 
     def load_user_data(self):
         if DEBUG:
@@ -41,7 +49,11 @@ class UserManager:
         self.user_data = user_data
         print(f"User data: {user_data}")
         self.user_id = user_data["id"]
-        self.activity_manager = ActivityManager(self.user_id)
+        self.sql_manager = SQLManager(self.user_id)
+        self.activity_manager = ActivityManager(self.user_id,self.sql_manager)
+        if platform == "android":
+            # starting to check if wifi is available
+            self.wifi_check_event = Clock.schedule_once(self.check_for_wifi)
         print(self.activity_manager)
         self.save_user_data()
 
@@ -62,11 +74,18 @@ class UserManager:
         for key in user_data.keys():
             self.user_data[key] = user_data[key]
 
+    def check_for_wifi(self,dt):
+        if wifi.is_connected():
+            print("connected to wifi, checking if upload needed")
+            self.sql_manager.upload_all()
+
     def erase_user_data(self):
         self.user_token = None
         self.user_data = None
         self.user_id = None
         self.active = False
+        if self.wifi_check_event:
+            self.wifi_check_event.cancel()
         if os.path.isfile(self.SAVE_ADDRESS):
             os.remove(self.SAVE_ADDRESS)
 

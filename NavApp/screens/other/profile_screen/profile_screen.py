@@ -1,7 +1,7 @@
-from kivy.uix.screenmanager import Screen
+from kivymd.uix.screen import MDScreen
 
 
-class ProfileScreen(Screen):
+class ProfileScreen(MDScreen):
 
     def sign_out(self, button):
         self.manager.active_user.erase_user_data()

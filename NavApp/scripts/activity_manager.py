@@ -3,9 +3,11 @@ import math
 import time
 from math import sin, cos, acos
 
+
 class ActivityManager:
-    def __init__(self, user_id):
+    def __init__(self, user_id,sql_manager):
         self.user_id = user_id
+        self.sql_manager = sql_manager
 
         self.activities = {
             "planinarenje": [],
@@ -16,15 +18,23 @@ class ActivityManager:
         }
 
     def add_new_activity(self, activity_type):
-        activity = Activity(activity_type)
+        activity = Activity(activity_type,self)
         self.activities[activity_type].append(activity)
         return activity
+
+    def save_activity(self,payload,payload_two):
+        payload["user"] = self.user_id
+        payload_two["user"] = self.user_id
+        # kako lokalno povezati?
+        payload_two["exercise"] = None
+        self.sql_manager.add_finished_activity(payload,payload_two)
 
 
 class Activity:
 
-    def __init__(self, activity_type):
+    def __init__(self, activity_type,manager):
         self.activity_type = activity_type
+        self.manager = manager
 
         self.start_date = None
         self.start_time = 0
@@ -50,10 +60,10 @@ class Activity:
         lon1 = math.radians(coord1[1])
         lon2 = math.radians(coord2[1])
         deltaPhi = lat2 - lat1
-        deltaLambda = lon2-lon1
-        a = math.sin(deltaPhi/2) ** 2 + math.cos(lat1) * math.cos(lat2) * (math.sin(deltaLambda/2) ** 2)
-        c = 2 * math.atan2(math.sqrt(a),math.sqrt(1-a))
-        distance = round(6371 * abs(c),4)
+        deltaLambda = lon2 - lon1
+        a = math.sin(deltaPhi / 2) ** 2 + math.cos(lat1) * math.cos(lat2) * (math.sin(deltaLambda / 2) ** 2)
+        c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+        distance = round(6371 * abs(c), 4)
         print(distance)
         return distance
 
@@ -62,7 +72,7 @@ class Activity:
         if location_ping:
             self.active_location_series.append((self.elapsed_time_active, location_ping))
             self.passive_location_series.append((self.elapsed_time_active, location_ping))
-        if len(self.active_location_series)>=2:
+        if len(self.active_location_series) >= 2:
             dist = self.calculate_distance_from_longitude(self.active_location_series[-1][1],
                                                           self.active_location_series[-2][1])
             self.total_distance += dist
@@ -73,20 +83,32 @@ class Activity:
 
     def stop_activity(self, end_time):
         self.elapsed_time_total = end_time - self.start_time
-        payload = self.wrap_self()
-        return payload
+        payload,payload_two = self.wrap_self()
+        self.manager.save_activity(payload,payload_two)
+
+    def __format_time(self,tlist):
+        return f"{tlist[0]}:{tlist[1]}:{tlist[2]} {tlist[3]}:{tlist[4]}:{tlist[5]}"
+
 
     def wrap_self(self):
         payload = {
-            "active_time": self.elapsed_time_active,
+            "type": self.activity_type,
+            "user": None,
+            "time_started": self.__format_time(self.start_date),
+            "time_elapsed": self.elapsed_time_active,
             "total_distance": self.total_distance,
-            "locations_active": self.active_location_series,
-            "locations_passive": self.passive_location_series
         }
-        return json.dumps(payload)
+
+        # no good for now
+        payload_two = {
+            "user": None,
+            "exercise": None,
+            "longitude": str(self.active_location_series),
+            "latitude": str(self.passive_location_series)
+        }
+        return payload,payload_two
 
     def calculate_average_speed(self):
         pass
 
-    def save_activity(self):
-        pass
+

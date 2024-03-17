@@ -7,9 +7,10 @@ from kivy.uix.gesturesurface import GestureSurface, GestureContainer
 from kivy.uix.image import Image
 from kivy.uix.screenmanager import Screen, SlideTransition, FadeTransition
 from kivy.multistroke import Recognizer, MultistrokeGesture, Candidate
+from kivymd.uix.screen import MDScreen
 
 
-class HomeScreen(Screen):
+class HomeScreen(MDScreen):
     def __init__(self, **kw):
         super().__init__(**kw)
 
