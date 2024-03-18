@@ -66,7 +66,7 @@ class Activity:
         distance = round(6371 * abs(c), 4)
         print(distance)
         return distance
-
+    
     def update_activity(self, dt, location_ping, ):
         self.elapsed_time_active += dt
         if location_ping:

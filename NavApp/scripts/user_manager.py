@@ -7,10 +7,15 @@ from kivy.clock import Clock
 from kivy.network.urlrequest import UrlRequest
 from scripts.activity_manager import ActivityManager
 from scripts.sql_manager import SQLManager
-from plyer import wifi
-
+from jnius import autoclass
 
 DEBUG = False
+
+if platform == "android":
+    WifiManager = autoclass('android.net.wifi.WifiConfiguration')
+    WifiInfo = autoclass('android.net.wifi.WifiInfo')
+
+
 
 class UserManager:
     MAIN_ADDRESS = "https://api.green-stem.eu"
@@ -53,7 +58,7 @@ class UserManager:
         self.activity_manager = ActivityManager(self.user_id,self.sql_manager)
         if platform == "android":
             # starting to check if wifi is available
-            self.wifi_check_event = Clock.schedule_once(self.check_for_wifi)
+            self.wifi_check_event = Clock.schedule_once(self.check_for_wifi,1)
         print(self.activity_manager)
         self.save_user_data()
 
@@ -75,9 +80,8 @@ class UserManager:
             self.user_data[key] = user_data[key]
 
     def check_for_wifi(self,dt):
-        if wifi.is_connected():
-            print("connected to wifi, checking if upload needed")
-            self.sql_manager.upload_all()
+        print("checking")
+        ## Ovdje ide magija sa javom
 
     def erase_user_data(self):
         self.user_token = None
