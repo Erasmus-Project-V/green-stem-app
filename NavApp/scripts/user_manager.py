@@ -7,14 +7,20 @@ from kivy.clock import Clock
 from kivy.network.urlrequest import UrlRequest
 from scripts.activity_manager import ActivityManager
 from scripts.sql_manager import SQLManager
-from jnius import autoclass
+from jnius import autoclass, cast
 
 DEBUG = False
+METERED_CONNECTION = True
+WIFI_CHECK_INTERVAL = 120
+
 
 if platform == "android":
-    WifiManager = autoclass('android.net.wifi.WifiConfiguration')
-    WifiInfo = autoclass('android.net.wifi.WifiInfo')
-
+    from android import mActivity
+    Context = autoclass('android.content.Context')
+    WifiManager = autoclass('android.net.wifi.WifiManager')
+    ConnectivityManager = autoclass('android.net.ConnectivityManager')
+    wm = cast("android.net.ConnectivityManager",mActivity.getSystemService(Context.CONNECTIVITY_SERVICE))
+    print(wm.isActiveNetworkMetered())
 
 
 class UserManager:
@@ -23,6 +29,7 @@ class UserManager:
         "Content-Type": "application/json"
     }
     SAVE_ADDRESS = "user_data.json"
+    METERED_CONNECTION = METERED_CONNECTION
 
     def __init__(self):
         self.active = False
@@ -34,6 +41,10 @@ class UserManager:
         self.wifi_check_event = None
 
     def load_user_data(self):
+        if platform == "android":
+            # starting to check if wifi is available
+            Clock.schedule_once(self.check_for_wifi)
+            self.wifi_check_event = Clock.schedule_interval(self.check_for_wifi,WIFI_CHECK_INTERVAL)
         if DEBUG:
             self.write_user_data("NONE", {"username":"admin","email":"admin@gmail.co1",
                                                                 "id":"12345","verified":True,
@@ -56,9 +67,6 @@ class UserManager:
         self.user_id = user_data["id"]
         self.sql_manager = SQLManager(self.user_id)
         self.activity_manager = ActivityManager(self.user_id,self.sql_manager)
-        if platform == "android":
-            # starting to check if wifi is available
-            self.wifi_check_event = Clock.schedule_once(self.check_for_wifi,1)
         print(self.activity_manager)
         self.save_user_data()
 
@@ -80,8 +88,9 @@ class UserManager:
             self.user_data[key] = user_data[key]
 
     def check_for_wifi(self,dt):
-        print("checking")
-        ## Ovdje ide magija sa javom
+        print("checking for wifi")
+        self.METERED_CONNECTION = wm.isActiveNetworkMetered()
+        print(self.METERED_CONNECTION)
 
     def erase_user_data(self):
         self.user_token = None
