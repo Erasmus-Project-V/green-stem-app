@@ -1,5 +1,7 @@
 import time
 
+from kivy.properties import StringProperty
+from kivy.uix.screenmanager import FadeTransition
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.screen import MDScreen
 from plyer import gps,accelerometer
@@ -15,6 +17,7 @@ class ActivityScreen(MDScreen):
     current_background = "assets/images/home/home_*_1.png"
     activity_manager: ActivityManager
     active_activity: Activity
+    last_location_debug = StringProperty('')
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -27,6 +30,8 @@ class ActivityScreen(MDScreen):
         }
         self.current_activity = 1
         Clock.schedule_once(self.further_build, 0.01)
+
+        self.last_location_debug = "None"
 
     def further_build(self, dt):
         print("BUILDING FURTHER SPECIAL")
@@ -43,11 +48,14 @@ class ActivityScreen(MDScreen):
 
         self.play_button = self.ids["play_button"]
         self.stop_button = self.ids["stop_button"]
+        self.debug_overlay = self.ids["debug_overlay"]
+
+        self.bind(last_location_debug=self.debug_overlay.get_bind_callback())
+
         if platform == "android":
             gps.configure(on_location=self.update_location,
                           on_status=self.on_auth_status)
             accelerometer.enable()
-            print(accelerometer.acceleration)
 
     def on_auth_status(self, general_status, status_message):
         if general_status == "provider_enabled":
@@ -148,10 +156,14 @@ class ActivityScreen(MDScreen):
             self.active_activity.reset_active_location()
 
     def update_location(self, **kwargs):
+        print(kwargs)
         lat = kwargs["lat"]
         lon = kwargs["lon"]
         print(f"Lat: {lat}, Lon: {lon}")
+        print(accelerometer.acceleration)
         self.last_location = [lat, lon]
+        self.last_location_debug = str(lat) + "\n" + str(lon) + "\n" + str(accelerometer.acceleration)
+
 
     def update_activity(self, dt=0):
         self.dt = round(time.perf_counter() - self.last_ping, 5)
@@ -177,4 +189,5 @@ class ActivityScreen(MDScreen):
             self.active_activity = None
 
     def quit_activity(self, button=None, *args):
+        self.manager.transition = FadeTransition()
         self.manager.goto_screen("hme")

@@ -7,7 +7,6 @@ from kivy.clock import Clock
 from kivy.network.urlrequest import UrlRequest
 from scripts.activity_manager import ActivityManager
 from scripts.sql_manager import SQLManager
-from jnius import autoclass, cast
 
 DEBUG = False
 METERED_CONNECTION = True
@@ -15,12 +14,15 @@ WIFI_CHECK_INTERVAL = 120
 
 
 if platform == "android":
+    from jnius import autoclass, cast
     from android import mActivity
     Context = autoclass('android.content.Context')
     WifiManager = autoclass('android.net.wifi.WifiManager')
     ConnectivityManager = autoclass('android.net.ConnectivityManager')
     wm = cast("android.net.ConnectivityManager",mActivity.getSystemService(Context.CONNECTIVITY_SERVICE))
     print(wm.isActiveNetworkMetered())
+
+
 
 
 class UserManager:
