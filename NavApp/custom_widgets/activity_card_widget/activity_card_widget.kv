@@ -1,0 +1,31 @@
+<ActivityCardWidget>:
+    release_func: root.clicked
+    hero_tag: "placeholder"
+    MDRelativeLayout:
+        size_hint: None, None
+        # size: dp(165.8), dp(178.3)
+        width: dp(165.8)
+        height: dp(178.3)
+        MDHeroFrom:
+            id: hero_from
+            tag: root.hero_tag
+            Button:
+                background_color: 0, 0, 0, 0
+                size_hint: None, None
+                size: hero_from.size
+                on_press:
+                    root.release_func(self.parent)
+                FitImage:
+                    size_hint: None, None
+                    size: self.parent.size
+                    allow_stretch: True
+                    source: root.img_path
+                    radius: 24
+                    opacity: 0.5
+        MDBoxLayout:
+            md_bg_color: (1, 1, 1, 0.2)
+            size_hint: 1, None
+            height: dp(25)
+            pos_hint: {"center_x":0.5,"center_y":0.5}
+            Label:
+                text: root.text

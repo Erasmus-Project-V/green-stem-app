@@ -5,10 +5,10 @@ from plyer import gps
 from kivy.utils import platform
 from kivy.animation import Animation
 from kivy.clock import Clock
-from kivy.uix.screenmanager import Screen
+from kivymd.uix.screen import MDScreen
 from scripts.activity_manager import ActivityManager, Activity
 
-class ActivityScreen(Screen):
+class ActivityScreen(MDScreen):
     current_background = "assets/images/home/home_*_1.png"
     activity_manager: ActivityManager
     active_activity: Activity

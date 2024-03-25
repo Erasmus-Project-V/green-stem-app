@@ -1,5 +1,5 @@
-from kivy.uix.screenmanager import Screen
+from kivymd.uix.screen import MDScreen
 
 
-class MonthlyActivityScreen(Screen):
+class MonthlyActivityScreen(MDScreen):
     pass
