@@ -1,17 +1,17 @@
 import os
 from kivy import Config
-from kivy.uix.screenmanager import ScreenManager
+from kivymd.uix.screenmanager import MDScreenManager
 from kivy.utils import platform
 from kivymd.uix.screenmanager import MDScreenManager
 from kivy.core.window import Window
 from scripts.user_manager import UserManager
+from kivy.core.window import Window
 
 print(f"platform is: {platform}")
 if not platform == "android":
     Config.set('graphics', 'width', '390')
     Config.set('graphics', 'height', '780')
-    # temporary \/
-    Window.size = (390,780)
+    Window.size = (390, 780)
 
 print(os.name)
 from scripts.imports import *

@@ -4,6 +4,16 @@
 <WeeklyActivityScreen>:
     name: "was"
     id: was
-    MDBoxLayout:
-        MDLabel:
-            text: "Weekly Activity Screen"
+    MDTopAppBar:
+        pos_hint: {"top": 1}
+        title: "Running"
+        md_bg_color: app.primary_colors["dark_grey"]
+        left_action_items: [["chevron-left", lambda x: root.back_arrow()]]
+
+    MDHeroTo:
+        id: hero_to
+        tag: "running_card"
+        md_bg_color: "gray"
+        size_hint: None, None
+        size: dp(312), dp(336.59)
+        pos_hint: {"center_x":0.5,"center_y":0.67}

@@ -1,0 +1,16 @@
+#File name: activity_history_card_widget.kv
+
+<ActivityHistoryCardWidget>:
+    activity_name: "Bicikliranje"
+    size_hint: None, None
+    size: (root.width, dp(50))
+    canvas:
+        Color:
+            rgba: app.primary_colors["dark_grey"]
+        RoundedRectangle:
+            pos: (0, root.height - (root.height - dp(70)))  # Position the rectangle at the widget's position
+            size: (root.width, dp(70))  # Set the rectangle size to the widget's size
+            radius: [0, 0, 0, 0]  # Set the radius of the corners
+
+    Label:
+        text: root.activity_name

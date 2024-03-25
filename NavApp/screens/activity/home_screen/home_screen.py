@@ -5,7 +5,8 @@ from kivy.metrics import dp
 from kivy.properties import StringProperty
 from kivy.uix.gesturesurface import GestureSurface, GestureContainer
 from kivy.uix.image import Image
-from kivy.uix.screenmanager import Screen, SlideTransition, FadeTransition
+from kivymd.uix.screen import MDScreen
+from kivy.uix.screenmanager import SlideTransition, FadeTransition
 from kivy.multistroke import Recognizer, MultistrokeGesture, Candidate
 from kivymd.uix.screen import MDScreen
 

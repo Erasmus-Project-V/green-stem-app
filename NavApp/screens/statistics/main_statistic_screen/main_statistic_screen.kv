@@ -3,8 +3,28 @@
 <MainStatisticScreen>:
     name: "mss"
     id: mss
-    MDBoxLayout:
-        MDLabel:
-            text: "Main Statistic Screen"
+    rectangle_radius: [20, 20, 20, 20]
+    rectangle_height: dp(100)
+    canvas:
+        Color:
+            rgba: app.primary_colors["dark_grey"]
+        RoundedRectangle:
+            id: rounded_rectangle
+            pos: (0, root.height - dp(48))  # Position the rectangle at the widget's position
+            size: (root.width, dp(100))
+            # height: root.rectangle_height   # Set the rectangle size to the widget's size
+            radius: root.rectangle_radius  # Set the radius of the corners
+
+    TopMenuWidget:
+        login: 1
+        widget_width: 1
+        top_widgets: [["This week", "lgn"], ["Chosen day", root.chosen_day_pressed], ["This month", "was"]]
+        pos_hint: {"center_x":0.5,"center_y":0.97}
+
+    MDRelativeLayout:
+        id: changeable
+        ActivityGridWidget:
+            activity_grid_elements: [{"text": "Running", "img_path": "assets/images/home/home_trcanje_1.png", "hero_tag": "running_card", "release_func": root.this_clicked},{"text": "Cycling", "img_path": "assets/images/home/home_bicikliranje_1.png", "hero_tag": "running_card", "release_func": root.this_clicked},{"text": "Hiking", "img_path": "assets/images/home/home_planinarenje_1.png", "hero_tag": "running_card", "release_func": root.this_clicked},{"text": "Walking", "img_path": "assets/images/home/home_hodanje_1.png", "hero_tag": "running_card", "release_func": root.this_clicked},{"text": "Skating", "img_path": "assets/images/home/home_rolanje_1.png", "hero_tag": "running_card", "release_func": root.this_clicked}]
     BottomNavWidget:
         selected: 2
+

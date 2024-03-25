@@ -7,11 +7,9 @@ from plyer import gps,accelerometer,compass,gyroscope,gravity
 from kivy.utils import platform
 from kivy.animation import Animation
 from kivy.clock import Clock
+from kivymd.uix.screen import MDScreen
 from scripts.activity_manager import ActivityManager, Activity
 from scripts.utilities import euclidean,Vector,processMagAcc,SensorManager,rotateVector
-
-MIN_MEASURE_DISTANCE = 5
-
 
 class ActivityScreen(MDScreen):
     current_background = "assets/images/home/home_*_1.png"
