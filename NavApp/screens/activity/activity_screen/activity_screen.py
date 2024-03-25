@@ -1,14 +1,14 @@
 import time
-
 from kivy.properties import StringProperty
 from kivy.uix.screenmanager import FadeTransition
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.screen import MDScreen
-from plyer import gps,accelerometer
+from plyer import gps,accelerometer,compass,gyroscope,gravity
 from kivy.utils import platform
 from kivy.animation import Animation
 from kivy.clock import Clock
 from scripts.activity_manager import ActivityManager, Activity
+from scripts.utilities import euclidean,Vector,processMagAcc,SensorManager,rotateVector
 
 MIN_MEASURE_DISTANCE = 5
 
@@ -37,6 +37,7 @@ class ActivityScreen(MDScreen):
         print("BUILDING FURTHER SPECIAL")
         self.active_activity: Activity = None
         self.location_on = False
+        self.sensor_manager = None
         self.image_container = self.ids["image_container"]
         self.activity_containers = [
             self.ids["ac1"],
@@ -50,12 +51,24 @@ class ActivityScreen(MDScreen):
         self.stop_button = self.ids["stop_button"]
         self.debug_overlay = self.ids["debug_overlay"]
 
+        self.previous_speed = 0
+
         self.bind(last_location_debug=self.debug_overlay.get_bind_callback())
 
         if platform == "android":
             gps.configure(on_location=self.update_location,
                           on_status=self.on_auth_status)
             accelerometer.enable()
+            compass.enable()
+            gravity.enable()
+            gyroscope.enable()
+            Clock.schedule_once(self.calibrate_sensors,1)
+
+    def calibrate_sensors(self,dt):
+        orientation,inclination,_ = processMagAcc(Vector(compass.field),Vector(gravity.gravity))
+        self.sensor_manager = SensorManager(orientation)
+
+
 
     def on_auth_status(self, general_status, status_message):
         if general_status == "provider_enabled":
@@ -146,6 +159,7 @@ class ActivityScreen(MDScreen):
         self.last_location = None
         if platform == "android":
             gps.start(minTime=1000, minDistance=MIN_MEASURE_DISTANCE)
+            self.accelerometer_event = Clock.schedule_interval(self.update_acceleration,0.1)
         self.activity_event = Clock.schedule_interval(self.update_activity, 1)
 
     def __pause_activity(self, dt=0):
@@ -154,15 +168,61 @@ class ActivityScreen(MDScreen):
         if platform == "android":
             gps.stop()
             self.active_activity.reset_active_location()
+            self.accelerometer_event.cancel()
+
+
+    def calibrate_acceleration(self,dt):
+        acceleration,direction,magnitude = self.update_acceleration(dt)
+        if self.inst_count > 100:
+            self.calibrated = True
+        pass
+
+
+    # Z axis - out of device , Y - along the length, X - along the width
+    def update_acceleration(self,dt):
+        print(dt)
+        acceleration_vector = Vector(accelerometer.acceleration)
+        compass_vector = Vector(compass.field)
+
+        gyroscope_velocity = Vector(gyroscope.rotation)
+        gyroscope_movement = gyroscope_velocity * dt
+
+        gravity_vector = Vector(gravity.gravity)
+
+        raw_acceleration = acceleration_vector - gravity_vector
+
+        orientation,inclination,rotationMatrix = processMagAcc(Vector(compass.field),Vector(gravity.gravity))
+        # CURRENTLY NOT WORKING
+        # getMeasurementsOrientation
+        rotated_acceleration = rotateVector(rotationMatrix,raw_acceleration)
+
+        print(f"AM02 gyro movement: {gyroscope_movement}, dt: {dt}, gravity: {gravity_vector}")
+
+
+
+        print(f"AM03 O orientation: pitch {int(orientation[0]*180/3.141)}, yaw {int(orientation[1]*180/3.141)}, roll {int(orientation[2]*180/3.141)}")
+        print(f"AM03 A raw acceleration: X: {round(raw_acceleration[0])} Y: {round(raw_acceleration[1])} Z:{round(raw_acceleration[2])}")
+        print(f"AM03 B rotated acceleration: X: {round(rotated_acceleration[0])} Y: {round(rotated_acceleration[1])} Z:{round(rotated_acceleration[2])}")
+
+        self.last_location_debug = (f"pitch: {int(orientation[0]*180/3.141)}° \n yaw: {int(orientation[1]*180/3.141)}° \n roll {int(orientation[2]*180/3.141)}° \n"
+                                    f"X: {round(rotated_acceleration[0],2)} Y: {round(rotated_acceleration[1],2)} Z: {round(rotated_acceleration[2],2)}")
+
+        return True
+
+
 
     def update_location(self, **kwargs):
         print(kwargs)
         lat = kwargs["lat"]
         lon = kwargs["lon"]
         print(f"Lat: {lat}, Lon: {lon}")
-        print(accelerometer.acceleration)
+        print(f"Speed: {kwargs['speed']}")
+        self.previous_speed = kwargs['speed']
+        acceleration_direction = Vector(accelerometer.acceleration) / euclidean(accelerometer.acceleration)
+        print(acceleration_direction)
+        print(compass.field)
         self.last_location = [lat, lon]
-        self.last_location_debug = str(lat) + "\n" + str(lon) + "\n" + str(accelerometer.acceleration)
+        #self.last_location_debug = str(lat) + "\n" + str(lon) + "\n" + str(accelerometer.acceleration)
 
 
     def update_activity(self, dt=0):
@@ -189,5 +249,9 @@ class ActivityScreen(MDScreen):
             self.active_activity = None
 
     def quit_activity(self, button=None, *args):
+        accelerometer.disable()
+        compass.disable()
+        gyroscope.disable()
+        gravity.disable()
         self.manager.transition = FadeTransition()
         self.manager.goto_screen("hme")
