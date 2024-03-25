@@ -1,0 +1,28 @@
+#File name: oval_day_widget.kv
+
+<OvalDayWidget>:
+    day_in_week: "?"
+    date: "?"
+    day_color: (71 / 255, 71 / 255, 71 / 255, 0.5)
+    release_func: root.pressed
+    size_hint: None, None
+    size: (dp(40), dp(64))
+    Button:
+        background_color: (0, 0, 0, 0)
+        size_hint: 1, 1
+        on_press:
+            root.release_func(root.date)
+
+        canvas:
+            Color:
+                rgba: root.day_color
+            RoundedRectangle:
+                size: root.size
+                radius: [dp(20), dp(20), dp(20), dp(20)]
+    MDLabel:
+        pos_hint: {"center_x":0.9,"center_y":0.67}
+        font_size: dp(12)
+        text: root.day_in_week
+    MDLabel:
+        pos_hint: {"center_x":0.78,"center_y":0.35} if len(root.date) == 2 else {"center_x":0.89,"center_y":0.35}
+        text: root.date
