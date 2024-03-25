@@ -10,7 +10,8 @@ from kivy.animation import Animation
 from kivy.clock import Clock
 from scripts.activity_manager import ActivityManager, Activity
 from scripts.utilities import euclidean, Vector, processMagAcc, SensorManager, rotateVector, getAltitudeFromPressure, \
-    polarToCartesian,convertBearing
+    polarToCartesian, convertBearing
+from scripts.navigation_manager import NavigationManager
 
 MIN_MEASURE_DISTANCE = 1
 
@@ -34,8 +35,7 @@ class ActivityScreen(MDScreen):
         Clock.schedule_once(self.further_build, 0.01)
 
         self.last_location_debug = "None"
-        self.last_location = None
-        self.last_location_lat_lon = None
+        self.navigator = None
 
     def further_build(self, dt):
         print("BUILDING FURTHER SPECIAL")
@@ -55,33 +55,15 @@ class ActivityScreen(MDScreen):
         self.stop_button = self.ids["stop_button"]
         self.debug_overlay = self.ids["debug_overlay"]
 
-        self.previous_velocity= 0
-        self.all_velocities = []
-        self.delta_path = 0
-        self.cached_path = 0
-        self.average_velocity = 0
-
         self.bind(last_location_debug=self.debug_overlay.get_bind_callback())
-
-        if platform == "android":
-            gps.configure(on_location=self.update_location,
-                          on_status=self.on_auth_status)
-            accelerometer.enable()
-            compass.enable()
-            gravity.enable()
-            gyroscope.enable()
-            barometer.enable()
-            Clock.schedule_once(self.calibrate_sensors, 1)
-
-    def calibrate_sensors(self, dt):
-        orientation, inclination, _ = processMagAcc(Vector(compass.field), Vector(gravity.gravity))
-        self.sensor_manager = SensorManager(orientation)
+        self.navigator = NavigationManager()
 
     def on_auth_status(self, general_status, status_message):
         if general_status == "provider_enabled":
             pass
         else:
             self.open_gps_access_popup()
+
 
     def open_gps_access_popup(self):
         dialog = MDDialog(title="GPS Error", text="Please enable GPS to continue!")
@@ -97,6 +79,7 @@ class ActivityScreen(MDScreen):
         self.image_container.source = self.current_background.replace("*", self.activities[self.current_activity])
         self.set_up_preset()
         if platform == "android":
+            self.navigator.configure_gps(self.on_auth_status,platform == "android")
             # nemam pojma otkud se android importa, ne ici instalirati!!!
             from android.permissions import Permission, request_permissions
             print("imported!")
@@ -163,110 +146,34 @@ class ActivityScreen(MDScreen):
             self.active_activity = self.activity_manager.add_new_activity(self.activities[self.current_activity])
             self.active_activity.start_activity(time.localtime(), time.perf_counter())
         self.last_ping = time.perf_counter()
-        self.last_location = None
-        self.last_location_lat_lon = None
         if platform == "android":
-            gps.start(minTime=1000, minDistance=MIN_MEASURE_DISTANCE)
-            self.accelerometer_event = Clock.schedule_interval(self.update_acceleration, 0.1)
+            self.navigator.start_gps(1000, MIN_MEASURE_DISTANCE)
         self.activity_event = Clock.schedule_interval(self.update_activity, 1)
 
     def __pause_activity(self, dt=0):
         self.update_activity()
         self.activity_event.cancel()
         if platform == "android":
-            gps.stop()
             self.active_activity.reset_active_location()
-            self.accelerometer_event.cancel()
-
-    def calibrate_acceleration(self, dt):
-        acceleration, direction, magnitude = self.update_acceleration(dt)
-        if self.inst_count > 100:
-            self.calibrated = True
-        pass
-
-    # Z axis - out of device , Y - along the length, X - along the width
-    def update_acceleration(self, dt):
-        acceleration_vector = Vector(accelerometer.acceleration)
-        compass_vector = Vector(compass.field)
-
-        gyroscope_velocity = Vector(gyroscope.rotation)
-        gyroscope_movement = gyroscope_velocity * dt
-
-        gravity_vector = Vector(gravity.gravity)
-
-        raw_acceleration = acceleration_vector - gravity_vector
-
-        orientation, inclination, rotationMatrix = processMagAcc(Vector(compass.field), Vector(gravity.gravity))
-        rotated_acceleration = rotateVector(rotationMatrix, raw_acceleration)
-
-        delta_velocity = rotated_acceleration * dt
-
-        if self.previous_velocity.__class__ != Vector:
-            self.previous_velocity = delta_velocity
-            self.delta_path = (delta_velocity.get_magnitude() * dt) / 2
-            return
-        v0 = self.previous_velocity
-        v1 = self.previous_velocity + delta_velocity
-        self.previous_velocity += delta_velocity
-        self.all_velocities.append(self.previous_velocity.get_magnitude())
-        self.delta_path += (v0.get_magnitude() + v1.get_magnitude()) * dt / 2
-
-
-        self.last_location_debug = (
-            f"pitch: {int(orientation[0] * 180 / 3.141)}° \n yaw: {int(orientation[1] * 180 / 3.141)}° \n roll {int(orientation[2] * 180 / 3.141)}° \n"
-            f"X: {round(rotated_acceleration[0], 2)} Y: {round(rotated_acceleration[1], 2)} Z: {round(rotated_acceleration[2], 2)}")
-
-        return True
-
-    def update_location(self, **kwargs):
-        print(f"KW00 {kwargs}")
-        lat = kwargs["lat"]
-        lon = kwargs["lon"]
-        # might make it stricter
-        accuracy_factor = 5 / (kwargs['accuracy'])
-        if accuracy_factor > 1:
-            accuracy_factor = 1
-        velocity_magnitude = kwargs['speed']
-        bearing_gps = kwargs['bearing']
-        pressure = barometer.pressure
-        if pressure:
-            altitude = getAltitudeFromPressure(pressure)
-        else:
-            altitude = kwargs['altitude']
-        print(f"AM04 {altitude}, {lon}, {lat}")
-        acceleration_direction = Vector(accelerometer.acceleration) / euclidean(accelerometer.acceleration)
-        location_vector = polarToCartesian(6378137 + altitude, lat, lon)
-        if self.last_location:
-            location_vector = location_vector * accuracy_factor + self.last_location * (1-accuracy_factor)
-        elif accuracy_factor < 0.25:
-            return
-        self.last_location_lat_lon = (lat,lon,altitude)
-        gps_distance = 0
-        if self.last_location:
-            gps_distance = (location_vector-self.last_location).get_magnitude()
-        if gps_distance > 5:
-            self.last_location = location_vector
-        print(f"AM04 {location_vector}  {velocity_magnitude}  {bearing_gps} Passed distance: {gps_distance}")
-        average_velocity = sum(self.all_velocities)/len(self.all_velocities)
-        if self.delta_path > 0.5 and 0.3 < average_velocity < 10:
-            print(f"AM04 delta path: {self.delta_path}, average velocity {average_velocity},")
-            self.cached_path += round(self.delta_path,2)
-            self.average_velocity = average_velocity
-        self.previous_velocity = Vector(math.cos(bearing_gps),math.sin(bearing_gps),0) * kwargs['speed']
-        self.delta_path = 0
+            self.navigator.stop_gps()
 
     def update_activity(self, dt=0):
         self.dt = round(time.perf_counter() - self.last_ping, 5)
         self.last_ping = time.perf_counter()
-        self.active_activity.update_activity(self.dt,self.last_location_lat_lon, self.cached_path)
-        self.cached_path = 0
+        if self.navigator:
+            (polar, cached, avg) = (self.navigator.get_location_polar(),
+                                    self.navigator.get_cached_path(), self.navigator.get_avg_velocity())
+            self.navigator.clear_cache()
+        else:
+            (polar, cached, avg) = (None, 0, None)
+        self.active_activity.update_activity(self.dt, polar, cached, avg)
         self.update_widgets(self.active_activity.elapsed_time_active,
                             self.active_activity.total_distance)
 
     def update_widgets(self, elapsed_time, elapsed_distance):
         self.activity_containers[1].quantity = time.strftime('%H:%M:%S', time.gmtime(round(elapsed_time)))
         self.activity_containers[2].quantity = str(int(elapsed_distance)) + "m"
-        self.activity_containers[3].quantity = str(int(self.average_velocity * 36)/10) + "km/h"
+        self.activity_containers[3].quantity = str(int(self.navigator.get_avg_velocity() * 36) / 10) + "km/h"
 
     def finish_activity(self, button):
         if self.active_activity:
@@ -276,10 +183,6 @@ class ActivityScreen(MDScreen):
             self.active_activity = None
 
     def quit_activity(self, button=None, *args):
-        accelerometer.disable()
-        compass.disable()
-        gyroscope.disable()
-        gravity.disable()
-        barometer.disable()
+        self.navigator.disable_sensors()
         self.manager.transition = FadeTransition()
         self.manager.goto_screen("hme")

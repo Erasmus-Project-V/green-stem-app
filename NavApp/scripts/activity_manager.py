@@ -51,11 +51,11 @@ class Activity:
                            start_date.tm_hour, start_date.tm_min, start_date.tm_sec]
         self.start_time = start_time
 
-    def update_activity(self, dt, location_ping, distance):
+    def update_activity(self, dt, location_ping, distance,avg_velocity):
         self.elapsed_time_active += dt
         if location_ping:
-            self.active_location_series.append((self.elapsed_time_active, location_ping))
-            self.passive_location_series.append((self.elapsed_time_active, location_ping))
+            self.active_location_series.append((self.elapsed_time_active, location_ping,distance,avg_velocity))
+            self.passive_location_series.append((self.elapsed_time_active, location_ping,distance,avg_velocity))
             self.total_distance += distance
 
     def reset_active_location(self):
