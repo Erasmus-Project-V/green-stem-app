@@ -3,6 +3,7 @@ from kivy.lang import Builder
 from kivy.uix.screenmanager import ScreenManager
 from kivymd.app import MDApp
 
+
 import re
 import os
 from kivy.utils import platform
@@ -22,7 +23,6 @@ def py_import_gen(py_abs_path, name):
 def build_importer():
     if not import_list_py:
         return
-    print(import_list_py)
     root_path = os.getcwd().split("/")[:-1]
     rp = ""
     for p in root_path:
@@ -57,7 +57,6 @@ if __name__ == "__main__":
 else:
     search_dir = os.getcwd()
     print(f"Starting from {os.getcwd() + '/' + __name__.replace('.', '/')}")
-    print(os.getcwd() + "/screens")
     seek(search_dir + "/screens")
     seek(search_dir + "/custom_widgets")
     build_importer()

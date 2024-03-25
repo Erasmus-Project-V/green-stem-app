@@ -34,6 +34,10 @@ plyer
 <br>
 math
 <br>
+sqlite3
+<br>
+numpy
+<br>
 
 ## Definicije
 ### scripts:

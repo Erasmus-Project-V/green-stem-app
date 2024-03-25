@@ -4,9 +4,11 @@
 <ActivityScreen>:
     name: "act"
     id: act
+    DebugOverlayWidget:
+        id: debug_overlay
     FitImage:
         id: image_container
-        source: "assets/images/home/home_trcanje_1.png" ""
+        source: "assets/images/home/home_trcanje_1.png"
         size_hint: (1.2,1)
         opacity: .25
         pos_hint: {"center_x": 0.5,"center_y":0.5}
@@ -54,7 +56,6 @@
             button_type: "play"
             hold_func: root.placeholder
             release_func: root.button_released
-
 
         PausePlayButtonWidget:
             id: stop_button

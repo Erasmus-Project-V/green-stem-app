@@ -8,6 +8,7 @@ from kivy.uix.image import Image
 from kivymd.uix.screen import MDScreen
 from kivy.uix.screenmanager import SlideTransition, FadeTransition
 from kivy.multistroke import Recognizer, MultistrokeGesture, Candidate
+from kivymd.uix.screen import MDScreen
 
 
 class HomeScreen(MDScreen):
