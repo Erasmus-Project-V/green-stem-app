@@ -17,35 +17,39 @@
         pos_hint: {"center_x":0.5,"center_y":0.9}
         size_hint: (None, None)
         size: (root.width, dp(60))
-        spacing: dp(15)
-        Button:
+        # spacing: dp(90)
+        padding: dp(40)
+
+        TopReturnButtonWidget:
             id: previous_month
-            name: previous_month
-            text: "<"
-            background_color: (0, 0, 0, 0)
-            on_press: root.arrow_pressed(self)
-            halign: "center"
-            valign: "middle"
+            icn_size: dp(30)
+            pos_hint: {"center_y": 0.5}
+            release_func: root.arrow_pressed
 
         MDLabel:
+            padding: dp(70)
             id: month_year
             text: "Month Year"
+            pos_hint: {"center_y": 0.5}
 
-        Button:
+        TopReturnButtonWidget:
             id: next_month
-            name: next_month
-            text: ">"
-            background_color: (0, 0, 0, 0)
-            on_press: root.arrow_pressed(self)
+            icn_size: dp(30)
+            pos_hint: {"center_x":0.5, "center_y": 0.5}
+            icn_direction: "right"
+            release_func: root.arrow_pressed
 
 
     MDScrollView:
+        id: scroll_view
         do_scroll_x: True
         do_scroll_y: False
         pos_hint: {"center_x":0.5,"center_y":0.63}
         size_hint: (None, None)
         size: (root.width, dp(100))
         bar_width: 0
+        # scroll_x: (root.current_date/31)-(-9*10**(-5)*root.current_date**2 - 0.0024*root.current_date + 0.1159)
+        # scroll_x: 0.44
         MDBoxLayout:
             id: scrollable_days
             size_hint_x: None
