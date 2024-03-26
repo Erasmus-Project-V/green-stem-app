@@ -72,6 +72,7 @@ class ActivityScreen(MDScreen):
         dialog.bind(on_dismiss=lambda *args: self.quit_activity)
         dialog.open()
 
+
     def start_up_screen(self):
         home_screen = self.manager.get_screen("hme")
         self.activity_manager = self.manager.active_user.activity_manager
@@ -183,6 +184,7 @@ class ActivityScreen(MDScreen):
             self.active_activity = None
 
     def quit_activity(self, button=None, *args):
-        self.navigator.disable_sensors()
+        if platform == "android":
+            self.navigator.disable_sensors()
         self.manager.transition = FadeTransition()
         self.manager.goto_screen("hme")

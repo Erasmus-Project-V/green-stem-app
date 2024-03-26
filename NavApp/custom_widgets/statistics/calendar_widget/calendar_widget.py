@@ -31,10 +31,9 @@ class CalendarWidget(MDRelativeLayout):
             day_widget.release_func = self.date_pressed
             scrollable_row.add_widget(day_widget)
 
-    @staticmethod
-    def get_days_in_month(year, month_name):
+    def get_days_in_month(self, year, month_name):
         # Get the month number from its name
-        month_number = list(calendar.month_name).index(month_name.capitalize())
+        month_number = self.months.index(month_name.capitalize()) +1
         # Get the number of days in the month
         num_days = calendar.monthrange(year, month_number)[1]
         # Generate the dates for each day in the month

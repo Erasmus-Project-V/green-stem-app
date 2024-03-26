@@ -11,6 +11,10 @@ class SignUpScreen(MDScreen):
         super().__init__(**kw)
         self.user_id = None
 
+    def start_up_screen(self):
+        self.top_menu = self.ids["top_menu"]
+        self.top_menu.animate_underscore(self.name)
+
     def create_new_user(self, button):
 
         username = self.ids["new_user_name_text"]

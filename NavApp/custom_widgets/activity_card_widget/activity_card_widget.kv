@@ -9,23 +9,25 @@
         MDHeroFrom:
             id: hero_from
             tag: root.hero_tag
-            Button:
-                background_color: 0, 0, 0, 0
+            MDRelativeLayout:
                 size_hint: None, None
                 size: hero_from.size
-                on_press:
-                    root.release_func(self.parent)
-                FitImage:
-                    size_hint: None, None
-                    size: self.parent.size
-                    allow_stretch: True
-                    source: root.img_path
-                    radius: 24
-                    opacity: 0.5
+                Button:
+                    background_color: 0, 0, 0, 0
+                    on_press:
+                        root.release_func(self.parent)
+                    FitImage:
+                        size_hint: None, None
+                        size: self.parent.size
+                        allow_stretch: True
+                        source: root.img_path
+                        radius: 24
+                        opacity: 0.5
         MDBoxLayout:
-            md_bg_color: (1, 1, 1, 0.2)
+            md_bg_color: (1, 1, 1, 0.1)
             size_hint: 1, None
-            height: dp(25)
+            height: dp(30)
             pos_hint: {"center_x":0.5,"center_y":0.5}
             Label:
                 text: root.text
+                font_name: app.fonts["sans_semi_bold"]

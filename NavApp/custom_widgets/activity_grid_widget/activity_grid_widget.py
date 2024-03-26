@@ -15,6 +15,8 @@ class ActivityGridWidget(MDRelativeLayout):
         super().__init__(*args, **kwargs)
         Clock.schedule_once(self.build_self, 0)
 
+    def placeholder(self,btn):
+        pass
     def build_self(self, clc):
         column_num = 2
         grid = self.create_grid(column_num)
