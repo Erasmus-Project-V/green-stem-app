@@ -1,5 +1,6 @@
 import os
 from kivy import Config
+from kivy.uix.screenmanager import FadeTransition
 from kivymd.uix.screenmanager import MDScreenManager
 from kivy.utils import platform
 from kivymd.uix.screenmanager import MDScreenManager
@@ -64,6 +65,7 @@ class MainScreenManager(MDScreenManager):
         if hasattr(scrn_ref, "start_up_screen"):
             scrn_ref.start_up_screen()
         self.current = scrn
+        self.transition = FadeTransition()
 
 
 class FitnessApp(MDApp):

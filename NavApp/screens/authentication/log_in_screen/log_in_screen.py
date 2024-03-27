@@ -18,6 +18,9 @@ class LogInScreen(MDScreen):
         if self.manager.active_user.load_user_data():
             self.check_for_unfinished_sign_up()
 
+    def start_up_screen(self):
+        self.top_menu = self.ids["top_menu"]
+        self.top_menu.animate_underscore(self.name)
 
     def validate_login(self, button):
 

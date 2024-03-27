@@ -67,6 +67,7 @@ class NavigationManager:
         v0 = self.previous_velocity
         v1 = self.previous_velocity + delta_velocity
         self.previous_velocity += delta_velocity
+        print(f"AM03 AverageVelocity {self.previous_velocity.get_magnitude()}")
 
         self.all_velocities.append(self.previous_velocity.get_magnitude())
         self.delta_path += (v0.get_magnitude() + v1.get_magnitude()) * dt / 2
