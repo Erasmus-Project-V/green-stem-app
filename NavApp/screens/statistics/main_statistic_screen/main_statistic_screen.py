@@ -65,7 +65,7 @@ class MainStatisticScreen(MDScreen):
         self.rectangle_radius = [20, 20, 0, 0]
         self.rectangle_height = dp(200)
         calendar_widget = CalendarWidget(current_month="January", current_year="2024", current_date="18")
-        calendar_widget.pos_hint = {"center_x":0.5,"center_y":0.81}
+        calendar_widget.pos_hint = {"center_x":0.5,"center_y":0.795}
         changeable.add_widget(calendar_widget)
 
         # history_widget = ActivityHistoryCardWidget()

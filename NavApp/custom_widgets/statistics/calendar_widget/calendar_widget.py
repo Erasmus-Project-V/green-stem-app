@@ -43,8 +43,7 @@ class CalendarWidget(MDRelativeLayout):
 
             self.color_date(self.current_date)
 
-    @staticmethod
-    def get_days_in_month(year, month_name):
+    def get_days_in_month(self, year, month_name):
         # Get the month number from its name
         month_number = self.months.index(month_name.capitalize()) +1
         # Get the number of days in the month
