@@ -8,6 +8,7 @@ from datetime import datetime
 
 
 class CalendarWidget(MDRelativeLayout):
+    current_date = StringProperty()
     current_month = StringProperty()
     current_year = StringProperty()
     months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October',
@@ -28,8 +29,19 @@ class CalendarWidget(MDRelativeLayout):
             day_widget.day_in_week = day[0][0]
             day_widget.date = str(day[1])
             day_widget.id = str(day[1])
-            day_widget.release_func = self.date_pressed
+            day_widget.release_func = self.color_date
             scrollable_row.add_widget(day_widget)
+
+        scroll_view = self.ids["scroll_view"]
+        if self.current_date:
+            cur_d = int(self.current_date)
+            # -(-9*10**(-5)*cur_d**2 - 0.0024*cur_d + 0.1159)
+            if cur_d >= 28:
+                scroll_view.scroll_x = 1
+            elif cur_d > 4:
+                scroll_view.scroll_x = (cur_d/len(days_in_month))
+
+            self.color_date(self.current_date)
 
     def get_days_in_month(self, year, month_name):
         # Get the month number from its name
@@ -46,14 +58,21 @@ class CalendarWidget(MDRelativeLayout):
 
     def arrow_pressed(self, btn):
         curr_month_index = self.months.index(self.current_month)
-        if btn == self.ids["previous_month"]:
+        self.current_date = ""
+        scroll_view = self.ids["scroll_view"]
+        if btn.parent == self.ids["previous_month"]:
+            scroll_view.scroll_x = 1
             if curr_month_index != 0:
                 self.current_month = self.months[curr_month_index - 1]
             else:
                 self.current_month = self.months[-1]
                 self.current_year = str(int(self.current_year) - 1)
 
-        if btn == self.ids["next_month"]:
+            self.current_date = f"{len(self.get_days_in_month(int(self.current_year), self.current_month))}"
+
+        if btn.parent == self.ids["next_month"]:
+            scroll_view.scroll_x = 0
+            self.current_date = "1"
             if curr_month_index != 11:
                 self.current_month = self.months[curr_month_index + 1]
             else:
@@ -68,7 +87,7 @@ class CalendarWidget(MDRelativeLayout):
         for child in reversed(children):
             scrollable_row.remove_widget(child)
 
-    def date_pressed(self, date):
+    def color_date(self, date):
         scrollable_row = self.ids["scrollable_days"]
         children = scrollable_row.children
         for child in children:
