@@ -2,6 +2,8 @@
     release_func: root.clicked
     hero_tag: "placeholder"
     MDRelativeLayout:
+        id: rel_one
+        name: "rel_one"
         size_hint: None, None
         # size: dp(165.8), dp(178.3)
         width: dp(165.8)
@@ -10,6 +12,10 @@
             id: hero_from
             tag: root.hero_tag
             MDRelativeLayout:
+                id: rel_two
+                hero_tag: None
+                activity_type: None
+                name: "rel_two"
                 size_hint: None, None
                 size: hero_from.size
                 Button:
@@ -24,6 +30,7 @@
                         radius: 24
                         opacity: 0.5
         MDBoxLayout:
+            id: front_box
             md_bg_color: (1, 1, 1, 0.1)
             size_hint: 1, None
             height: dp(30)

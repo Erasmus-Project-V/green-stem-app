@@ -4,15 +4,18 @@
 <WeeklyActivityScreen>:
     name: "was"
     id: was
+    heroes_to: [hero_to]
+
     MDTopAppBar:
+        id: top_bar
         pos_hint: {"top": 1}
-        title: "Running"
+        title: "null"
         md_bg_color: app.primary_colors["dark_grey"]
         left_action_items: [["chevron-left", lambda x: root.back_arrow()]]
 
     MDHeroTo:
         id: hero_to
         tag: "hero"
-        size: "120dp", "120dp"
+        size: "320dp", "320dp"
         size_hint: None, None
         pos_hint: {"center_x":0.5,"center_y":0.67}
