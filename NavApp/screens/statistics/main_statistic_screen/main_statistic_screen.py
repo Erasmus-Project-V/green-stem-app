@@ -107,7 +107,7 @@ class MainStatisticScreen(MDScreen):
         self.rectangle_radius = [20, 20, 0, 0]
         self.rectangle_height = dp(200)
         calendar_widget = self.layouts["day"]
-        calendar_widget.pos_hint = {"center_x": 0.5, "center_y": 0.81}
+        calendar_widget.pos_hint = {"center_x": 0.5, "center_y": 0.85}
         changeable.add_widget(calendar_widget)
         self.active_layout = calendar_widget
 
@@ -115,8 +115,17 @@ class MainStatisticScreen(MDScreen):
         # history_widget.pos_hint = {"center_x":0.5,"center_y":0.5}
         # changeable.add_widget(history_widget)
         history_list = ActivityHistoryListWidget()
-        history_list.pos_hint = {"center_x": 0.5, "center_y": 0.22}
+        history_list.activity_history_elements = [
+            {"img_path": "assets/images/home/home_trcanje_1.png", "activity_time": "11:22", "activity_name": "Trcanje"},
+            {"img_path": "assets/images/home/home_trcanje_1.png", "activity_time": "11:22", "activity_name": "Trcanje"},
+            {"img_path": "assets/images/home/home_trcanje_1.png", "activity_time": "11:22", "activity_name": "Trcanje"},
+            {"img_path": "assets/images/home/home_trcanje_1.png", "activity_time": "11:22", "activity_name": "Trcanje"},
+            {"img_path": "assets/images/home/home_trcanje_1.png", "activity_time": "11:22", "activity_name": "Trcanje"},
+            {"img_path": "assets/images/home/home_trcanje_1.png", "activity_time": "11:22", "activity_name": "Trcanje"},
+        ]
+        history_list.pos_hint = {"center_x": 0.5, "center_y": 0.48}
         changeable.add_widget(history_list)
+
     def clean_children(self):
         changeable = self.ids["changeable"]
         children = changeable.children

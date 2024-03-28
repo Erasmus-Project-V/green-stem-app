@@ -7,6 +7,7 @@
     size_hint: None, None
     size: (dp(340), dp(73))
     pos_hint: {"center_x":0.5,"center_y":0.5}
+    on_touch_down: root.activity_card_pressed()
     canvas:
         Color:
             rgba: app.primary_colors["dark_grey"]
@@ -18,7 +19,7 @@
     Label:
         font_name: app.fonts["sans_semi_bold"]
         text: root.activity_name
-        pos_hint: {"center_x":0.18,"center_y":0.65}
+        pos_hint: {"center_x":0.14,"center_y":0.65}
 
     Label:
         text: root.activity_time

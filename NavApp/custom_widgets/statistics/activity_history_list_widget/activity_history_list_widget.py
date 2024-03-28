@@ -12,5 +12,15 @@ class ActivityHistoryListWidget(MDRelativeLayout):
         Clock.schedule_once(self.build_self, 0)
 
     def build_self(self, clc):
+        scrollable_column = self.ids["scrollable_activities"]
+
         for activity in self.activity_history_elements:
-            pass
+            history_card = ActivityHistoryCardWidget()
+            history_card.img_path = activity["img_path"]
+            history_card.activity_name = activity["activity_name"]
+            history_card.activity_time = activity["activity_time"]
+            scrollable_column.add_widget(history_card)
+
+        if len(self.activity_history_elements) <= 5:
+            scroll_view = self.ids["scroll_view"]
+            scroll_view.do_scroll_y = False
