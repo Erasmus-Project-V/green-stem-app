@@ -9,15 +9,16 @@ class ActivityCardWidget(MDRelativeLayout):
     img_path = StringProperty("")
     text = StringProperty()
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self,hero_tag=None,activity_type=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.hero_ref = None
-        Clock.schedule_once(self.build_self, 0)
+        self.build_self(hero_tag,activity_type)
 
-    def build_self(self, dt):
+    def build_self(self, hero_tag,activity_type):
         self.hero_ref = self.ids["hero_from"]
-        if self.hero_ref.tag == "placeholder":
-            raise RuntimeError('Hero not assigned a unique tag!!!!')
+        self.hero_ref.tag = hero_tag
+        self.ids.rel_two.hero_tag = hero_tag
+        self.ids.rel_two.activity_type = activity_type
 
     def clicked(self, button):
         print("please implement custom press command!")

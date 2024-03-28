@@ -13,8 +13,8 @@ class ActivityGridWidget(MDRelativeLayout):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        Clock.schedule_once(self.build_self, 0)
-
+        self.nav_ref = {}
+        self.build_self(0)
     def placeholder(self,btn):
         pass
     def build_self(self, clc):
@@ -28,13 +28,13 @@ class ActivityGridWidget(MDRelativeLayout):
         grid = []
         row = []
         for i, element in enumerate(self.activity_grid_elements):
-            activity_card = ActivityCardWidget()
+            activity_card = ActivityCardWidget(element["hero_tag"],element["text"])
             activity_card.hero_tag = element["hero_tag"]
             activity_card.release_func = element["release_func"]
             activity_card.img_path = element["img_path"]
             activity_card.text = element["text"]
-
             row.append(activity_card)
+            self.nav_ref[element["hero_tag"]] = activity_card
 
             if (i + 1) % column_num == 0:
                 grid.append(row)

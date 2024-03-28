@@ -67,6 +67,9 @@ class MainScreenManager(MDScreenManager):
         self.current = scrn
         self.transition = FadeTransition()
 
+    def tamper_hero_data(self,widget):
+        self._create_heroes_data(widget)
+
 
 class FitnessApp(MDApp):
 
