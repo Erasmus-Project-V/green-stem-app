@@ -1,16 +1,41 @@
 #File name: activity_history_card_widget.kv
 
 <ActivityHistoryCardWidget>:
-    activity_name: "Bicikliranje"
+    activity_name: "Define activity"
+    activity_time: "--:--"
+    img_path: "assets/images/sample_profile_picture.png"
     size_hint: None, None
-    size: (root.width, dp(50))
+    size: (dp(340), dp(73))
+    pos_hint: {"center_x":0.5,"center_y":0.5}
     canvas:
         Color:
             rgba: app.primary_colors["dark_grey"]
         RoundedRectangle:
-            pos: (0, root.height - (root.height - dp(70)))  # Position the rectangle at the widget's position
-            size: (root.width, dp(70))  # Set the rectangle size to the widget's size
-            radius: [0, 0, 0, 0]  # Set the radius of the corners
+            pos: (0, 0)  # Position the rectangle at the widget's position
+            size: (root.width, root.height)  # Set the rectangle size to the widget's size
+            radius: [20, 20, 20, 20]  # Set the radius of the corners
 
     Label:
+        font_name: app.fonts["sans_semi_bold"]
         text: root.activity_name
+        pos_hint: {"center_x":0.18,"center_y":0.65}
+
+    Label:
+        text: root.activity_time
+        pos_hint: {"center_x":0.11,"center_y":0.39}
+        font_name: app.fonts["sans_semi_bold"]
+        color: app.primary_colors["light_blue"]
+        font_size: dp(13)
+
+    MDRelativeLayout:
+        size_hint: None, None
+        size: (dp(67.6), dp(67.8))
+        # md_bg_color: (0, 1, 0, 0.4)
+        pos_hint: {"center_x":0.89,"center_y":0.5}
+        FitImage:
+            size_hint:  1, 1
+            fit_mode: "fill"
+            opacity: 0.7
+            pos_hint: {"center_x": 0.5, "center_y": 0.5}
+            source: root.img_path
+            radius: [20, 20, 20, 20]
