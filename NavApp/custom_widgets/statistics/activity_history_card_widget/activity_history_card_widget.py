@@ -9,3 +9,6 @@ from datetime import datetime
 
 class ActivityHistoryCardWidget(MDRelativeLayout):
     img_path = StringProperty()
+
+    def activity_card_pressed(self):
+        print("The activity card was pressed")
