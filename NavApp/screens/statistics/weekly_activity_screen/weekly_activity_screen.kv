@@ -5,6 +5,17 @@
     name: "was"
     id: was
     heroes_to: [hero_to]
+    unit_quantity: "[quantity]"
+    calorie_count: "[quantity]"
+
+    canvas.after:
+        Color:
+            rgba: app.primary_colors["dark_grey"]
+        RoundedRectangle:
+            id: rounded_rectangle
+            pos: (dp(20), dp(310))  # Position the rectangle at the widget's position
+            size: (root.width - dp(40), dp(270))
+            radius: [40, 40, 40, 40]  # Set the radius of the corners
 
     MDTopAppBar:
         id: top_bar
@@ -19,3 +30,34 @@
         size: "320dp", "320dp"
         size_hint: None, None
         pos_hint: {"center_x":0.5,"center_y":0.67}
+
+
+    MDLabel:
+        pos_hint: {"center_x":0.62,"center_y":0.76}
+        id: label
+        text: root.measurement_type
+        color: [1, 1, 1, 0.65]
+
+    QuantityDisplayWidget:
+        id: changeable_unit_quantity
+        title: root.measurement_type
+        quantity: root.unit_quantity
+        dimension: "small"
+        pos_hint: {"center_x":0.28,"center_y":0.28}
+
+    QuantityDisplayWidget:
+        title: "CALORIES"
+        quantity: root.calorie_count
+        dimension: "small"
+        pos_hint: {"center_x":0.74,"center_y":0.28}
+
+    MDLabel:
+        pos_hint: {"center_x":0.62,"center_y":0.15}
+        text: "YOUR FRIENDS"
+        color: [1, 1, 1, 0.65]
+        font_size: dp(17)
+
+
+    FriendStatListWidget:
+        pos_hint: {"center_x":0.5,"center_y":0.07}
+        friend_activities: [{"quantity_one": "5205 STEPS", "quantity_two": "3200 kcal", "friend_name": "josip320"}, {"quantity_one": "5205 STEPS", "quantity_two": "3200 kcal", "friend_name": "josip320"}, {"quantity_one": "5205 STEPS", "quantity_two": "3200 kcal", "friend_name": "josip320"}]

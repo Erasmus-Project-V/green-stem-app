@@ -5,13 +5,6 @@
     dark_gray_container: app.primary_colors["dark_grey"]
     size_hint: 1, None
     height: dp(120)
-    canvas:
-        Color:
-            rgba: app.primary_colors["dark_grey"]
-        RoundedRectangle:
-            pos: (0, 0)  # Position the rectangle at the widget's position
-            size: (root.width, root.height)  # Set the rectangle size to the widget's size
-            radius: [0, 0, 20, 20]  # Set the radius of the corners
 
     MDBoxLayout:
         pos_hint: {"center_x":0.5,"center_y":0.8}
