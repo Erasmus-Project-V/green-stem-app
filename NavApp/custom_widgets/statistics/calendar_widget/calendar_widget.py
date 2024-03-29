@@ -1,4 +1,3 @@
-from kivy.metrics import dp
 from kivy.properties import StringProperty
 from kivymd.uix.relativelayout import MDRelativeLayout
 from kivy.clock import Clock

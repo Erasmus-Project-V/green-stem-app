@@ -4,15 +4,17 @@
     name: "mss"
     id: mss
     rectangle_radius: [20, 20, 20, 20]
-    rectangle_height: dp(100)
-    canvas:
-        Color:
-            rgba: app.primary_colors["dark_grey"]
-        RoundedRectangle:
-            id: rounded_rectangle
-            pos: (0, root.height - dp(60))  # Position the rectangle at the widget's position
-            size: (root.width, dp(150))
-            radius: root.rectangle_radius  # Set the radius of the corners
+    rectangle_pos: {"center_x":0.5,"center_y":0.5}
+    MDRelativeLayout:
+        pos_hint: root.rectangle_pos
+        canvas:
+            Color:
+                rgba: app.primary_colors["dark_grey"]
+            RoundedRectangle:
+                id: rounded_rectangle
+                pos: (0, root.height - dp(60))  # Position the rectangle at the widget's position
+                size: (root.width, dp(230))
+                radius: root.rectangle_radius  # Set the radius of the corners
 
     TopMenuWidget:
         widget_width: 1

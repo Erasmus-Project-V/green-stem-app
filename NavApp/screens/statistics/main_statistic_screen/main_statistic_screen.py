@@ -1,18 +1,11 @@
 from kivy.animation import Animation
 from kivy.clock import Clock
 from kivymd.uix.screen import MDScreen
-from kivymd.app import MDApp
-from kivymd.uix.boxlayout import MDBoxLayout
-from kivy.uix.button import Button
-from kivymd.uix.label import MDLabel
 from custom_widgets.statistics.calendar_widget.calendar_widget import CalendarWidget
-from custom_widgets.statistics.activity_history_card_widget.activity_history_card_widget import \
-    ActivityHistoryCardWidget
 from custom_widgets.statistics.activity_history_list_widget.activity_history_list_widget import \
     ActivityHistoryListWidget
 from kivy.metrics import dp
-from kivymd.uix.screenmanager import MDScreenManager
-from kivymd.uix.transition import MDSlideTransition, MDFadeSlideTransition
+from kivymd.uix.transition import MDSlideTransition
 
 from NavApp.custom_widgets.activity_grid_widget.activity_grid_widget import ActivityGridWidget
 
@@ -36,17 +29,16 @@ class MainStatisticScreen(MDScreen):
 
         self.ref_nav = {"Chosen day": "day", "This week": "week_month", "This month": "week_month"}
         self.layouts = {
-            "day": CalendarWidget(current_month="January", current_year="2024"),
+            "day": CalendarWidget(current_month="January", current_year="2024", current_date="13"),
             "week_month": ActivityGridWidget(activity_grid_elements=self.hero_activity_presets),
         }
-
 
         self.build_references = {
             "day": self.build_chosen_day,
             "week_month": self.build_hero_panels
         }
 
-        self.active_layout = None
+        self.active_layouts = []
         self.changeable_widget = None
 
         Clock.schedule_once(self.futher_build, 0.1)
@@ -63,9 +55,10 @@ class MainStatisticScreen(MDScreen):
         self.initialized = True
 
     def destroy_old_layout(self):
-        if self.active_layout:
-            self.changeable_widget.remove_widget(self.active_layout)
-            self.active_layout = None
+        if self.active_layouts:
+            for layout in self.active_layouts:
+                self.changeable_widget.remove_widget(layout)
+            self.active_layouts = []
 
     def change_state(self, btn):
         layout = self.ref_nav[btn.name]
@@ -87,33 +80,32 @@ class MainStatisticScreen(MDScreen):
     def transit_hero(self, btn):
         self.current_hero_tag = btn.hero_tag
         self.current_activity_type = btn.activity_type
-        x = self.active_layout.nav_ref[btn.hero_tag].ids.front_box
+        x = self.active_layouts[0].nav_ref[btn.hero_tag].ids.front_box
         anim = Animation(opacity=0, duration=0.2)
         anim.bind(on_complete=self._transit_hero)
         anim.start(x)
 
     def reenter_hero(self, *args):
         anim = Animation(opacity=1, duration=0.2)
-        anim.start(self.active_layout.nav_ref[self.current_hero_tag].ids.front_box)
+        anim.start(self.active_layouts[0].nav_ref[self.current_hero_tag].ids.front_box)
         self.unbind(on_enter=self.reenter_hero)
 
     def build_hero_panels(self):
-        self.active_layout = self.layouts["week_month"]
-        self.changeable_widget.add_widget(self.active_layout)
+        self.rectangle_pos = {"center_x": 0.5, "center_y": 0.5}
+        self.active_layouts.append(self.layouts["week_month"])
+        self.changeable_widget.add_widget(self.active_layouts[0])
         self.changeable_widget.manager = self.manager
 
     def build_chosen_day(self):
         changeable = self.ids["changeable"]
         self.rectangle_radius = [20, 20, 0, 0]
-        self.rectangle_height = dp(200)
+        self.rectangle_height = dp(100)
+        self.rectangle_pos = {"center_x":0.5, "center_y": 0.35}
         calendar_widget = self.layouts["day"]
         calendar_widget.pos_hint = {"center_x": 0.5, "center_y": 0.85}
         changeable.add_widget(calendar_widget)
-        self.active_layout = calendar_widget
+        self.active_layouts.append(calendar_widget)
 
-        # history_widget = ActivityHistoryCardWidget()
-        # history_widget.pos_hint = {"center_x":0.5,"center_y":0.5}
-        # changeable.add_widget(history_widget)
         history_list = ActivityHistoryListWidget()
         history_list.activity_history_elements = [
             {"img_path": "assets/images/home/home_trcanje_1.png", "activity_time": "11:22", "activity_name": "Trcanje"},
@@ -124,6 +116,7 @@ class MainStatisticScreen(MDScreen):
             {"img_path": "assets/images/home/home_trcanje_1.png", "activity_time": "11:22", "activity_name": "Trcanje"},
         ]
         history_list.pos_hint = {"center_x": 0.5, "center_y": 0.48}
+        self.active_layouts.append(history_list)
         changeable.add_widget(history_list)
 
     def clean_children(self):
@@ -132,5 +125,3 @@ class MainStatisticScreen(MDScreen):
         for child in children:
             changeable.remove_widget(child)
 
-    def arrow_press(self, btn):
-        print("Left arrow pressed")

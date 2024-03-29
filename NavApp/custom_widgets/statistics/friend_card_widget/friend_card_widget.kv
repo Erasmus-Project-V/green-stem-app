@@ -1,0 +1,38 @@
+#File name: friend_card_widget.kv
+
+<FriendCardWidget>:
+    size_hint: (None, None)
+    size: (dp(340), dp(55))
+    quantity_one: "1.Quantity"
+    quantity_two: "2.Quantity"
+    friend_name: "[Name]"
+    canvas:
+        Color:
+            rgba: app.primary_colors["dark_grey"]
+        RoundedRectangle:
+            id: rounded_rectangle
+            # pos: (dp(20), dp(310))  # Position the rectangle at the widget's position
+            size: (root.width, root.height)
+            radius: [60, 60, 60, 60]  # Set the radius of the corners
+
+    MDLabel:
+        text: root.friend_name
+        pos_hint: {"center_y":0.5}
+        color: [1, 1, 1, 0.65]
+        pos: (dp(30), dp(30))
+
+    MDLabel:
+        text: root.quantity_one
+        pos_hint: {"center_y":0.5}
+        pos: (dp(130), dp(31))
+        font_name: app.fonts["sans_semi_bold"]
+        font_size: dp(15)
+        color: app.primary_colors["light_blue"]
+
+    MDLabel:
+        text: root.quantity_two
+        pos_hint: {"center_y":0.5}
+        pos: (dp(250), dp(30))
+        font_name: app.fonts["sans_semi_bold"]
+        font_size: dp(15)
+        color: app.primary_colors["light_blue"]
