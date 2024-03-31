@@ -1,6 +1,8 @@
 # find parent manager using while loop with rules
 import math
 
+import numpy as np
+
 
 def find_manager(parent, name="manager"):
     try:
@@ -81,6 +83,9 @@ class Vector:
     def __getitem__(self, item):
         return self.components[item]
 
+    def __setitem__(self, key, value):
+        self.components[key] = value
+
     def cross(self, other):
         if not (self.dimension == 3 and other.dimension == 3):
             raise ArithmeticError("NO!")
@@ -95,6 +100,12 @@ class Vector:
     def __str__(self):
         return str(self.components)
 
+    def __round__(self, n=0):
+        s = list(self.components)
+        for c in range(self.dimension):
+            s[c] = round(self.components[c], n)
+        return Vector(s)
+
 
 def getRotationMatrix(gravity: Vector, geomagnetic: Vector):
     A = gravity
@@ -103,6 +114,7 @@ def getRotationMatrix(gravity: Vector, geomagnetic: Vector):
     normsqA = A * A
     g = 9.81
     freeFallGravitySquared = 0.01 * g ** 2
+    # check if in freefall (not good)
     if (normsqA < freeFallGravitySquared):
         return False
 
@@ -148,6 +160,53 @@ def getOrientation(R):
     values[1] = math.asin(-R[7])
     values[2] = math.atan2(-R[6], R[8])
     return values
+
+
+def mat_mul(m1, m2):
+    row1_m1_vec = Vector(m1[0:3])
+    row2_m1_vec = Vector(m1[3:6])
+    row3_m1_vec = Vector(m1[6:9])
+    col1_m2_vec = Vector(m2[0], m2[3], m2[6])
+    col2_m2_vec = Vector(m2[1], m2[4], m2[7])
+    col3_m2_vec = Vector(m2[2], m2[5], m2[8])
+    return [
+        row1_m1_vec * col1_m2_vec, row1_m1_vec * col2_m2_vec, row1_m1_vec * col3_m2_vec,
+        row2_m1_vec * col1_m2_vec, row2_m1_vec * col2_m2_vec, row2_m1_vec * col3_m2_vec,
+        row3_m1_vec * col1_m2_vec, row3_m1_vec * col2_m2_vec, row3_m1_vec * col3_m2_vec
+    ]
+
+
+# TODO BROĐANAC
+def getRotationMatrixFromOrientation(yaw, pitch, roll):
+    c_yaw = math.cos(yaw)
+    s_yaw = math.sin(yaw)
+    c_pitch = math.cos(pitch)
+    s_pitch = math.sin(pitch)
+    c_roll = math.cos(roll)
+    s_roll = math.sin(roll)
+    rotation_pitch = [1, 0, 0,
+                      0, c_pitch, -s_pitch,
+                      0, s_pitch, c_pitch]
+    rotation_yaw = [c_yaw, -s_yaw, 0,
+                    s_yaw, c_yaw, 0,
+                    0, 0, 1]
+    rotation_roll = [c_roll, 0, s_roll,
+                     0, 1, 0,
+                     -s_roll, 0, c_roll]
+    identity_matrix = [
+        1, 0, 0,
+        0, 1, 0,
+        0, 0, 1
+
+    ]
+    rotations_stacked = mat_mul(identity_matrix, rotation_yaw)
+    rotations_stacked = mat_mul(rotations_stacked, rotation_pitch)
+    rotations_stacked = mat_mul(rotations_stacked, rotation_roll)
+    rotations_stacked[1] *= -1
+    rotations_stacked[3] *= -1
+    rotations_stacked[5] *= -1
+    rotations_stacked[7] *= -1
+    return rotations_stacked
 
 
 def getInclintation(I):
@@ -222,7 +281,49 @@ class LocationManager:
         return sum(self.averager) / len(self.averager)
 
 
+def average_orientation(o1, o2, w1=0.5):
+    o1_sign = o1 / abs(o1)
+    o2_sign = o2 / abs(o2)
+    if abs(o1) > math.pi:
+        o1 = 2 * math.pi * -o1_sign + o1
+        o1_sign *= -1
+    if abs(o2) > math.pi:
+        o2 = 2 * math.pi * -o2_sign + o2
+        o2_sign *= -1
+    if o1_sign == o2_sign or (abs(o1) < math.pi / 2 and abs(o2) < math.pi / 2):
+        average = o1 * w1 + o2 * (1 - w1)
+        if abs(average) > math.pi:
+            return 2 * math.pi * -average / abs(average) + abs(average)
+        return average
+    if o1_sign > o2_sign:
+        pos = o1
+        neg = o2
+    else:
+        w1 = 1 - w1
+        pos = o2
+        neg = o1
+    average = (2 * math.pi - abs(neg)) * (1 - w1) + pos * w1
+    if average > math.pi:
+        return (2 * math.pi - abs(average)) * -1
+    return average
+
+
 def convertBearing(bearing):
     if bearing > 180:
         bearing = - 360 + bearing
     return math.radians(bearing)
+
+
+def low_pass_filter(adata: np.ndarray, bandlimit: int = 1, sampling_rate: int = 10) -> np.ndarray:
+    # translate bandlimit from Hz to dataindex according to sampling rate and data size
+    bandlimit_index = int(bandlimit * adata.size / sampling_rate)
+
+    fsig = np.fft.fft(adata)
+
+    for i in range(bandlimit_index + 1, len(fsig) - bandlimit_index ):
+        fsig[i] = 0
+
+    adata_filtered = np.fft.ifft(fsig)
+
+    return np.real(adata_filtered)
+

@@ -13,7 +13,7 @@ from scripts.utilities import euclidean, Vector, processMagAcc, SensorManager, r
     polarToCartesian, convertBearing
 from scripts.navigation_manager import NavigationManager
 
-MIN_MEASURE_DISTANCE = 1
+MIN_MEASURE_DISTANCE = 10
 
 
 class ActivityScreen(MDScreen):
@@ -38,7 +38,6 @@ class ActivityScreen(MDScreen):
         self.navigator = None
 
     def further_build(self, dt):
-        print("BUILDING FURTHER SPECIAL")
         self.active_activity: Activity = None
         self.location_on = False
         self.sensor_manager = None
@@ -142,6 +141,7 @@ class ActivityScreen(MDScreen):
         self.__start_activity()
 
     def __start_activity(self, dt=0):
+        self.e = Clock.schedule_interval(self.debugger,0.1)
         if not self.active_activity:
             print(self.activity_manager)
             self.active_activity = self.activity_manager.add_new_activity(self.activities[self.current_activity])
@@ -152,12 +152,18 @@ class ActivityScreen(MDScreen):
         self.activity_event = Clock.schedule_interval(self.update_activity, 1)
 
     def __pause_activity(self, dt=0):
+        self.e.cancel()
         self.update_activity()
         self.activity_event.cancel()
         if platform == "android":
             self.active_activity.reset_active_location()
             self.navigator.stop_gps()
 
+
+    def debugger(self,dt):
+        orientation_debug = self.navigator.rotated_orientation * 180 / math.pi
+        o = f"{round(orientation_debug[0])} \n {round(orientation_debug[1])} \n {round(orientation_debug[2])}"
+        self.last_location_debug = o
     def update_activity(self, dt=0):
         self.dt = round(time.perf_counter() - self.last_ping, 5)
         self.last_ping = time.perf_counter()
@@ -175,6 +181,7 @@ class ActivityScreen(MDScreen):
         self.activity_containers[1].quantity = time.strftime('%H:%M:%S', time.gmtime(round(elapsed_time)))
         self.activity_containers[2].quantity = str(int(elapsed_distance)) + "m"
         self.activity_containers[3].quantity = str(int(self.navigator.get_avg_velocity() * 36) / 10) + "km/h"
+        self.activity_containers[0].quantity = str(int(self.navigator.get_location_polar()[2]))
 
     def finish_activity(self, button):
         if self.active_activity:

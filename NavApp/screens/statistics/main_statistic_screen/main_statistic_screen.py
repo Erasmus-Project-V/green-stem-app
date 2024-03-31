@@ -12,8 +12,7 @@ from custom_widgets.statistics.activity_history_card_widget.activity_history_car
 from kivy.metrics import dp
 from kivymd.uix.screenmanager import MDScreenManager
 from kivymd.uix.transition import MDSlideTransition, MDFadeSlideTransition
-
-from NavApp.custom_widgets.activity_grid_widget.activity_grid_widget import ActivityGridWidget
+from custom_widgets.activity_grid_widget.activity_grid_widget import ActivityGridWidget
 
 
 class MainStatisticScreen(MDScreen):

@@ -84,7 +84,7 @@ class Activity:
             "user": None,
             "exercise": None,
             "longitude": str(self.active_location_series),
-            "latitude": str(self.passive_location_series)
+            "latitude": str(self.active_location_series)
         }
         return payload, payload_two
 
