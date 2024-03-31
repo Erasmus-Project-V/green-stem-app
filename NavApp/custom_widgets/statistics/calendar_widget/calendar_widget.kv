@@ -4,19 +4,12 @@
     blue_container: app.primary_colors["light_blue"]
     dark_gray_container: app.primary_colors["dark_grey"]
     size_hint: 1, None
-    height: dp(200)
-    canvas:
-        Color:
-            rgba: app.primary_colors["dark_grey"]
-        RoundedRectangle:
-            pos: (0, root.height - (root.height - dp(70)))  # Position the rectangle at the widget's position
-            size: (root.width, root.height - dp(70))  # Set the rectangle size to the widget's size
-            radius: [0, 0, 20, 20]  # Set the radius of the corners
+    height: dp(120)
 
     MDBoxLayout:
-        pos_hint: {"center_x":0.5,"center_y":0.9}
+        pos_hint: {"center_x":0.5,"center_y":0.8}
         size_hint: (None, None)
-        size: (root.width, dp(60))
+        size: (root.width, dp(30))
         # spacing: dp(90)
         padding: dp(40)
 
@@ -44,12 +37,10 @@
         id: scroll_view
         do_scroll_x: True
         do_scroll_y: False
-        pos_hint: {"center_x":0.5,"center_y":0.63}
+        pos_hint: {"center_x":0.5,"center_y":0.4}
         size_hint: (None, None)
-        size: (root.width, dp(100))
+        size: (root.width, dp(70))
         bar_width: 0
-        # scroll_x: (root.current_date/31)-(-9*10**(-5)*root.current_date**2 - 0.0024*root.current_date + 0.1159)
-        # scroll_x: 0.44
         always_overscroll: False
         MDBoxLayout:
             id: scrollable_days
