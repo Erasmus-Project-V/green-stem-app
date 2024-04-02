@@ -25,7 +25,6 @@ def euclidean(*args):
         args = args[0]
     if len(args) < 3:
         args.append(0)
-    print(args)
     return (args[0] ** 2 + args[1] ** 2 + args[2] ** 2) ** 0.5
 
 
@@ -245,21 +244,23 @@ class SensorManager:
     def get_measurements_orientation(self, true_orientation: Vector, movement: Vector):
         # TODO - fix when orientation snaps!! -180 > 180
         self.predicted_orientation = self.orientation + movement
-        print(f"AM03 PT {self.predicted_orientation * 180 / math.pi}, {true_orientation * 180 / math.pi}")
-        print(f"AM03 NORM {self.predicted_orientation * 180 / math.pi}, {true_orientation * 180 / math.pi}")
+        #print(f"AM03 PT {self.predicted_orientation * 180 / math.pi}, {true_orientation * 180 / math.pi}")
+        #print(f"AM03 NORM {self.predicted_orientation * 180 / math.pi}, {true_orientation * 180 / math.pi}")
         self.combined_orientation = true_orientation * self.epsilon + self.predicted_orientation * (1 - self.epsilon)
         self.orientation = (self.combined_orientation + self.orientation) / 2
 
         return self.orientation
 
 
-def polarToCartesian(ro, theta, phi):
-    theta = math.radians(theta)
-    phi = math.radians(phi)
-    z = ro * math.cos(theta)
-    x = ro * math.sin(theta) * math.cos(phi)
-    y = ro * math.sin(theta) * math.sin(phi)
-    return Vector(x, y, z)
+
+def coordinate_distance_calculator(r=6371000,lat1=0,lon1=0,lat2=0,lon2=0):
+    lat1 = math.radians(lat1)
+    lat2 = math.radians(lat2)
+    lon1 = math.radians(lon1)
+    lon2 = math.radians(lon2)
+    d = 2 * r * math.asin(math.sqrt(math.sin((lat2-lat1)/2)**2 + math.cos(lat1) * math.cos(lat2) *
+                                    math.sin((lon2-lon1)/2)**2))
+    return d
 
 
 # pojednostavljenje, trebalo bi štimati do 1500 metara NMV
@@ -313,17 +314,31 @@ def convertBearing(bearing):
         bearing = - 360 + bearing
     return math.radians(bearing)
 
+def clamp(v,min,max):
+    if v > max:
+        return max
+    if v < min:
+        return min
+    else:
+        return v
+def filterAccelerometerData(acceleration: Vector
+                            ,acceleration_filter:Vector = Vector(0,0,0)
+                            ,last_acceleration:Vector=Vector(0,0,0),
+                            dt=0.1):
+    cutoff_freq = 0.9
+    RC = 1.0 / cutoff_freq
+    filter_constant = RC / (dt + RC)
+    alpha = filter_constant
+    k_accelerometer_min_step = 0.033
+    k_accelerometer_noise_attenuation = 3.0
 
-def low_pass_filter(adata: np.ndarray, bandlimit: int = 1, sampling_rate: int = 10) -> np.ndarray:
-    # translate bandlimit from Hz to dataindex according to sampling rate and data size
-    bandlimit_index = int(bandlimit * adata.size / sampling_rate)
+    d = clamp(abs(acceleration_filter.get_magnitude()-acceleration.get_magnitude())/k_accelerometer_min_step - 1.0,0.0,1.0)
+    alpha = d * filter_constant / k_accelerometer_noise_attenuation + (1.0-d) * filter_constant
 
-    fsig = np.fft.fft(adata)
+    acceleration_filter = (acceleration_filter + acceleration - last_acceleration) * alpha
 
-    for i in range(bandlimit_index + 1, len(fsig) - bandlimit_index ):
-        fsig[i] = 0
+    last_acceleration = acceleration.get_copy()
+    return last_acceleration, acceleration_filter
 
-    adata_filtered = np.fft.ifft(fsig)
 
-    return np.real(adata_filtered)
 

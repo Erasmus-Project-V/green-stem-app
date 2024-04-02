@@ -9,8 +9,7 @@ from kivy.utils import platform
 from kivy.animation import Animation
 from kivy.clock import Clock
 from scripts.activity_manager import ActivityManager, Activity
-from scripts.utilities import euclidean, Vector, processMagAcc, SensorManager, rotateVector, getAltitudeFromPressure, \
-    polarToCartesian, convertBearing
+
 from scripts.navigation_manager import NavigationManager
 
 MIN_MEASURE_DISTANCE = 10
@@ -162,7 +161,9 @@ class ActivityScreen(MDScreen):
 
     def debugger(self,dt):
         orientation_debug = self.navigator.rotated_orientation * 180 / math.pi
-        o = f"{round(orientation_debug[0])} \n {round(orientation_debug[1])} \n {round(orientation_debug[2])}"
+        velocity_debug = round(self.navigator.previous_velocity,1)
+        delta_location_debug = self.navigator.lld
+        o = (f"{round(orientation_debug[0])} \n {round(orientation_debug[1])} \n {round(orientation_debug[2])} \n velocity: {velocity_debug} \n a {delta_location_debug}")
         self.last_location_debug = o
     def update_activity(self, dt=0):
         self.dt = round(time.perf_counter() - self.last_ping, 5)
@@ -170,12 +171,11 @@ class ActivityScreen(MDScreen):
         if self.navigator:
             (polar, cached, avg) = (self.navigator.get_location_polar(),
                                     self.navigator.get_cached_path(), self.navigator.get_avg_velocity())
-            self.navigator.clear_cache()
         else:
             (polar, cached, avg) = (None, 0, None)
-        self.active_activity.update_activity(self.dt, polar, cached, avg)
+        self.active_activity.update_activity(self.dt, self.navigator.last_location, cached, avg)
         self.update_widgets(self.active_activity.elapsed_time_active,
-                            self.active_activity.total_distance)
+                            self.navigator.get_cached_path())
 
     def update_widgets(self, elapsed_time, elapsed_distance):
         self.activity_containers[1].quantity = time.strftime('%H:%M:%S', time.gmtime(round(elapsed_time)))
@@ -185,6 +185,7 @@ class ActivityScreen(MDScreen):
 
     def finish_activity(self, button):
         if self.active_activity:
+            self.navigator.clear_cache()
             print("finalizing activity...")
             self.reset_containers(self.presets[self.activity_presets[self.current_activity]])
             self.active_activity.stop_activity(time.perf_counter())

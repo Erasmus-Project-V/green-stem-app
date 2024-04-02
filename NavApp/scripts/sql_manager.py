@@ -7,6 +7,7 @@ SQL_BASE_NAME = "activities.db"
 class SQLManager:
 
     def __init__(self, user_id):
+        self.in_writing = False
         self.user_id = user_id
         has_file = SQL_BASE_NAME in os.listdir()
         self.connection = connect(SQL_BASE_NAME)
@@ -24,12 +25,12 @@ class SQLManager:
     def __build_base(self):
         self.__create_table("exercises", [
             ("type", "TEXT"), ("user", "TEXT"), ("time_started", "TEXT"),
-            ("time_elapsed", "REAL"), ("total_distance", "INTEGER")
+            ("time_elapsed", "REAL"), ("total_distance", "INTEGER"), ("average_velocity", "INTEGER")
         ])
         ## upitno
         self.__create_table("locations", [
-            ("user", "TEXT"), ("exercise", "TEXT"), ("latitude", "BLOB"),
-            ("longitude", "BLOB")
+            ("user", "TEXT"), ("exercise", "TEXT"), ("timestamp", "INTEGER"), ("latitude", "INTEGER"),
+            ("longitude", "INTEGER") , ("velocity", "INTEGER"), ("distance","INTEGER")
         ])
 
     def __insert_into_table(self, table_name, values):
@@ -44,10 +45,12 @@ class SQLManager:
         os.remove(SQL_BASE_NAME)
 
     def add_finished_activity(self, exercise, location_data):
-        print(location_data)
+        self.in_writing = True
         self.__insert_into_table("exercises", exercise.values())
-        self.__insert_into_table("locations", location_data.values())
+        for l in location_data:
+            self.__insert_into_table("locations", l.values())
         self.connection.commit()
+        self.in_writing = False
     def upload_all(self):
-        print("uploading...")
+        command = "null"
 

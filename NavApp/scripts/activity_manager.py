@@ -3,7 +3,8 @@ import math
 import time
 from math import sin, cos, acos
 
-
+#  1 is best
+DATA_DETAIL = 3
 class ActivityManager:
     def __init__(self, user_id, sql_manager):
         self.user_id = user_id
@@ -25,8 +26,6 @@ class ActivityManager:
     def save_activity(self, payload, payload_two):
         payload["user"] = self.user_id
         payload_two["user"] = self.user_id
-        # kako lokalno povezati?
-        payload_two["exercise"] = None
         self.sql_manager.add_finished_activity(payload, payload_two)
 
 
@@ -56,7 +55,7 @@ class Activity:
         if location_ping:
             self.active_location_series.append((self.elapsed_time_active, location_ping,distance,avg_velocity))
             self.passive_location_series.append((self.elapsed_time_active, location_ping,distance,avg_velocity))
-            self.total_distance += distance
+            self.total_distance = distance
 
     def reset_active_location(self):
         self.active_location_series = []
@@ -64,6 +63,7 @@ class Activity:
 
     def stop_activity(self, end_time):
         self.elapsed_time_total = end_time - self.start_time
+        self.average_velocity = round(3.6 * self.total_distance / self.elapsed_time_total,2)
         payload, payload_two = self.wrap_self()
         self.manager.save_activity(payload, payload_two)
 
@@ -77,16 +77,37 @@ class Activity:
             "time_started": self.__format_time(self.start_date),
             "time_elapsed": self.elapsed_time_active,
             "total_distance": self.total_distance,
+            "average_velocity": self.average_velocity
         }
 
-        # no good for now
+
+
+
+        times = []
+        lats = []
+        lons = []
+        velocities = []
+        distances = []
+        for i in range(0,len(self.passive_location_series),DATA_DETAIL):
+            times.append(round(self.passive_location_series[i][0]))
+            lats.append(self.passive_location_series[i][1][0])
+            lons.append(self.passive_location_series[i][1][1])
+            velocities.append(round(self.passive_location_series[i][3]*3.6))
+            distances.append(round(self.passive_location_series[i][2]))
+
+        lat_json = {"time":times, "latitude":lats}
+        lon_json = {"time":times, "longitude":lons}
+        vel_json = {"time":times, "velocity":velocities}
+        dist_json = {"time":times, "distance":distances}
+
         payload_two = {
             "user": None,
             "exercise": None,
-            "longitude": str(self.active_location_series),
-            "latitude": str(self.active_location_series)
+            "latitude": lat_json,
+            "longitude": lon_json,
+            "velocity": vel_json,
+            "distance": dist_json
+
         }
         return payload, payload_two
 
-    def calculate_average_speed(self):
-        pass
