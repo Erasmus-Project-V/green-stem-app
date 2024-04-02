@@ -12,17 +12,15 @@ DEBUG = False
 METERED_CONNECTION = True
 WIFI_CHECK_INTERVAL = 120
 
-
 if platform == "android":
     from jnius import autoclass, cast
     from android import mActivity
+
     Context = autoclass('android.content.Context')
     WifiManager = autoclass('android.net.wifi.WifiManager')
     ConnectivityManager = autoclass('android.net.ConnectivityManager')
-    wm = cast("android.net.ConnectivityManager",mActivity.getSystemService(Context.CONNECTIVITY_SERVICE))
+    wm = cast("android.net.ConnectivityManager", mActivity.getSystemService(Context.CONNECTIVITY_SERVICE))
     print(wm.isActiveNetworkMetered())
-
-
 
 
 class UserManager:
@@ -43,14 +41,15 @@ class UserManager:
         self.wifi_check_event = None
 
     def load_user_data(self):
+        Clock.schedule_once(self.upload_to_base)
         if platform == "android":
             # starting to check if wifi is available
             Clock.schedule_once(self.check_for_wifi)
-            self.wifi_check_event = Clock.schedule_interval(self.check_for_wifi,WIFI_CHECK_INTERVAL)
+            self.wifi_check_event = Clock.schedule_interval(self.check_for_wifi, WIFI_CHECK_INTERVAL)
         if DEBUG:
-            self.write_user_data("NONE", {"username":"admin","email":"admin@gmail.co1",
-                                                                "id":"12345","verified":True,
-                                                                "weight":80,"height":180,"age":20,"gender":"male"})
+            self.write_user_data("NONE", {"username": "admin", "email": "admin@gmail.co1",
+                                          "id": "12345", "verified": True,
+                                          "weight": 80, "height": 180, "age": 20, "gender": "male"})
             return True
         if not os.path.isfile(self.SAVE_ADDRESS):
             return False
@@ -68,7 +67,7 @@ class UserManager:
         print(f"User data: {user_data}")
         self.user_id = user_data["id"]
         self.sql_manager = SQLManager(self.user_id)
-        self.activity_manager = ActivityManager(self.user_id,self.sql_manager)
+        self.activity_manager = ActivityManager(self.user_id, self.sql_manager)
         print(self.activity_manager)
         self.save_user_data()
 
@@ -89,10 +88,60 @@ class UserManager:
         for key in user_data.keys():
             self.user_data[key] = user_data[key]
 
-    def check_for_wifi(self,dt):
+    def check_for_wifi(self, dt):
         print("checking for wifi")
         self.METERED_CONNECTION = wm.isActiveNetworkMetered()
         print(self.METERED_CONNECTION)
+        if not self.METERED_CONNECTION and self.sql_manager.has_new and not self.sql_manager.in_writing:
+            print("Uploading to base!")
+            self.upload_to_base()
+
+    def __upload_to_base(self,*args):
+        self.index += 1
+        if self.index >= self.length:
+            print("finished successfully, clearing local storage...")
+            self.sql_manager.clear_base()
+            return
+        i = self.index
+        payload_one = {
+            "type": self.a[i][0],
+            "user": self.a[i][1],
+            "time_started": self.a[i][2],
+            "time_elapsed": self.a[i][3],
+            "total_distance": self.a[i][4],
+            "average_velocity": self.a[i][5]
+        }
+
+        self.send_request("/api/collections/exercises/records","POST",
+                          body=json.dumps(payload_one),success_func=self.__finalize_upload,
+                          error_func=self.placeholder)
+
+    def placeholder(self,a,b):
+        print(f"error! {b}")
+
+    def __finalize_upload(self,a,b):
+        print("finalizing...")
+        payload_two = {
+            "user": self.b[self.index][0],
+            "exercise": b["id"],
+            "latitude": json.loads(self.b[self.index][2]),
+            "longitude": json.loads(self.b[self.index][3]),
+            "velocity": json.loads(self.b[self.index][4]),
+            "distance": json.loads(self.b[self.index][5])
+        }
+        # send second request
+        self.send_request("/api/collections/locations/records","POST",
+                  body=json.dumps(payload_two),success_func=self.__upload_to_base,
+                  error_func=self.placeholder)
+
+    def upload_to_base(self, *args):
+        print("uploading")
+        self.a, self.b = self.sql_manager.fetch_all()
+        self.index = -1
+        self.length = len(self.a)
+        if len(self.a) > 0:
+            self.__upload_to_base(0)
+
 
     def erase_user_data(self):
         self.user_token = None

@@ -8,6 +8,7 @@ class SQLManager:
 
     def __init__(self, user_id):
         self.in_writing = False
+        self.has_new = False
         self.user_id = user_id
         has_file = SQL_BASE_NAME in os.listdir()
         self.connection = connect(SQL_BASE_NAME)
@@ -29,8 +30,8 @@ class SQLManager:
         ])
         ## upitno
         self.__create_table("locations", [
-            ("user", "TEXT"), ("exercise", "TEXT"), ("timestamp", "INTEGER"), ("latitude", "INTEGER"),
-            ("longitude", "INTEGER") , ("velocity", "INTEGER"), ("distance","INTEGER")
+            ("user", "TEXT"), ("exercise", "TEXT"), ("latitude", "BLOB"),
+            ("longitude", "BLOB"), ("velocity", "BLOB"), ("distance", "BLOB")
         ])
 
     def __insert_into_table(self, table_name, values):
@@ -47,10 +48,26 @@ class SQLManager:
     def add_finished_activity(self, exercise, location_data):
         self.in_writing = True
         self.__insert_into_table("exercises", exercise.values())
-        for l in location_data:
-            self.__insert_into_table("locations", l.values())
+        print(location_data)
+        self.__insert_into_table("locations", location_data.values())
         self.connection.commit()
         self.in_writing = False
-    def upload_all(self):
-        command = "null"
+        self.has_new = True
+
+    def fetch_all(self):
+        command1 = "SELECT * FROM exercises"
+        command2 = "SELECT * FROM locations"
+        de = self.cursor.execute(command1).fetchall()
+        dl = self.cursor.execute(command2).fetchall()
+        if not de:
+            de, dl = [], []
+        return de, dl
+
+    def clear_base(self):
+        self.has_new = False
+        command1 = "DELETE FROM exercises"
+        command2 = "DELETE FROM locations"
+        self.cursor.execute(command1)
+        self.cursor.execute(command2)
+        self.connection.commit()
 

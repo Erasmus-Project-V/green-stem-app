@@ -103,10 +103,10 @@ class Activity:
         payload_two = {
             "user": None,
             "exercise": None,
-            "latitude": lat_json,
-            "longitude": lon_json,
-            "velocity": vel_json,
-            "distance": dist_json
+            "latitude": json.dumps(lat_json),
+            "longitude": json.dumps(lon_json),
+            "velocity": json.dumps(vel_json),
+            "distance": json.dumps(dist_json)
 
         }
         return payload, payload_two
