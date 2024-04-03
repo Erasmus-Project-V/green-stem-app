@@ -153,7 +153,7 @@ class NavigationManager:
         self.previous_locations.append((current_location[0],current_location[1],current_location[2],accuracy_factor))
         if len(self.previous_locations) >= 3:
             triangulated_location = Vector(sum([i[0] for i in self.previous_locations])/3,
-                                          sum([i[0] for i in self.previous_locations])/3,
+                                          sum([i[1] for i in self.previous_locations])/3,
                                           6371000)
             averaged_accuracy = sum([i[-1] for i in self.previous_locations])/3
             self.previous_locations = [(triangulated_location[0],triangulated_location[1],triangulated_location[2],accuracy_factor)]
