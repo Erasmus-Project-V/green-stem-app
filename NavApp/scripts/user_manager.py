@@ -41,7 +41,6 @@ class UserManager:
         self.wifi_check_event = None
 
     def load_user_data(self):
-        Clock.schedule_once(self.upload_to_base)
         if platform == "android":
             # starting to check if wifi is available
             Clock.schedule_once(self.check_for_wifi)

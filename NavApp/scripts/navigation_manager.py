@@ -130,7 +130,7 @@ class NavigationManager:
         return rotation_averaged, rotated_acceleration
 
     def update_location(self, **kwargs):
-        print(f"KW00 {kwargs}")
+        #print(f"KW00 {kwargs}")
         latitude = kwargs["lat"]
         longitude = kwargs["lon"]
         velocity_magnitude = kwargs['speed']
@@ -170,9 +170,9 @@ class NavigationManager:
             gps_distance = coordinate_distance_calculator(lat1=self.last_location[0],lon1=self.last_location[1],
                                                           lat2=triangulated_location[0],lon2=triangulated_location[1])
         self.last_location = triangulated_location
-        print(
-            f"AM04 delta path: {self.cached_path-self.last_cached_path}, gps_distance {gps_distance} average velocity {self.average_velocity}, "
-            f"weighed {(1-averaged_accuracy)*(self.cached_path-self.last_cached_path) + averaged_accuracy*gps_distance}, {averaged_accuracy}")
+        #print(
+        #    f"AM04 delta path: {self.cached_path-self.last_cached_path}, gps_distance {gps_distance} average velocity {self.average_velocity}, "
+        #    f"weighed {(1-averaged_accuracy)*(self.cached_path-self.last_cached_path) + averaged_accuracy*gps_distance}, {averaged_accuracy}")
         if self.cached_path-self.last_cached_path > 1:
             self.cached_path = self.last_cached_path + (1-averaged_accuracy)*(self.cached_path-self.last_cached_path) + averaged_accuracy*gps_distance
         self.last_cached_path = self.cached_path
@@ -205,7 +205,12 @@ class NavigationManager:
 
         self.last_location_ping = time.perf_counter()
 
-
+    def calculate_steps(self, delta_path, gender, height):
+        # za sada bez brzine, nije dovoljno tocna
+        c1 = 0.415 if gender == "male" else 0.413
+        stride_length = c1 * height / 100
+        steps = 2 * delta_path / stride_length
+        return steps
 
     def clear_cache(self):
         self.cached_path = 0

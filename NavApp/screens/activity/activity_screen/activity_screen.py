@@ -26,9 +26,14 @@ class ActivityScreen(MDScreen):
         self.activities = ["planinarenje", "hodanje", "trcanje", "bicikliranje", "rolanje"]
         self.activity_presets = [1, 2, 2, 3, 3]
         self.presets = {
-            1: {"type": 1, "data": ["STEPS", "TIME", "DISTANCE", "NET ALTITUDE", "CALORIES"]},
+            1: {"type": 1, "data": ["STEPS", "TIME", "DISTANCE", "ALTITUDE", "CALORIES"]},
             2: {"type": 1, "data": ["STEPS", "TIME", "DISTANCE", "SPEED", "CALORIES"]},
-            3: {"type": 0, "data": ["KM", "TIME", "SPEED", "CALORIES", "0"]},
+            3: {"type": 0, "data": ["DISTANCE", "TIME", "SPEED", "CALORIES", "0"]},
+        }
+        self.update_methods = {
+            1: self.update_mountaineering,
+            2: self.update_walk,
+            3: self.update_wheel
         }
         self.current_activity = 1
         Clock.schedule_once(self.further_build, 0.01)
@@ -48,6 +53,7 @@ class ActivityScreen(MDScreen):
             self.ids["ac4"],
             self.ids["ac5"]
         ]
+
 
         self.play_button = self.ids["play_button"]
         self.stop_button = self.ids["stop_button"]
@@ -177,12 +183,29 @@ class ActivityScreen(MDScreen):
         self.update_widgets(self.active_activity.elapsed_time_active,
                             self.navigator.get_cached_path())
 
-    def update_widgets(self, elapsed_time, elapsed_distance):
-        self.activity_containers[1].quantity = time.strftime('%H:%M:%S', time.gmtime(round(elapsed_time)))
+
+    def update_walk(self,elapsed_distance):
+        gender = self.manager.active_user.get_user_attribute("gender")
+        height = self.manager.active_user.get_user_attribute("height")
+        self.activity_containers[0].quantity = str(int(self.navigator.calculate_steps(elapsed_distance,gender,height)))
         self.activity_containers[2].quantity = str(int(elapsed_distance)) + "m"
         self.activity_containers[3].quantity = str(int(self.navigator.get_avg_velocity() * 36) / 10) + "km/h"
-        self.activity_containers[0].quantity = str(int(self.navigator.get_location_polar()[2]))
 
+    def update_mountaineering(self,elapsed_distance):
+        gender = self.manager.active_user.get_user_attribute("gender")
+        height = self.manager.active_user.get_user_attribute("height")
+        self.activity_containers[0].quantity = str(int(self.navigator.calculate_steps(elapsed_distance,gender,height)))
+        self.activity_containers[2].quantity = str(int(elapsed_distance)) + "m"
+        self.activity_containers[3].quantity = str(int(self.navigator.get_location_polar()[2])) + "m"
+
+    def update_wheel(self,elapsed_distance):
+        self.activity_containers[0].quantity = str(int(elapsed_distance)) + "m"
+        self.activity_containers[2].quantity = str(int(self.navigator.get_avg_velocity() * 36) / 10) + "km/h"
+
+
+    def update_widgets(self, elapsed_time, elapsed_distance):
+        self.activity_containers[1].quantity = time.strftime('%H:%M:%S', time.gmtime(round(elapsed_time)))
+        self.update_methods[self.activity_presets[self.current_activity]](elapsed_distance)
     def finish_activity(self, button):
         if self.active_activity:
             self.navigator.clear_cache()
