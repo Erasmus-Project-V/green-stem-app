@@ -91,9 +91,11 @@ class UserManager:
         print("checking for wifi")
         self.METERED_CONNECTION = wm.isActiveNetworkMetered()
         print(self.METERED_CONNECTION)
-        if not self.METERED_CONNECTION and self.sql_manager.has_new and not self.sql_manager.in_writing:
-            print("Uploading to base!")
-            self.upload_to_base()
+        if not self.METERED_CONNECTION and self.active:
+            print("Checking for new entries")
+            if self.sql_manager.has_new and not self.sql_manager.in_writing:
+                print("Uploading to base!")
+                self.upload_to_base()
 
     def __upload_to_base(self,*args):
         self.index += 1

@@ -216,6 +216,7 @@ class ActivityScreen(MDScreen):
 
     def quit_activity(self, button=None, *args):
         if platform == "android":
+            self.navigator.stop_gps()
             self.navigator.disable_sensors()
         self.manager.transition = FadeTransition()
         self.manager.goto_screen("hme")

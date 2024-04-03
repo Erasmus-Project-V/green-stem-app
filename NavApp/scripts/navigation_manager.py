@@ -228,7 +228,7 @@ class NavigationManager:
         return self.cached_path
 
     def stop_gps(self):
-        if self.gps_running:
+        if not self.gps_running:
             return False
         gps.stop()
         self.accelerometer_event.cancel()
