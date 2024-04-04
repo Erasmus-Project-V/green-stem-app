@@ -1,0 +1,32 @@
+
+
+<ProfileBarWidget>:
+    md_bg_color: (0,1,0,0)
+    size_hint: (1,0.2)
+    bar_text: "Null"
+    release_func: root.placeholder
+    button_opacity: 1
+    bar_text_color: app.primary_colors["white"]
+    MDLabel:
+        text: root.bar_text
+        color: root.bar_text_color
+        pos_hint: {"center_x":0.5,"center_y":0.5}
+        font_name: app.fonts["sans_semi_bold"]
+    MDIcon:
+        opacity: root.button_opacity
+        disabled: not root.button_opacity
+        icon: "chevron-right"
+        icon_color: app.primary_colors["white"]
+        pos_hint: {"center_x":0.9,"center_y":0.5}
+        font_size: "32dp"
+    Image:
+        source:"assets/images/sprites/profile_bar_underline.png"
+        fit_mode: "fill"
+        size_hint: (1,0.02)
+        pos_hint: {"center_x":0.5,"center_y":0}
+    Button:
+        opacity: 0
+        size_hint: (1,1)
+        pos_hint: {"center_x":0.5,"center_y":0.5}
+        on_release:
+            root.release_func(self)

@@ -15,7 +15,14 @@ class SQLManager:
         self.cursor = self.connection.cursor()
         if not has_file:
             self.__build_base()
+        else:
+            self.__check_empty()
 
+    def __check_empty(self):
+        command = "SELECT * FROM exercises"
+        fd = self.cursor.execute(command).fetchall()
+        if fd:
+            self.has_new = True
     def __create_table(self, table_name, table_vars):
         command = f"CREATE TABLE {table_name} ("
         for ts, tp in table_vars:

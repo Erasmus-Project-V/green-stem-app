@@ -4,15 +4,32 @@
 <ProfileScreen>:
     name: "pfs"
     id: pfs
+    md_bg_color: app.primary_colors["black"]
+    blue_ref: app.primary_colors["light_blue"]
     MDBoxLayout:
-        MDLabel:
-            text: "Profile Screen"
-        Button:
-            text:"sign out"
-            color: app.primary_colors["error_color"]
-            background_color: (0,0,0,0)
-            pos_hint: {"center_x":0.5,"center_y":0.2}
-            on_release:
-                root.sign_out(self)
+        orientation: "horizontal"
+        pos_hint: {"center_x":0.5,"center_y":0.75}
+        md_bg_color: (0,0,1,0)
+        size_hint: (0.8,0.2)
+    MDBoxLayout:
+        orientation: "vertical"
+        pos_hint: {"center_x":0.5,"center_y":0.4}
+        md_bg_color: (1,0,0,0)
+        size_hint: (0.85,0.4)
+        ProfileBarWidget:
+            bar_text: "Points & Levels"
+        ProfileBarWidget:
+            bar_text: "Edit profile"
+            release_func: root.edit_profile
+        ProfileBarWidget:
+            bar_text: "Privacy"
+        ProfileBarWidget:
+            bar_text: "Settings"
+            release_func: root.edit_settings
+        ProfileBarWidget:
+            bar_text: "Sign Out"
+            button_opacity: 0
+            bar_text_color: app.primary_colors["error_color"]
+            release_func: root.sign_out
     BottomNavWidget:
         selected: 4

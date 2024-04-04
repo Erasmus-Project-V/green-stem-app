@@ -64,12 +64,13 @@ class NavigationManager:
         self.gps_running = True
 
     def reset_containers(self):
-        self.last_acceleration = Vector(0,0,0)
-        self.previous_velocity = Vector(0,0,0)
-        self.filtered_acceleration = Vector(0,0,0)
+        self.last_acceleration = Vector(0, 0, 0)
+        self.previous_velocity = Vector(0, 0, 0)
+        self.filtered_acceleration = Vector(0, 0, 0)
         self.all_velocities = []
         self.average_velocity = 0
         self.delta_path = 0
+
     # TODO: Add compensation for wobble and filter out bad gps
     # Z axis - out of device , Y - along the length, X - along the width
     def update_acceleration(self, dt):
@@ -107,13 +108,12 @@ class NavigationManager:
         rotated_acceleration = rotateVector(rotation_matrix_smoothened, raw_acceleration)
         rotated_acceleration = round(rotated_acceleration, 2)
         if not self.last_acceleration:
-            self.last_acceleration,self.filtered_acceleration = filterAccelerometerData(rotated_acceleration,dt=dt)
+            self.last_acceleration, self.filtered_acceleration = filterAccelerometerData(rotated_acceleration, dt=dt)
         else:
-            self.last_acceleration,self.filtered_acceleration = filterAccelerometerData(rotated_acceleration,
-                                                                                        self.filtered_acceleration,
-                                                                                        self.last_acceleration,
-                                                                                        dt=dt)
-
+            self.last_acceleration, self.filtered_acceleration = filterAccelerometerData(rotated_acceleration,
+                                                                                         self.filtered_acceleration,
+                                                                                         self.last_acceleration,
+                                                                                         dt=dt)
 
         rotated_acceleration[2] = 0.0
         self.all_accelerations.append(rotated_acceleration)
@@ -130,7 +130,7 @@ class NavigationManager:
         return rotation_averaged, rotated_acceleration
 
     def update_location(self, **kwargs):
-        #print(f"KW00 {kwargs}")
+        # print(f"KW00 {kwargs}")
         latitude = kwargs["lat"]
         longitude = kwargs["lon"]
         velocity_magnitude = kwargs['speed']
@@ -138,53 +138,50 @@ class NavigationManager:
         altitude = kwargs['altitude']
 
         # might make it stricter
-        accuracy_factor = 4 / (kwargs['accuracy']**1.25)
+        accuracy_factor = 4 / (kwargs['accuracy'] ** 1.25)
         if accuracy_factor > 1:
             accuracy_factor = 1
         elif accuracy_factor < 0.22:
             return
 
         # take care of runaway velocity
-        self.pivot_velocity(velocity_magnitude,bearing_gps)
+        self.pivot_velocity(velocity_magnitude, bearing_gps)
 
         # factor of altitude removed from calculations for now
         current_location = Vector(latitude, longitude, altitude)
         self.all_accelerations = []
-        self.previous_locations.append((current_location[0],current_location[1],current_location[2],accuracy_factor))
+        self.previous_locations.append((current_location[0], current_location[1], current_location[2], accuracy_factor))
         if len(self.previous_locations) >= 3:
-            triangulated_location = Vector(sum([i[0] for i in self.previous_locations])/3,
-                                          sum([i[1] for i in self.previous_locations])/3,
-                                          6371000)
-            averaged_accuracy = sum([i[-1] for i in self.previous_locations])/3
-            self.previous_locations = [(triangulated_location[0],triangulated_location[1],triangulated_location[2],accuracy_factor)]
+            triangulated_location = Vector(sum([i[0] for i in self.previous_locations]) / 3,
+                                           sum([i[1] for i in self.previous_locations]) / 3,
+                                           6371000)
+            averaged_accuracy = sum([i[-1] for i in self.previous_locations]) / 3
+            self.previous_locations = [
+                (triangulated_location[0], triangulated_location[1], triangulated_location[2], accuracy_factor)]
         else:
             return
 
         if self.last_location:
-            self.lld = round(self.last_location,1)
-
-
+            self.lld = round(self.last_location, 1)
 
         gps_distance = 0
         if self.last_location:
-            gps_distance = coordinate_distance_calculator(lat1=self.last_location[0],lon1=self.last_location[1],
-                                                          lat2=triangulated_location[0],lon2=triangulated_location[1])
+            gps_distance = coordinate_distance_calculator(lat1=self.last_location[0], lon1=self.last_location[1],
+                                                          lat2=triangulated_location[0], lon2=triangulated_location[1])
         self.last_location = triangulated_location
-        #print(
+        # print(
         #    f"AM04 delta path: {self.cached_path-self.last_cached_path}, gps_distance {gps_distance} average velocity {self.average_velocity}, "
         #    f"weighed {(1-averaged_accuracy)*(self.cached_path-self.last_cached_path) + averaged_accuracy*gps_distance}, {averaged_accuracy}")
-        if self.cached_path-self.last_cached_path > 1:
-            self.cached_path = self.last_cached_path + (1-averaged_accuracy)*(self.cached_path-self.last_cached_path) + averaged_accuracy*gps_distance
+        if self.cached_path - self.last_cached_path > 1:
+            self.cached_path = self.last_cached_path + (1 - averaged_accuracy) * (
+                        self.cached_path - self.last_cached_path) + averaged_accuracy * gps_distance
         self.last_cached_path = self.cached_path
 
-
-
-    def pivot_velocity(self,velocity_magnitude, bearing_gps):
+    def pivot_velocity(self, velocity_magnitude, bearing_gps):
         if self.last_location_ping > 10:
             self.last_location_ping = time.perf_counter() - self.last_location_ping
         else:
             self.last_location_ping = 1
-
 
         if bearing_gps > 180:
             bearing_gps = -360 + bearing_gps
@@ -209,7 +206,7 @@ class NavigationManager:
         # za sada bez brzine, nije dovoljno tocna
         c1 = 0.415 if gender == "male" else 0.413
         stride_length = c1 * height / 100
-        steps = 2 * delta_path / stride_length
+        steps = delta_path / stride_length
         return steps
 
     def clear_cache(self):
@@ -222,7 +219,7 @@ class NavigationManager:
         if self.last_location_lat_lon:
             return self.last_location_lat_lon
         else:
-            return [0,0,0]
+            return [0, 0, 0]
 
     def get_cached_path(self):
         return self.cached_path

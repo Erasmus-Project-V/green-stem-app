@@ -1,6 +1,9 @@
 # File name: main_frame.kv
 #:import FadeTransition kivy.uix.screenmanager.FadeTransition
 
+<MDScreen>:
+    md_bg_color: app.primary_colors["black"]
+
 <MainScreenManager>:
     transition: FadeTransition()
     id: manager
