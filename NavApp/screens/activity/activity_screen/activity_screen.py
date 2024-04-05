@@ -54,7 +54,6 @@ class ActivityScreen(MDScreen):
             self.ids["ac5"]
         ]
 
-
         self.play_button = self.ids["play_button"]
         self.stop_button = self.ids["stop_button"]
         self.debug_overlay = self.ids["debug_overlay"]
@@ -68,14 +67,12 @@ class ActivityScreen(MDScreen):
         else:
             self.open_gps_access_popup()
 
-
     def open_gps_access_popup(self):
         dialog = MDDialog(title="GPS Error", text="Please enable GPS to continue!")
         dialog.size_hint = [.8, .8]
         dialog.pos_hint = {"center_x": .5, "center_y": .5}
         dialog.bind(on_dismiss=lambda *args: self.quit_activity)
         dialog.open()
-
 
     def start_up_screen(self):
         home_screen = self.manager.get_screen("hme")
@@ -84,7 +81,7 @@ class ActivityScreen(MDScreen):
         self.image_container.source = self.current_background.replace("*", self.activities[self.current_activity])
         self.set_up_preset()
         if platform == "android":
-            self.navigator.configure_gps(self.on_auth_status,platform == "android")
+            self.navigator.configure_gps(self.on_auth_status, platform == "android")
             # nemam pojma otkud se android importa, ne ici instalirati!!!
             from android.permissions import Permission, request_permissions
             print("imported!")
@@ -146,7 +143,7 @@ class ActivityScreen(MDScreen):
         self.__start_activity()
 
     def __start_activity(self, dt=0):
-        self.e = Clock.schedule_interval(self.debugger,0.1)
+        self.e = Clock.schedule_interval(self.debugger, 0.1)
         if not self.active_activity:
             print(self.activity_manager)
             self.active_activity = self.activity_manager.add_new_activity(self.activities[self.current_activity])
@@ -164,13 +161,14 @@ class ActivityScreen(MDScreen):
             self.active_activity.reset_active_location()
             self.navigator.stop_gps()
 
-
-    def debugger(self,dt):
+    def debugger(self, dt):
         orientation_debug = self.navigator.rotated_orientation * 180 / math.pi
-        velocity_debug = round(self.navigator.previous_velocity,1)
+        velocity_debug = round(self.navigator.previous_velocity, 1)
         delta_location_debug = self.navigator.lld
-        o = (f"{round(orientation_debug[0])} \n {round(orientation_debug[1])} \n {round(orientation_debug[2])} \n velocity: {velocity_debug} \n a {delta_location_debug}")
+        o = (
+            f"{round(orientation_debug[0])} \n {round(orientation_debug[1])} \n {round(orientation_debug[2])} \n velocity: {velocity_debug} \n a {delta_location_debug}")
         self.last_location_debug = o
+
     def update_activity(self, dt=0):
         self.dt = round(time.perf_counter() - self.last_ping, 5)
         self.last_ping = time.perf_counter()
@@ -183,29 +181,32 @@ class ActivityScreen(MDScreen):
         self.update_widgets(self.active_activity.elapsed_time_active,
                             self.navigator.get_cached_path())
 
-
-    def update_walk(self,elapsed_distance):
-        gender = self.manager.active_user.get_user_attribute("gender")
-        height = self.manager.active_user.get_user_attribute("height")
-        self.activity_containers[0].quantity = str(int(self.navigator.calculate_steps(elapsed_distance,gender,height)))
+    def update_walk(self, elapsed_distance, gender, height):
+        self.activity_containers[0].quantity = str(
+            int(self.navigator.calculate_steps(elapsed_distance, gender, height)))
         self.activity_containers[2].quantity = str(int(elapsed_distance)) + "m"
         self.activity_containers[3].quantity = str(int(self.navigator.get_avg_velocity() * 36) / 10) + "km/h"
 
-    def update_mountaineering(self,elapsed_distance):
-        gender = self.manager.active_user.get_user_attribute("gender")
-        height = self.manager.active_user.get_user_attribute("height")
-        self.activity_containers[0].quantity = str(int(self.navigator.calculate_steps(elapsed_distance,gender,height)))
+    def update_mountaineering(self, elapsed_distance, gender, height):
+        self.activity_containers[0].quantity = str(
+            int(self.navigator.calculate_steps(elapsed_distance, gender, height)))
         self.activity_containers[2].quantity = str(int(elapsed_distance)) + "m"
         self.activity_containers[3].quantity = str(int(self.navigator.get_location_polar()[2])) + "m"
 
-    def update_wheel(self,elapsed_distance):
+    def update_wheel(self, elapsed_distance, gender, height):
         self.activity_containers[0].quantity = str(int(elapsed_distance)) + "m"
         self.activity_containers[2].quantity = str(int(self.navigator.get_avg_velocity() * 36) / 10) + "km/h"
 
-
     def update_widgets(self, elapsed_time, elapsed_distance):
         self.activity_containers[1].quantity = time.strftime('%H:%M:%S', time.gmtime(round(elapsed_time)))
-        self.update_methods[self.activity_presets[self.current_activity]](elapsed_distance)
+        gender = self.manager.active_user.get_user_attribute("gender")
+        height = self.manager.active_user.get_user_attribute("height")
+        weight = self.manager.active_user.get_user_attribute("weight")
+        calories = int(self.navigator.calculate_calories(elapsed_time, elapsed_distance, weight,
+                                                         self.activities[self.current_activity]))
+        self.activity_containers[-1].quantity = str(calories)
+        self.update_methods[self.activity_presets[self.current_activity]](elapsed_distance, gender, height)
+
     def finish_activity(self, button):
         if self.active_activity:
             self.navigator.clear_cache()

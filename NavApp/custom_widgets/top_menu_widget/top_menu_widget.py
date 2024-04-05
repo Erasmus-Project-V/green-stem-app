@@ -21,6 +21,7 @@ class TopMenuWidget(MDBoxLayout):
         self.button_callbacks = {}
 
         self.animation_active = False
+        self.built = False
 
         Clock.schedule_once(self.add_units, .1)
 
@@ -58,6 +59,7 @@ class TopMenuWidget(MDBoxLayout):
                 button_func = self.transfer_screen
             self.add_widget(self.build_unit(btn_text, screen_ref, button_func))
         self.animate_underscore(self.top_widgets[self.selected][0])
+        self.built = True
 
     def finish_animation(self,a,b):
         self.animation_active = False

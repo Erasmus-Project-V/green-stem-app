@@ -93,6 +93,7 @@ class FitnessApp(MDApp):
         self.fonts = {
             "sans_semi_bold": "assets/fonts/OpenSans_SemiBold.ttf",
             "sans_regular": "assets/fonts/OpenSans_Regular.ttf",
+            "sans_bold": "assets/fonts/OpenSans_Bold.ttf",
             "actor_regular": "assets/fonts/Actor_Regular.ttf",
             "advent_regular": "assets/fonts/AdventPro_Regular.ttf"
         }

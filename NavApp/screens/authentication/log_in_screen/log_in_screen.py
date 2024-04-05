@@ -13,14 +13,17 @@ class LogInScreen(MDScreen):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         Clock.schedule_once(self.check_local_sign_in, 0.01)
+        self.waiter = Clock.schedule_interval(self.start_up_screen,.2)
 
     def check_local_sign_in(self, dt):
         if self.manager.active_user.load_user_data():
             self.check_for_unfinished_sign_up()
 
-    def start_up_screen(self):
+    def start_up_screen(self,*args):
         self.top_menu = self.ids["top_menu"]
-        self.top_menu.animate_underscore(self.name)
+        if self.top_menu.built:
+            self.waiter.cancel()
+            self.top_menu.animate_underscore(self.name)
 
     def validate_login(self, button):
 

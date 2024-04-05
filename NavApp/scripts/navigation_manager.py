@@ -173,7 +173,7 @@ class NavigationManager:
         #    f"weighed {(1-averaged_accuracy)*(self.cached_path-self.last_cached_path) + averaged_accuracy*gps_distance}, {averaged_accuracy}")
         if self.cached_path - self.last_cached_path > 1:
             self.cached_path = self.last_cached_path + (1 - averaged_accuracy) * (
-                        self.cached_path - self.last_cached_path) + averaged_accuracy * gps_distance
+                    self.cached_path - self.last_cached_path) + averaged_accuracy * gps_distance
         self.last_cached_path = self.cached_path
 
     def pivot_velocity(self, velocity_magnitude, bearing_gps):
@@ -207,6 +207,24 @@ class NavigationManager:
         stride_length = c1 * height / 100
         steps = delta_path / stride_length
         return steps
+
+    def calculate_calories(self, delta_time, delta_path, weight, type="walking"):
+        # constants calculated by manual linear regression
+        c = {
+            "hodanje": (1.344, -3.452, 2.6),
+            "trcanje": (1.344, -3.452, 2.6),
+            "bicikliranje": (0.375, 0.2, 5),
+            "rolanje": (0.691, -2.445, 3),
+            "planinarenje": (1.344, -1.452, 1)
+
+        }
+        c0 = c[type]
+        speed = delta_path / delta_time
+        if speed < c0[2]:
+            return 0
+        MET = c0[0] * speed + c0[1]
+        calories_burned = MET * 3.5 * weight / (200*60) * delta_time
+        return calories_burned
 
     def clear_cache(self):
         self.cached_path = 0
