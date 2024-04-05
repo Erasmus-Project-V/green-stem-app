@@ -4,6 +4,20 @@
 <MonthlyActivityScreen>:
     name: "mas"
     id: mas
+    heroes_to: [hero_to]
     MDBoxLayout:
         MDLabel:
-            text: "Monthly Activity"
+            text: "This is the future monthly activity screen"
+    MDHeroTo:
+        id: hero_to
+        tag: "hero"
+        size: "320dp", "320dp"
+        size_hint: None, None
+        pos_hint: {"center_x":0.5,"center_y":0.67}
+
+    MDTopAppBar:
+        id: top_bar
+        pos_hint: {"top": 1}
+        title: "null"
+        md_bg_color: app.primary_colors["dark_grey"]
+        left_action_items: [["chevron-left", lambda x: root.back_arrow()]]
