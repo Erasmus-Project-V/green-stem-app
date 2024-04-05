@@ -1,10 +1,10 @@
 [app]
 
 # (str) Title of your application
-title = My Application
+title = Fitness app
 
 # (str) Package name
-package.name = myapp
+package.name = fran_fitness_app
 
 # (str) Package domain (needed for android/ios packaging)
 package.domain = org.test
@@ -37,16 +37,16 @@ version = 0.1
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = python3,kivy,kivymd==1.2.0,https://github.com/HyTurtle/plyer/archive/master.zip,pillow,android,python-for-android,sqlite3,numpy
+requirements = python3,kivy,kivymd==1.2.0,https://github.com/HyTurtle/plyer/archive/master.zip,pillow,android,python-for-android,sqlite3
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
 # requirements.source.kivy = ../../kivy
 
 # (str) Presplash of the application
-#presplash.filename = %(source.dir)s/data/presplash.png
+presplash.filename = %(source.dir)s/assets/images/auth_background.png
 
 # (str) Icon of the application
-#icon.filename = %(source.dir)s/data/icon.png
+icon.filename = %(source.dir)s/assets/images/placeholder_icon.png
 
 # (list) Supported orientations
 # Valid options are: landscape, portrait, portrait-reverse or landscape-reverse

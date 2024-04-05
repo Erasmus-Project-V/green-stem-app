@@ -1,7 +1,6 @@
 # find parent manager using while loop with rules
 import math
 
-import numpy as np
 
 
 def find_manager(parent, name="manager"):

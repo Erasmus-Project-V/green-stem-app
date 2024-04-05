@@ -1,7 +1,6 @@
 import math
 import time
 
-import numpy as np
 from kivy.clock import Clock
 from plyer import gps, accelerometer, compass, gyroscope, gravity, barometer
 from scripts.utilities import *
