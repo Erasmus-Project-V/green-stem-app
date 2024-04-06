@@ -179,12 +179,17 @@ class BackgroundNavigator:
             gps_distance = coordinate_distance_calculator(lat1=self.last_location[0], lon1=self.last_location[1],
                                                           lat2=triangulated_location[0], lon2=triangulated_location[1])
         self.last_location = triangulated_location
+        accelerometer_distance = self.cached_path-self.last_cached_path
         print(
-            f"AM04 delta path: {self.cached_path-self.last_cached_path}, gps_distance {gps_distance} average velocity {self.average_velocity}, "
+            f"AM04 delta path: {accelerometer_distance}, gps_distance {gps_distance} average velocity {self.average_velocity}, "
             f"weighed {(1-averaged_accuracy)*(self.cached_path-self.last_cached_path) + averaged_accuracy*gps_distance}, {averaged_accuracy}")
-        if self.cached_path - self.last_cached_path > 1:
+
+        if gps_distance < 1 and accelerometer_distance > 15:
+            print("probably an invalid jump distance...")
+            self.cached_path = gps_distance
+        elif accelerometer_distance > 1:
             self.cached_path = self.last_cached_path + (1 - averaged_accuracy) * (
-                    self.cached_path - self.last_cached_path) + averaged_accuracy * gps_distance
+                    accelerometer_distance) + averaged_accuracy * gps_distance
         self.last_cached_path = self.cached_path
 
     def pivot_velocity(self, velocity_magnitude, bearing_gps):
