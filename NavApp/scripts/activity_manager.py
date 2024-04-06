@@ -54,6 +54,7 @@ class Activity:
 
     def update_activity(self, dt, location_ping, distance, avg_velocity):
         self.elapsed_time_active += dt
+        print("acitivty is being updated!")
         if location_ping:
             self.active_location_series.append((self.elapsed_time_active, location_ping, distance, avg_velocity))
             self.passive_location_series.append((self.elapsed_time_active, location_ping, distance, avg_velocity))

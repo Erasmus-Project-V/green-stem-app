@@ -1,3 +1,4 @@
+from kivy.animation import Animation
 from kivy.clock import Clock
 from kivymd.uix.screen import MDScreen
 
@@ -8,17 +9,25 @@ class WeeklyActivityScreen(MDScreen):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Clock.schedule_once(self.build_self, 0.4)
+        self.scroller = None
 
     def back_arrow(self):
         self.manager.transition.direction = "right"
         self.manager.goto_screen("mss")
+        self.anim = Animation(opacity=0, duration=0.3)
+        self.anim.bind(on_complete=self.return_to_mss)
+        self.anim.start(self.scroller)
         # not good, should be fired on complete of transition
+
+    def return_to_mss(self, *args):
         mss = self.manager.get_screen("mss")
         mss.bind(on_enter=mss.reenter_hero)
 
-    def start_up_screen(self,hero_tag, activity_type):
+    def start_up_screen(self, hero_tag, activity_type):
         self.ids["hero_to"].tag = hero_tag
+        self.scroller = self.ids["stat_scroller"]
+        self.anim = Animation(opacity=1, duration=0.3)
+        self.anim.start(self.scroller)
         self.activity = activity_type
         print(self.activity)
         self.ids["top_bar"].title = activity_type

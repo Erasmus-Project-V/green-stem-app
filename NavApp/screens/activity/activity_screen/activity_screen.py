@@ -4,6 +4,8 @@ from kivy.properties import StringProperty
 from kivy.uix.screenmanager import FadeTransition
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.screen import MDScreen
+from oscpy.client import OSCClient
+from oscpy.server import OSCThreadServer
 from plyer import gps, accelerometer, compass, gyroscope, gravity, barometer
 from kivy.utils import platform
 from kivy.animation import Animation
@@ -11,6 +13,10 @@ from kivy.clock import Clock
 from scripts.activity_manager import ActivityManager, Activity
 
 from scripts.navigation_manager import NavigationManager
+
+if platform == "android":
+    from jnius import autoclass
+    from android import mActivity
 
 MIN_MEASURE_DISTANCE = 10
 
@@ -41,7 +47,14 @@ class ActivityScreen(MDScreen):
         self.last_location_debug = "None"
         self.navigator = None
 
+        server = OSCThreadServer()
+        server.listen(address=b'localhost', port=3002, default=True)
+        server.bind(b'/receive_data', self.receive_data)
+        server.bind(b'/receive_navdata',self.receive_navdata)
+        self.client = OSCClient(b'localhost', 3000)
+
     def further_build(self, dt):
+
         self.active_activity: Activity = None
         self.location_on = False
         self.sensor_manager = None
@@ -74,6 +87,17 @@ class ActivityScreen(MDScreen):
         dialog.bind(on_dismiss=lambda *args: self.quit_activity)
         dialog.open()
 
+    def get_service_name(self):
+        context = mActivity.getApplicationContext()
+        return str(context.getPackageName()) + '.Service' + 'Navigator'
+
+    def start_service(self):
+        if platform == "android":
+            service = autoclass(self.get_service_name())
+            argument = autoclass("android.content.pm.ServiceInfo")
+            service.start(mActivity, str(argument.FOREGROUND_SERVICE_TYPE_LOCATION))
+            self.service = service
+            print("service started!")
     def start_up_screen(self):
         home_screen = self.manager.get_screen("hme")
         self.activity_manager = self.manager.active_user.activity_manager
@@ -81,7 +105,6 @@ class ActivityScreen(MDScreen):
         self.image_container.source = self.current_background.replace("*", self.activities[self.current_activity])
         self.set_up_preset()
         if platform == "android":
-            self.navigator.configure_gps(self.on_auth_status, platform == "android")
             # nemam pojma otkud se android importa, ne ici instalirati!!!
             from android.permissions import Permission, request_permissions
             print("imported!")
@@ -94,6 +117,7 @@ class ActivityScreen(MDScreen):
 
             request_permissions([Permission.ACCESS_COARSE_LOCATION,
                                  Permission.ACCESS_FINE_LOCATION], callback)
+
 
     def placeholder(self, *args):
         pass
@@ -168,6 +192,7 @@ class ActivityScreen(MDScreen):
         o = (
             f"{round(orientation_debug[0])} \n {round(orientation_debug[1])} \n {round(orientation_debug[2])} \n velocity: {velocity_debug} \n a {delta_location_debug}")
         self.last_location_debug = o
+
 
     def update_activity(self, dt=0):
         self.dt = round(time.perf_counter() - self.last_ping, 5)

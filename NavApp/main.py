@@ -7,12 +7,16 @@ from kivymd.uix.screenmanager import MDScreenManager
 from kivy.core.window import Window
 from scripts.user_manager import UserManager
 from kivy.core.window import Window
+from oscpy.client import OSCClient
+from oscpy.server import OSCThreadServer
 
 print(f"platform is: {platform}")
 if not platform == "android":
     Config.set('graphics', 'width', '390')
     Config.set('graphics', 'height', '780')
     Window.size = (390, 780)
+
+
 
 print(os.name)
 from scripts.imports import *
@@ -67,7 +71,7 @@ class MainScreenManager(MDScreenManager):
         self.current = scrn
         self.transition = FadeTransition()
 
-    def tamper_hero_data(self,widget):
+    def tamper_hero_data(self, widget):
         self._create_heroes_data(widget)
 
 
@@ -99,6 +103,31 @@ class FitnessApp(MDApp):
         }
         self.size = Window.size
         self.ratio = self.size[1] / self.size[0]
+
+
+
+
+
+    def on_pause(self):
+        print('paused!')
+        return True
+
+
+
+    def stop_service(self):
+        if platform == "android":
+            self.client.send_message(b'/terminate', [])
+
+    def receive_data(self, message="null"):
+        print(f"OSCPY Recieved message: {message}")
+
+    def receive_navdata(self, *args):
+        print(f"received data {args}")
+        res = ''.join(map(chr, args))
+
+    def on_resume(self):
+        print("resumed!")
+        return True
 
     def build(self):
         return MainScreenManager()

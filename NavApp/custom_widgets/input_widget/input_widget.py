@@ -26,6 +26,9 @@ class InputWidget(MDRelativeLayout):
     def return_text(self):
         return self.field.text
 
+    def set_text(self,text):
+        self.field.text = text
+
     def exit_error_mode(self):
         self.field.helper_text = ""
         self.check_box.error_mode = False

@@ -8,57 +8,61 @@
     heroes_to: [hero_to]
     unit_quantity: "[quantity]"
     calorie_count: "[quantity]"
-
-    canvas.after:
-        Color:
-            rgba: app.primary_colors["dark_grey"]
-        RoundedRectangle:
-            id: rounded_rectangle
-            pos: (dp(20), dp(310))  # Position the rectangle at the widget's position
-            size: (root.width - dp(40), dp(270))
-            radius: [40, 40, 40, 40]  # Set the radius of the corners
-
-    MDTopAppBar:
-        id: top_bar
-        pos_hint: {"top": 1}
-        title: "null"
-        md_bg_color: app.primary_colors["dark_grey"]
-        left_action_items: [["chevron-left", lambda x: root.back_arrow()]]
-
     MDHeroTo:
         id: hero_to
         tag: "hero"
         size: "320dp", "320dp"
         size_hint: None, None
         pos_hint: {"center_x":0.5,"center_y":0.67}
+    MDTopAppBar:
+        id: top_bar
+        pos_hint: {"top": 1}
+        title: "null"
+        md_bg_color: app.primary_colors["dark_grey"]
+        left_action_items: [["chevron-left", lambda x: root.back_arrow()]]
+    MDScrollView:
+        id: stat_scroller
+        pos_hint: {"center_x":0.5,"center_y":0.45}
+        size_hint: 1,.9
+        bar_width: 0
+        always_overscroll: False
+        smooth_scroll_end: 0
+        MDRelativeLayout:
+            md_bg_color: (1,0,0,0)
+            id: scroller_child
+            size_hint_y: None
+            height: self.parent.height
+            size_hint_x: 1
+            canvas.after:
+                Color:
+                    rgba: app.primary_colors["dark_grey"]
+                RoundedRectangle:
+                    id: rounded_rectangle
+                    pos: (dp(20), dp(310))  # Position the rectangle at the widget's position
+                    size: (root.width - dp(40), dp(270))
+                    radius: [40, 40, 40, 40]  # Set the radius of the corner
 
+            MDLabel:
+                pos_hint: {"center_x":0.62,"center_y":0.85}
+                id: label
+                text: root.measurement_type
+                color: [1, 1, 1, 0.65]
 
-    MDLabel:
-        pos_hint: {"center_x":0.62,"center_y":0.76}
-        id: label
-        text: root.measurement_type
-        color: [1, 1, 1, 0.65]
+            QuantityDisplayWidget:
+                id: changeable_unit_quantity
+                title: root.measurement_type
+                quantity: root.unit_quantity
+                dimension: "small"
+                pos_hint: {"center_x":0.28,"center_y":0.32}
 
-    QuantityDisplayWidget:
-        id: changeable_unit_quantity
-        title: root.measurement_type
-        quantity: root.unit_quantity
-        dimension: "small"
-        pos_hint: {"center_x":0.28,"center_y":0.28}
+            QuantityDisplayWidget:
+                title: "CALORIES"
+                quantity: root.calorie_count
+                dimension: "small"
+                pos_hint: {"center_x":0.74,"center_y":0.32}
 
-    QuantityDisplayWidget:
-        title: "CALORIES"
-        quantity: root.calorie_count
-        dimension: "small"
-        pos_hint: {"center_x":0.74,"center_y":0.28}
-
-    MDLabel:
-        pos_hint: {"center_x":0.62,"center_y":0.15}
-        text: "YOUR FRIENDS"
-        color: [1, 1, 1, 0.65]
-        font_size: dp(17)
-
-
-    FriendStatListWidget:
-        pos_hint: {"center_x":0.5,"center_y":0.07}
-        friend_activities: [{"quantity_one": "5205 STEPS", "quantity_two": "3200 kcal", "friend_name": "josip320"}, {"quantity_one": "5205 STEPS", "quantity_two": "3200 kcal", "friend_name": "josip320"}, {"quantity_one": "5205 STEPS", "quantity_two": "3200 kcal", "friend_name": "josip320"}]
+            MDLabel:
+                pos_hint: {"center_x":0.62,"center_y":0.16}
+                text: "YOUR ACTIVITIES"
+                color: [1, 1, 1, 0.65]
+                font_size: dp(17)

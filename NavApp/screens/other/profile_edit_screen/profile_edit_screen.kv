@@ -4,6 +4,8 @@
 <ProfileEditScreen>:
     name: "pes"
     id: pes
+    blue_container: app.primary_colors["light_blue"]
+    sans_container: app.fonts["sans_semi_bold"]
     TopReturnButtonWidget:
         release_func: root.return_to_profile
     MDLabel:
@@ -13,5 +15,24 @@
         font_name: app.fonts["sans_bold"]
         halign: "center"
     MDBoxLayout:
-        MDLabel:
-            text: "Profile edit screen"
+        md_bg_color: (1,0,0,0)
+        pos_hint: {"center_x":.5,"center_y":.4}
+        size_hint: (.85,.4)
+        orientation: "vertical"
+        InputWidget:
+            id: uname
+            placeholder_text: "Username"
+        InputWidget:
+            id: age
+            placeholder_text: "Age"
+        InputWidget:
+            id: weight
+            placeholder_text: "Weight"
+        InputWidget:
+            id: height
+            placeholder_text: "Height"
+    OvalBlueButtonWidget:
+        type: "full"
+        button_disabled: True
+        pos_hint: {"center_x":0.5,"center_y":0.1}
+        button_text: "Save"
