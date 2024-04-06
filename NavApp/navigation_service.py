@@ -62,7 +62,6 @@ class BackgroundNavigator:
         gyroscope.disable()
 
     def start_gps(self, min_time, min_dist):
-        self.reset_containers()
         self.last_location = None
         self.last_location_lat_lon = None
         gps.start(minTime=1000, minDistance=min_dist)
@@ -73,6 +72,7 @@ class BackgroundNavigator:
         self.previous_velocity = Vector(0, 0, 0)
         self.filtered_acceleration = Vector(0, 0, 0)
         self.all_velocities = []
+        self.previous_locations = []
         self.average_velocity = 0
         self.delta_path = 0
         self.cached_path = 0
@@ -138,15 +138,17 @@ class BackgroundNavigator:
         return rotation_averaged, rotated_acceleration
 
     def update_location(self, **kwargs):
+        print("updating location...")
         latitude = kwargs["lat"]
         longitude = kwargs["lon"]
         velocity_magnitude = kwargs['speed']
         bearing_gps = kwargs['bearing']
         altitude = kwargs['altitude']
         self.altitude = altitude
-
+        print(kwargs["accuracy"])
         # might make it stricter
         accuracy_factor = 4 / (kwargs['accuracy'] ** 1.25)
+        print(accuracy_factor)
         if accuracy_factor > 1:
             accuracy_factor = 1
         elif accuracy_factor < 0.22:
@@ -177,9 +179,9 @@ class BackgroundNavigator:
             gps_distance = coordinate_distance_calculator(lat1=self.last_location[0], lon1=self.last_location[1],
                                                           lat2=triangulated_location[0], lon2=triangulated_location[1])
         self.last_location = triangulated_location
-        # print(
-        #    f"AM04 delta path: {self.cached_path-self.last_cached_path}, gps_distance {gps_distance} average velocity {self.average_velocity}, "
-        #    f"weighed {(1-averaged_accuracy)*(self.cached_path-self.last_cached_path) + averaged_accuracy*gps_distance}, {averaged_accuracy}")
+        print(
+            f"AM04 delta path: {self.cached_path-self.last_cached_path}, gps_distance {gps_distance} average velocity {self.average_velocity}, "
+            f"weighed {(1-averaged_accuracy)*(self.cached_path-self.last_cached_path) + averaged_accuracy*gps_distance}, {averaged_accuracy}")
         if self.cached_path - self.last_cached_path > 1:
             self.cached_path = self.last_cached_path + (1 - averaged_accuracy) * (
                     self.cached_path - self.last_cached_path) + averaged_accuracy * gps_distance
@@ -223,7 +225,6 @@ class BackgroundNavigator:
         if not self.gps_running:
             return False
         gps.stop()
-        self.accelerometer_event.cancel()
         self.gps_running = False
 
     def run(self):
@@ -233,14 +234,16 @@ class BackgroundNavigator:
         self.mService = PythonService.mService
 
         self.loop_running = True
-        self.paused = False
+        self.paused = True
 
         self.server.bind(b'/terminate', self.terminate)
+        self.server.bind(b'/resume', self.resume)
+        self.server.bind(b'/pause', self.pause)
+        self.server.bind(b'/reset', self.reset)
 
         self.configure_gps(True)
         self.enable_sensors()
         sleep(1)
-        self.start_gps(1000, 10)
         self.client.send_message(b'/receive_data', [100])
         start_time = time.perf_counter() - 0.1
         counter = 0
@@ -248,19 +251,32 @@ class BackgroundNavigator:
         while self.loop_running:
             counter += 1
             dt0 = time.perf_counter() - start_time
-            self.update_acceleration(dt0)
+            if not self.paused:
+                self.update_acceleration(dt0)
             dt += dt0
             start_time = time.perf_counter()
             sleep(0.1)
             if counter == 10:
-                print("sending update!")
-                argument = f'{dt}A{self.last_location}A{self.cached_path}A{self.average_velocity}A{self.altitude}'
-                print(argument)
-                self.client.send_message(b'/receive_navdata',argument.encode('ascii'))
-
+                if not self.paused:
+                    print("sending update!")
+                    argument = f'{dt}A{self.last_location}A{self.cached_path}A{self.average_velocity}A{self.altitude}'
+                    print(argument)
+                    self.client.send_message(b'/receive_navdata',argument.encode('ascii'))
+                dt = 0
                 counter = 0
 
         self.mService.stopSelf()
+
+    def pause(self):
+        self.paused = True
+        self.stop_gps()
+
+    def resume(self):
+        self.paused = False
+        self.start_gps(1000, 1)
+
+    def reset(self):
+        self.reset_containers()
 
     def terminate(self):
         self.loop_running = False

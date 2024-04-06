@@ -105,25 +105,12 @@ class FitnessApp(MDApp):
         self.ratio = self.size[1] / self.size[0]
 
 
-
-
-
     def on_pause(self):
         print('paused!')
         return True
 
 
 
-    def stop_service(self):
-        if platform == "android":
-            self.client.send_message(b'/terminate', [])
-
-    def receive_data(self, message="null"):
-        print(f"OSCPY Recieved message: {message}")
-
-    def receive_navdata(self, *args):
-        print(f"received data {args}")
-        res = ''.join(map(chr, args))
 
     def on_resume(self):
         print("resumed!")

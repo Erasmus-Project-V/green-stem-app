@@ -34,172 +34,8 @@ class NavigationManager:
         self.last_cached_path = 0
         self.average_velocity = 0
 
-    def configure_gps(self, auth_method, is_android):
-        if not self.gps_configured:
-            gps.configure(on_location=self.update_location,
-                          on_status=auth_method)
-            self.gps_configured = True
-        self.enable_sensors()
-        Clock.schedule_once(self.calibrate_sensors, 1)
 
-    def enable_sensors(self):
-        accelerometer.enable()
-        compass.enable()
-        gravity.enable()
-        gyroscope.enable()
 
-    def disable_sensors(self):
-        accelerometer.disable()
-        compass.disable()
-        gravity.disable()
-        gyroscope.disable()
-
-    def start_gps(self, min_time, min_dist):
-        self.reset_containers()
-        self.last_location = None
-        self.last_location_lat_lon = None
-        gps.start(minTime=1000, minDistance=min_dist)
-        self.accelerometer_event = Clock.schedule_interval(self.update_acceleration, 0.1)
-        self.gps_running = True
-
-    def reset_containers(self):
-        self.last_acceleration = Vector(0, 0, 0)
-        self.previous_velocity = Vector(0, 0, 0)
-        self.filtered_acceleration = Vector(0, 0, 0)
-        self.all_velocities = []
-        self.average_velocity = 0
-        self.delta_path = 0
-
-    # TODO: Add compensation for wobble and filter out bad gps
-    # Z axis - out of device , Y - along the length, X - along the width
-    def update_acceleration(self, dt):
-        acceleration_vector = Vector(accelerometer.acceleration)
-        compass_vector = Vector(compass.field)
-
-        gyroscope_velocity = Vector(gyroscope.rotation)
-        if gyroscope_velocity:
-            gyroscope_movement = gyroscope_velocity * dt
-        else:
-            gyroscope_movement = Vector(0, 0, 0)
-        gyroscope_movement_rad = gyroscope_movement * math.pi / 180
-
-        gravity_vector = Vector(gravity.gravity)
-        raw_acceleration = acceleration_vector - gravity_vector
-
-        orientation, inclination, rotation_matrix = processMagAcc(compass_vector, gravity_vector)
-        if self.rotated_orientation[0]:
-            predicted_orientation = self.rotated_orientation + gyroscope_movement_rad
-        else:
-            predicted_orientation = orientation
-
-        rotation_averaged = [0, 0, 0]
-        for i in range(3):
-            try:
-                rotation_averaged[i] = round(average_orientation(predicted_orientation[i], orientation[i], w1=0.9), 2)
-            except:
-                rotation_averaged[i] = orientation[i]
-        rotation_averaged = Vector(rotation_averaged)
-
-        # not functioning
-        rotation_matrix_smoothened = getRotationMatrixFromOrientation(rotation_averaged[0], rotation_averaged[1],
-                                                                      rotation_averaged[2])
-
-        rotated_acceleration = rotateVector(rotation_matrix_smoothened, raw_acceleration)
-        rotated_acceleration = round(rotated_acceleration, 2)
-        if not self.last_acceleration:
-            self.last_acceleration, self.filtered_acceleration = filterAccelerometerData(rotated_acceleration, dt=dt)
-        else:
-            self.last_acceleration, self.filtered_acceleration = filterAccelerometerData(rotated_acceleration,
-                                                                                         self.filtered_acceleration,
-                                                                                         self.last_acceleration,
-                                                                                         dt=dt)
-
-        rotated_acceleration[2] = 0.0
-        self.all_accelerations.append(rotated_acceleration)
-
-        delta_velocity = rotated_acceleration * dt
-        v0 = self.previous_velocity
-        v1 = self.previous_velocity + delta_velocity
-        self.previous_velocity += delta_velocity
-        self.all_velocities.append(self.previous_velocity.get_magnitude())
-        ds = (v0 + v1) * dt / 2
-        self.delta_path += ds.get_magnitude()
-        self.rotated_orientation = rotation_averaged
-
-        return rotation_averaged, rotated_acceleration
-
-    def update_location(self, **kwargs):
-        # print(f"KW00 {kwargs}")
-        latitude = kwargs["lat"]
-        longitude = kwargs["lon"]
-        velocity_magnitude = kwargs['speed']
-        bearing_gps = kwargs['bearing']
-        altitude = kwargs['altitude']
-
-        # might make it stricter
-        accuracy_factor = 4 / (kwargs['accuracy'] ** 1.25)
-        if accuracy_factor > 1:
-            accuracy_factor = 1
-        elif accuracy_factor < 0.22:
-            return
-
-        # take care of runaway velocity
-        self.pivot_velocity(velocity_magnitude, bearing_gps)
-
-        # factor of altitude removed from calculations for now
-        current_location = Vector(latitude, longitude, altitude)
-        self.all_accelerations = []
-        self.previous_locations.append((current_location[0], current_location[1], current_location[2], accuracy_factor))
-        if len(self.previous_locations) >= 3:
-            triangulated_location = Vector(sum([i[0] for i in self.previous_locations]) / 3,
-                                           sum([i[1] for i in self.previous_locations]) / 3,
-                                           6371000)
-            averaged_accuracy = sum([i[-1] for i in self.previous_locations]) / 3
-            self.previous_locations = [
-                (triangulated_location[0], triangulated_location[1], triangulated_location[2], accuracy_factor)]
-        else:
-            return
-
-        if self.last_location:
-            self.lld = round(self.last_location, 1)
-
-        gps_distance = 0
-        if self.last_location:
-            gps_distance = coordinate_distance_calculator(lat1=self.last_location[0], lon1=self.last_location[1],
-                                                          lat2=triangulated_location[0], lon2=triangulated_location[1])
-        self.last_location = triangulated_location
-        # print(
-        #    f"AM04 delta path: {self.cached_path-self.last_cached_path}, gps_distance {gps_distance} average velocity {self.average_velocity}, "
-        #    f"weighed {(1-averaged_accuracy)*(self.cached_path-self.last_cached_path) + averaged_accuracy*gps_distance}, {averaged_accuracy}")
-        if self.cached_path - self.last_cached_path > 1:
-            self.cached_path = self.last_cached_path + (1 - averaged_accuracy) * (
-                    self.cached_path - self.last_cached_path) + averaged_accuracy * gps_distance
-        self.last_cached_path = self.cached_path
-
-    def pivot_velocity(self, velocity_magnitude, bearing_gps):
-        if self.last_location_ping > 10:
-            self.last_location_ping = time.perf_counter() - self.last_location_ping
-        else:
-            self.last_location_ping = 1
-
-        if bearing_gps > 180:
-            bearing_gps = -360 + bearing_gps
-        bearing_gps = math.radians(bearing_gps)
-        self.bearing_ref = bearing_gps
-        self.previous_velocity = Vector(math.sin(bearing_gps), math.cos(bearing_gps), 0) * velocity_magnitude
-
-        if self.all_velocities:
-            average_velocity = sum(self.all_velocities) / len(self.all_velocities)
-            self.all_velocities.clear()
-        else:
-            average_velocity = 0
-
-        if 0.3 < self.delta_path and 0.3 < average_velocity < 10:
-            self.cached_path += round(self.delta_path, 2)
-        self.delta_path = 0
-        self.average_velocity = average_velocity
-
-        self.last_location_ping = time.perf_counter()
 
     def calculate_steps(self, delta_path, gender, height):
         # za sada bez brzine, nije dovoljno tocna
@@ -208,46 +44,23 @@ class NavigationManager:
         steps = delta_path / stride_length
         return steps
 
-    def calculate_calories(self, delta_time, delta_path, weight, type="walking"):
+    def calculate_calories(self, delta_time, delta_path, weight, type="hodanje"):
         # constants calculated by manual linear regression
         c = {
             "hodanje": (1.344, -3.452, 2.6),
             "trcanje": (1.344, -3.452, 2.6),
             "bicikliranje": (0.375, 0.2, 5),
             "rolanje": (0.691, -2.445, 3),
-            "planinarenje": (1.344, -1.452, 1)
+            "planinarenje": (1.344, -1.452, 1.6)
 
         }
+        if delta_time == 0:
+            delta_time = 1
         c0 = c[type]
-        speed = delta_path / delta_time
+        speed = delta_path / delta_time * 3.6
         if speed < c0[2]:
             return 0
         MET = c0[0] * speed + c0[1]
         calories_burned = MET * 3.5 * weight / (200*60) * delta_time
         return calories_burned
 
-    def clear_cache(self):
-        self.cached_path = 0
-
-    def get_avg_velocity(self):
-        return self.average_velocity
-
-    def get_location_polar(self):
-        if self.last_location_lat_lon:
-            return self.last_location_lat_lon
-        else:
-            return [0, 0, 0]
-
-    def get_cached_path(self):
-        return self.cached_path
-
-    def stop_gps(self):
-        if not self.gps_running:
-            return False
-        gps.stop()
-        self.accelerometer_event.cancel()
-        self.gps_running = False
-
-    # TODO
-    def calibrate_sensors(self, dt):
-        pass

@@ -53,6 +53,12 @@ class ActivityScreen(MDScreen):
         server.bind(b'/receive_navdata',self.receive_navdata)
         self.client = OSCClient(b'localhost', 3000)
 
+
+        self.last_location = None
+        self.cached_path = 0
+        self.average_velocity = 0
+        self.altitude = 0
+
     def further_build(self, dt):
 
         self.active_activity: Activity = None
@@ -69,9 +75,7 @@ class ActivityScreen(MDScreen):
 
         self.play_button = self.ids["play_button"]
         self.stop_button = self.ids["stop_button"]
-        self.debug_overlay = self.ids["debug_overlay"]
 
-        self.bind(last_location_debug=self.debug_overlay.get_bind_callback())
         self.navigator = NavigationManager()
 
     def on_auth_status(self, general_status, status_message):
@@ -95,28 +99,62 @@ class ActivityScreen(MDScreen):
         if platform == "android":
             service = autoclass(self.get_service_name())
             argument = autoclass("android.content.pm.ServiceInfo")
-            service.start(mActivity, str(argument.FOREGROUND_SERVICE_TYPE_LOCATION))
+            service.start(mActivity, 'img' ,'NavApp' ,'Navigation is active' , str(argument.FOREGROUND_SERVICE_TYPE_LOCATION))
             self.service = service
             print("service started!")
+
+    def stop_service(self):
+        if platform == "android":
+            self.client.send_message(b'/terminate', [])
+
+    def receive_data(self, message="null"):
+        print(f"OSCPY Recieved message: {message}")
+        if message == 100:
+            self.play_button.button_disabled = False
+
+    def receive_navdata(self, *args):
+        res = ''.join(map(chr, args))
+        print(f"received data {res}")
+        subres = res.split("A")
+        dt = float(subres[0])
+        ll = subres[1]
+        if ll != "None":
+            ll = tuple(map(float,ll[1:-1].replace(" ","").split(",")))
+        else:
+            ll = None
+        print(ll)
+        cp = float(subres[2])
+        avg_vel = float(subres[3])
+        alt = float(subres[4])
+        self.last_location = ll
+        self.cached_path = cp
+        self.average_velocity = avg_vel
+        self.altitude = alt
+        if self.active_activity:
+            self.update_activity(dt)
+
     def start_up_screen(self):
+        self.play_button.button_disabled = True
         home_screen = self.manager.get_screen("hme")
         self.activity_manager = self.manager.active_user.activity_manager
         self.current_activity = home_screen.get_current_activity() - 1
         self.image_container.source = self.current_background.replace("*", self.activities[self.current_activity])
         self.set_up_preset()
         if platform == "android":
-            # nemam pojma otkud se android importa, ne ici instalirati!!!
+            # imam pojma otkud se android importa, ne ici instalirati!!!
             from android.permissions import Permission, request_permissions
             print("imported!")
 
             def callback(permission, results):
                 if not False in results:
                     print("Got all permissions!")
+                    self.start_service()
                 else:
                     self.open_gps_access_popup()
 
             request_permissions([Permission.ACCESS_COARSE_LOCATION,
                                  Permission.ACCESS_FINE_LOCATION], callback)
+
 
 
     def placeholder(self, *args):
@@ -167,60 +205,42 @@ class ActivityScreen(MDScreen):
         self.__start_activity()
 
     def __start_activity(self, dt=0):
-        self.e = Clock.schedule_interval(self.debugger, 0.1)
         if not self.active_activity:
             print(self.activity_manager)
             self.active_activity = self.activity_manager.add_new_activity(self.activities[self.current_activity])
             self.active_activity.start_activity(time.localtime(), time.perf_counter())
-        self.last_ping = time.perf_counter()
         if platform == "android":
-            self.navigator.start_gps(1000, MIN_MEASURE_DISTANCE)
-        self.activity_event = Clock.schedule_interval(self.update_activity, 1)
+            self.client.send_message(b'/resume',[])
 
     def __pause_activity(self, dt=0):
-        self.e.cancel()
         self.update_activity()
-        self.activity_event.cancel()
         if platform == "android":
             self.active_activity.reset_active_location()
-            self.navigator.stop_gps()
-
-    def debugger(self, dt):
-        orientation_debug = self.navigator.rotated_orientation * 180 / math.pi
-        velocity_debug = round(self.navigator.previous_velocity, 1)
-        delta_location_debug = self.navigator.lld
-        o = (
-            f"{round(orientation_debug[0])} \n {round(orientation_debug[1])} \n {round(orientation_debug[2])} \n velocity: {velocity_debug} \n a {delta_location_debug}")
-        self.last_location_debug = o
+            self.client.send_message(b'/pause',[])
 
 
-    def update_activity(self, dt=0):
-        self.dt = round(time.perf_counter() - self.last_ping, 5)
-        self.last_ping = time.perf_counter()
-        if self.navigator:
-            (polar, cached, avg) = (self.navigator.get_location_polar(),
-                                    self.navigator.get_cached_path(), self.navigator.get_avg_velocity())
-        else:
-            (polar, cached, avg) = (None, 0, None)
-        self.active_activity.update_activity(self.dt, self.navigator.last_location, cached, avg)
+
+
+    def update_activity(self, dt=0.0):
+        self.active_activity.update_activity(dt, self.last_location, self.cached_path, self.average_velocity)
         self.update_widgets(self.active_activity.elapsed_time_active,
-                            self.navigator.get_cached_path())
+                            self.cached_path)
 
     def update_walk(self, elapsed_distance, gender, height):
         self.activity_containers[0].quantity = str(
             int(self.navigator.calculate_steps(elapsed_distance, gender, height)))
         self.activity_containers[2].quantity = str(int(elapsed_distance)) + "m"
-        self.activity_containers[3].quantity = str(int(self.navigator.get_avg_velocity() * 36) / 10) + "km/h"
+        self.activity_containers[3].quantity = str(int(self.average_velocity * 36) / 10) + "km/h"
 
     def update_mountaineering(self, elapsed_distance, gender, height):
         self.activity_containers[0].quantity = str(
             int(self.navigator.calculate_steps(elapsed_distance, gender, height)))
         self.activity_containers[2].quantity = str(int(elapsed_distance)) + "m"
-        self.activity_containers[3].quantity = str(int(self.navigator.get_location_polar()[2])) + "m"
+        self.activity_containers[3].quantity = str(int(self.altitude)) + "m"
 
     def update_wheel(self, elapsed_distance, gender, height):
         self.activity_containers[0].quantity = str(int(elapsed_distance)) + "m"
-        self.activity_containers[2].quantity = str(int(self.navigator.get_avg_velocity() * 36) / 10) + "km/h"
+        self.activity_containers[2].quantity = str(int(self.average_velocity * 36) / 10) + "km/h"
 
     def update_widgets(self, elapsed_time, elapsed_distance):
         self.activity_containers[1].quantity = time.strftime('%H:%M:%S', time.gmtime(round(elapsed_time)))
@@ -228,13 +248,13 @@ class ActivityScreen(MDScreen):
         height = self.manager.active_user.get_user_attribute("height")
         weight = self.manager.active_user.get_user_attribute("weight")
         calories = int(self.navigator.calculate_calories(elapsed_time, elapsed_distance, weight,
-                                                         self.activities[self.current_activity]))
+                                                             self.activities[self.current_activity]))
         self.activity_containers[-1].quantity = str(calories)
         self.update_methods[self.activity_presets[self.current_activity]](elapsed_distance, gender, height)
 
     def finish_activity(self, button):
         if self.active_activity:
-            self.navigator.clear_cache()
+            self.client.send_message(b'/reset',[])
             print("finalizing activity...")
             self.reset_containers(self.presets[self.activity_presets[self.current_activity]])
             self.active_activity.stop_activity(time.perf_counter())
@@ -242,7 +262,6 @@ class ActivityScreen(MDScreen):
 
     def quit_activity(self, button=None, *args):
         if platform == "android":
-            self.navigator.stop_gps()
-            self.navigator.disable_sensors()
+            self.stop_service()
         self.manager.transition = FadeTransition()
         self.manager.goto_screen("hme")

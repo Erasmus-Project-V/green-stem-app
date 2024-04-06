@@ -7,7 +7,7 @@ title = Fitness app
 package.name = fran_fitness_app
 
 # (str) Package domain (needed for android/ios packaging)
-package.domain = org.test
+package.domain = org.vgim
 
 # (str) Source code where the main.py live
 source.dir = .
@@ -29,7 +29,7 @@ source.include_exts = py,png,jpg,kv,atlas,kg,ttf
 #source.exclude_patterns = license,images/*/*.jpg
 
 # (str) Application versioning (method 1)
-version = 0.1
+version = 0.2
 
 # (str) Application versioning (method 2)
 # version.regex = __version__ = ['"](.*)['"]
