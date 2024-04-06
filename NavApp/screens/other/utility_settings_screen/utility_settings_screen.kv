@@ -1,0 +1,39 @@
+#File name: utility_settings_screen.kv
+
+
+<UtilitySettingsScreen>:
+    name: "uss"
+    id: uss
+    md_bg_color: app.primary_colors["black"]
+    blue_ref: app.primary_colors["light_blue"]
+    TopReturnButtonWidget:
+        release_func: root.return_to_settings
+    MDLabel:
+        pos_hint: {"center_x":0.5,"center_y":0.9}
+        text: "Notifications"
+        font_size: "28dp"
+        font_name: app.fonts["sans_bold"]
+        halign: "center"
+    MDLabel:
+        pos_hint: {"center_x":0.5,"center_y":0.05}
+        text: "You can manage app notification premissions \n in your phone settings"
+        font_size: "12dp"
+        font_name: app.fonts["sans_regular"]
+        halign: "center"
+    MDBoxLayout:
+        orientation: "vertical"
+        pos_hint: {"center_x":0.5,"center_y":0.4}
+        size_hint: (0.85,0.4)
+        md_bg_color: (1,0,0,0)
+        ProfileBarWidget:
+            bar_text: "Motivational notifications"
+            button_opacity: 0
+            MDSwitch:
+                id: mnt
+                pos_hint: {"center_x":0.9,"center_y":0.4}
+        ProfileBarWidget:
+            bar_text: "Friends activity notifications"
+            button_opacity: 0
+            MDSwitch:
+                id: fnt
+                pos_hint: {"center_x":0.9,"center_y":0.4}
