@@ -7,7 +7,7 @@
     size_hint: None, None
     size: (dp(340), dp(73))
     pos_hint: {"center_x":0.5,"center_y":0.5}
-    on_touch_down: root.activity_card_pressed()
+    activity_card_function: root.activity_card_pressed
     canvas:
         Color:
             rgba: app.primary_colors["dark_grey"]
@@ -15,6 +15,13 @@
             pos: (0, 0)  # Position the rectangle at the widget's position
             size: (root.width, root.height)  # Set the rectangle size to the widget's size
             radius: [20, 20, 20, 20]  # Set the radius of the corners
+
+    Button:
+        size: root.size
+        background_color: [0, 0, 0, 0]
+        background_normal: ''
+        background_down: ''
+        on_press: root.activity_card_function(root.activity_name, root.activity_time)
 
     Label:
         font_name: app.fonts["sans_semi_bold"]

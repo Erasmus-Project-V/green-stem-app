@@ -4,8 +4,74 @@
 <DailyActivityScreen>:
     name: "das"
     id: das
-    MDBoxLayout:
+    heroes_to: [hero_to]
+    canvas:
+        Color:
+            rgba: app.primary_colors["dark_grey"]
+        RoundedRectangle:
+            id: rounded_rectangle
+            pos: (dp(20), dp(500))  # Position the rectangle at the widget's position
+            size: (root.width - dp(40), dp(190))
+            radius: [40, 40, 40, 40]  # Set the radius of the corners
+
+    MDRelativeLayout:
+        pos_hint: {"center_x":0.5,"center_y":0.75}
         MDLabel:
-            text: "Daily Activity Screen"
-    BottomNavWidget:
-        selected: 2
+            halign: "center"
+            valign: "top"
+            text: "KARTA"
+
+    MDHeroTo:
+        id: hero_to
+        tag: "hero"
+        size: "320dp", "320dp"
+        size_hint: None, None
+        pos_hint: {"center_x":0.5,"center_y":0.67}
+
+    MDTopAppBar:
+        id: top_bar
+        pos_hint: {"top": 1}
+        # title: "null"
+        md_bg_color: app.primary_colors["dark_grey"]
+        left_action_items: [["chevron-left", lambda x: root.back_arrow()]]
+
+
+    MDBoxLayout:
+        orientation: "horizontal"
+        size_hint: 1, None
+        height: dp(80)
+        spacing: dp(-120)
+        pos_hint: {"center_x":0.75,"center_y":0.955}
+
+        MDLabel:
+            font_name: app.fonts["sans_semi_bold"]
+            id: activity_name
+            text: "Activity"
+
+        MDLabel:
+            font_name: app.fonts["sans_semi_bold"]
+            color: app.primary_colors["light_blue"]
+            id: activity_time
+            text: "Time"
+            font_size: dp(15)
+
+    QuantityDisplayWidget:
+        id: changeable_unit_quantity
+        title: "KALORIJE"
+        quantity: "1550"
+        dimension: "medium"
+        pos_hint: {"center_x":0.5,"center_y":0.47}
+
+    QuantityDisplayWidget:
+        id: time_quantity
+        title: "VRIJEME"
+        quantity: "1550"
+        dimension: "small"
+        pos_hint: {"center_x":0.26,"center_y":0.23}
+
+    QuantityDisplayWidget:
+        id: distance_quantity
+        title: "KM"
+        quantity: "1550"
+        dimension: "small"
+        pos_hint: {"center_x":0.74,"center_y":0.23}

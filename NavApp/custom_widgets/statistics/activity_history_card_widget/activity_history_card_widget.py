@@ -5,5 +5,8 @@ from kivymd.uix.relativelayout import MDRelativeLayout
 class ActivityHistoryCardWidget(MDRelativeLayout):
     img_path = StringProperty()
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
     def activity_card_pressed(self):
         print("The activity card was pressed")

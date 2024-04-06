@@ -6,6 +6,8 @@ from kivymd.uix.boxlayout import MDBoxLayout
 from kivy.uix.button import Button
 from kivymd.uix.label import MDLabel
 from custom_widgets.statistics.calendar_widget.calendar_widget import CalendarWidget
+from custom_widgets.statistics.activity_history_list_widget.activity_history_list_widget import \
+    ActivityHistoryListWidget
 from custom_widgets.statistics.activity_history_card_widget.activity_history_card_widget import \
     ActivityHistoryCardWidget
 
@@ -109,10 +111,22 @@ class MainStatisticScreen(MDScreen):
         changeable.add_widget(calendar_widget)
         self.active_layout = calendar_widget
 
-        # history_widget = ActivityHistoryCardWidget()
-        # history_widget.pos_hint = {"center_x":0.5,"center_y":0.7}
-        # changeable.add_widget(history_widget)
+        history_widget = ActivityHistoryListWidget()
+        history_widget.pos_hint = {"center_x":0.5,"center_y":0.45}
+        history_widget.activity_history_elements = [{"img_path": "assets/images/home/home_trcanje_1.png","activity_name": "Trcanje", "activity_time": "20:20", "card_function": self.goto_das},
+                                                    {"img_path": "assets/images/home/home_trcanje_1.png","activity_name": "Trcanje", "activity_time": "20:20", "card_function": self.goto_das},
+                                                    {"img_path": "assets/images/home/home_trcanje_1.png",
+                                                     "activity_name": "Plivanje", "activity_time": "20:20", "card_function": self.goto_das},
+                                                    {"img_path": "assets/images/home/home_trcanje_1.png",
+                                                     "activity_name": "Trcanje", "activity_time": "20:20", "card_function": self.goto_das},
+                                                    {"img_path": "assets/images/home/home_trcanje_1.png",
+                                                     "activity_name": "Trcanje", "activity_time": "20:20", "card_function": self.goto_das},
+                                                    {"img_path": "assets/images/home/home_trcanje_1.png",
+                                                     "activity_name": "Trcanje", "activity_time": "20:20", "card_function": self.goto_das},
+                                                   ]
+        changeable.add_widget(history_widget)
 
-
-    def arrow_press(self, btn):
-        print("Left arrow pressed")
+    def goto_das(self, activity_name, time):
+        das = self.manager.get_screen("das")
+        das.start_up_screen(activity_name, time)
+        self.manager.current = "das"
