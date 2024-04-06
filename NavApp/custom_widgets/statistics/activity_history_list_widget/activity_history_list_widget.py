@@ -19,6 +19,7 @@ class ActivityHistoryListWidget(MDRelativeLayout):
             history_card.img_path = activity["img_path"]
             history_card.activity_name = activity["activity_name"]
             history_card.activity_time = activity["activity_time"]
+            history_card.activity_card_function = activity["card_function"]
             scrollable_column.add_widget(history_card)
 
         if len(self.activity_history_elements) <= 5:
