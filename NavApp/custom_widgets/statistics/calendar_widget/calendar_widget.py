@@ -15,6 +15,9 @@ class CalendarWidget(MDRelativeLayout):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+        self.container_ref = None
+
         Clock.schedule_once(self.build_self, 0)
 
     def build_self(self, dt=None):
@@ -41,6 +44,9 @@ class CalendarWidget(MDRelativeLayout):
                 scroll_view.scroll_x = (cur_d/len(days_in_month))
 
             self.color_date(self.current_date)
+
+    def set_container_ref(self,ref):
+        self.container_ref = ref
 
     def get_days_in_month(self, year, month_name):
         # Get the month number from its name

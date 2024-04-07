@@ -1,21 +1,20 @@
+import datetime
+import time
+
 from kivy.animation import Animation
 from kivy.clock import Clock
+from kivymd.uix.relativelayout import MDRelativeLayout
 from kivymd.uix.screen import MDScreen
-from kivymd.app import MDApp
-from kivymd.uix.boxlayout import MDBoxLayout
-from kivy.uix.button import Button
-from kivymd.uix.label import MDLabel
 from custom_widgets.statistics.calendar_widget.calendar_widget import CalendarWidget
 from custom_widgets.statistics.activity_history_list_widget.activity_history_list_widget import \
     ActivityHistoryListWidget
 from custom_widgets.statistics.activity_history_card_widget.activity_history_card_widget import \
     ActivityHistoryCardWidget
-
+from kivy.utils import platform
 from kivy.metrics import dp
 from kivymd.uix.screenmanager import MDScreenManager
 from kivymd.uix.transition import MDSlideTransition, MDFadeSlideTransition
 from custom_widgets.activity_grid_widget.activity_grid_widget import ActivityGridWidget
-
 
 class MainStatisticScreen(MDScreen):
     image_root = "assets/images/home/"
@@ -23,6 +22,9 @@ class MainStatisticScreen(MDScreen):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.initialized = False
+        self.connected = False
+        self.current_layout = None
+        self.current_layout_name = "week"
         self.hero_activity_presets = [{"text": "Running", "img_path": f"{self.image_root}home_trcanje_1.png",
                                        "hero_tag": "running_card", "release_func": self.transit_hero},
                                       {"text": "Cycling", "img_path": f"{self.image_root}home_bicikliranje_1.png",
@@ -36,10 +38,9 @@ class MainStatisticScreen(MDScreen):
 
         self.ref_nav = {"Chosen day": "day", "This week": "week_month", "This month": "week_month"}
         self.layouts = {
-            "day": CalendarWidget(current_month="January", current_year="2024"),
+            "day": self.init_chosen_day(),
             "week_month": ActivityGridWidget(activity_grid_elements=self.hero_activity_presets),
         }
-
 
         self.build_references = {
             "day": self.build_chosen_day,
@@ -52,25 +53,110 @@ class MainStatisticScreen(MDScreen):
         Clock.schedule_once(self.futher_build, 0.1)
 
     def futher_build(self, dt):
+        self.user = self.manager.active_user
         self.changeable_widget = self.ids["changeable"]
+
+    def fetch_this_week_online(self, *args, activity_name='trcanje'):
+        print("this week is being fetched online")
+        today = datetime.date.today()
+        week_ago = today - datetime.timedelta(days=7)
+        print(week_ago)
+        print(activity_name)
+
+        self.user.send_request(f"/api/collections/exercises/records?filter=(type%3D%27{activity_name}%27%20%26%26%20created%3E%27{week_ago}%27)", method="GET"
+                               , success_func=self.successful_fetch, error_func=self.failed_fetch)
+
+    def fetch_this_day_online(self,*args,activity_name='trcanje'):
+        current_date = datetime.date.today()
+
+        self.user.send_request(f"/api/collections/exercises/records?filter=(type%3D%27{activity_name}%27%20%26%26%20created%3D%27{current_date}%27)", method="GET"
+                               , success_func=self.successful_fetch, error_func=self.failed_fetch)
+
+    def fetch_this_month_online(self,activity_name='trcanje'):
+        current_date = datetime.date.today()
+        m1 = str(current_date[:-2]) + "01"
+        self.user.send_request(f"/api/collections/exercises/records?filter=(type%3D'{activity_name}'%20%26%26%20created%3E%3D'{m1}')", method="GET"
+                               , success_func=self.successful_fetch, error_func=self.failed_fetch)
+
+    def fetch_this_week_offline(self):
+        pass
+
+    def fetch_this_day_offline(self):
+        pass
+
+    def fetch_this_month_offline(self):
+        pass
+
+    def successful_fetch(self, message, body):
+        print(body)
+        self.exercises = body['items']
+        self.n_exercises = body['totalItems']
+
+
+    def failed_fetch(self, a, b):
+        print(a)
+        print(b)
+
+    def check_for_connection(self):
+        if not self.user.check_for_wifi(0):
+            print("user is connected to the internet! - uploading any leftovers...")
+            return True
+        else:
+            print("user is offline, showing limited data")
+            return False
 
     def start_up_screen(self):
         if self.initialized:
             return
         self.destroy_old_layout()
+        if platform == "android":
+            self.connected = self.check_for_connection()
+        else:
+            self.connected = True
         self.manager.tamper_hero_data(self.layouts["week_month"])
         self.build_hero_panels()
         self.initialized = True
 
+    def init_chosen_day(self):
+        tm = datetime.date.today()
+        mdict = {1: "January", 2: "February", 3: "March", 4: "April", 5: "May", 6: "June", 7: "July", 8: "August",
+                 9: "September", 10: "October", 11: "November", 12: "December"}
+        rl = MDRelativeLayout()
+        calendar_widget = CalendarWidget(current_month=mdict[tm.month], current_year=str(tm.year),
+                                         current_date=str(tm.day))
+        calendar_widget.pos_hint = {"center_x": 0.5, "center_y": 0.81}
+        rl.add_widget(calendar_widget)
+
+        history_widget = ActivityHistoryListWidget()
+        calendar_widget.set_container_ref(history_widget)
+        history_widget.pos_hint = {"center_x": 0.5, "center_y": 0.45}
+        history_widget.activity_history_elements = [
+            {"img_path": "assets/images/home/home_trcanje_1.png", "activity_name": "Trcanje", "activity_time": "20:20",
+             "card_function": self.goto_das},
+            ]
+        rl.add_widget(history_widget)
+        return rl
+
     def destroy_old_layout(self):
-        if self.active_layout:
-            self.changeable_widget.remove_widget(self.active_layout)
-            self.active_layout = None
+        if self.active_layout and self.initialized:
+            anim = Animation(opacity=0, duration=0.5)
+            anim.bind(on_complete=self.finish_destruction)
+            anim.start(self.active_layout)
+        elif self.active_layout:
+            self.finish_destruction()
+
+    def finish_destruction(self, *args):
+        self.changeable_widget.remove_widget(self.active_layout)
+        self.active_layout = None
+        if self.current_layout:
+            self.build_references[self.current_layout]()
+            anim = Animation(opacity=1, duration=0.5)
+            anim.start(self.active_layout)
 
     def change_state(self, btn):
-        layout = self.ref_nav[btn.name]
+        self.current_layout_name = btn.name.split(" ")[-1]
+        self.current_layout = self.ref_nav[btn.name]
         self.destroy_old_layout()
-        self.build_references[layout]()
 
     def placeholder(self, *args):
         pass
@@ -85,6 +171,11 @@ class MainStatisticScreen(MDScreen):
         self.manager.current = "was"
 
     def transit_hero(self, btn):
+        actdict = {"Running":"trcanje","Walking":"hodanje","Cycling":"bicikliranje","Skating":"rolanje","Hiking":"planinarenje"}
+        if self.connected:
+            self.fetch_this_week_online(activity_name=actdict[btn.activity_type])
+        else:
+            self.fetch_this_week_offline()
         self.current_hero_tag = btn.hero_tag
         self.current_activity_type = btn.activity_type
         x = self.active_layout.nav_ref[btn.hero_tag].ids.front_box
@@ -106,27 +197,10 @@ class MainStatisticScreen(MDScreen):
         changeable = self.ids["changeable"]
         self.rectangle_radius = [20, 20, 0, 0]
         self.rectangle_height = dp(200)
-        calendar_widget = self.layouts["day"]
-        calendar_widget.pos_hint = {"center_x": 0.5, "center_y": 0.81}
-        changeable.add_widget(calendar_widget)
-        self.active_layout = calendar_widget
+        self.active_layout = self.layouts["day"]
+        changeable.add_widget(self.active_layout)
 
-        history_widget = ActivityHistoryListWidget()
-        history_widget.pos_hint = {"center_x":0.5,"center_y":0.45}
-        history_widget.activity_history_elements = [{"img_path": "assets/images/home/home_trcanje_1.png","activity_name": "Trcanje", "activity_time": "20:20", "card_function": self.goto_das},
-                                                    {"img_path": "assets/images/home/home_trcanje_1.png","activity_name": "Trcanje", "activity_time": "20:20", "card_function": self.goto_das},
-                                                    {"img_path": "assets/images/home/home_trcanje_1.png",
-                                                     "activity_name": "Plivanje", "activity_time": "20:20", "card_function": self.goto_das},
-                                                    {"img_path": "assets/images/home/home_trcanje_1.png",
-                                                     "activity_name": "Trcanje", "activity_time": "20:20", "card_function": self.goto_das},
-                                                    {"img_path": "assets/images/home/home_trcanje_1.png",
-                                                     "activity_name": "Trcanje", "activity_time": "20:20", "card_function": self.goto_das},
-                                                    {"img_path": "assets/images/home/home_trcanje_1.png",
-                                                     "activity_name": "Trcanje", "activity_time": "20:20", "card_function": self.goto_das},
-                                                   ]
-        changeable.add_widget(history_widget)
-
-    def goto_das(self, activity_name, time):
+    def goto_das(self, activity_name, time, activity_data=None):
         das = self.manager.get_screen("das")
         das.start_up_screen(activity_name, time)
         self.manager.current = "das"

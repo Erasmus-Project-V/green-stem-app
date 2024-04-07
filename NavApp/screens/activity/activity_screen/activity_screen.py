@@ -134,13 +134,13 @@ class ActivityScreen(MDScreen):
             self.update_activity(dt)
 
     def start_up_screen(self):
-        self.play_button.button_disabled = True
         home_screen = self.manager.get_screen("hme")
         self.activity_manager = self.manager.active_user.activity_manager
         self.current_activity = home_screen.get_current_activity() - 1
         self.image_container.source = self.current_background.replace("*", self.activities[self.current_activity])
         self.set_up_preset()
         if platform == "android":
+            self.play_button.button_disabled = True
             # imam pojma otkud se android importa, ne ici instalirati!!!
             from android.permissions import Permission, request_permissions
             print("imported!")

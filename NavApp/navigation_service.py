@@ -184,12 +184,17 @@ class BackgroundNavigator:
             f"AM04 delta path: {accelerometer_distance}, gps_distance {gps_distance} average velocity {self.average_velocity}, "
             f"weighed {(1-averaged_accuracy)*(self.cached_path-self.last_cached_path) + averaged_accuracy*gps_distance}, {averaged_accuracy}")
 
+        delta_distance = 0
         if gps_distance < 1 and accelerometer_distance > 15:
             print("probably an invalid jump distance...")
-            self.cached_path = gps_distance
+            self.cached_path = self.last_cached_path + gps_distance
+            delta_distance = gps_distance
         elif accelerometer_distance > 1:
-            self.cached_path = self.last_cached_path + (1 - averaged_accuracy) * (
-                    accelerometer_distance) + averaged_accuracy * gps_distance
+            delta_distance = (1 - averaged_accuracy) * (accelerometer_distance) + averaged_accuracy * gps_distance
+            self.cached_path = self.last_cached_path + delta_distance
+        dt = time.perf_counter() - self.velocity_time
+        self.velocity_time = time.perf_counter()
+        self.average_velocity = delta_distance / dt
         self.last_cached_path = self.cached_path
 
     def pivot_velocity(self, velocity_magnitude, bearing_gps):
@@ -213,7 +218,7 @@ class BackgroundNavigator:
         if 0.3 < self.delta_path and 0.3 < average_velocity < 10:
             self.cached_path += round(self.delta_path, 2)
         self.delta_path = 0
-        self.average_velocity = average_velocity
+        #self.average_velocity = average_velocity
 
         self.last_location_ping = time.perf_counter()
 
@@ -278,6 +283,7 @@ class BackgroundNavigator:
 
     def resume(self):
         self.paused = False
+        self.velocity_time = time.perf_counter()
         self.start_gps(1000, 1)
 
     def reset(self):

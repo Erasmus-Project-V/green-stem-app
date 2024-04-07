@@ -72,7 +72,12 @@ class Activity:
 
 
     def __format_time(self, tlist):
-        return f"{tlist[0]}:{tlist[1]}:{tlist[2]} {tlist[3]}:{tlist[4]}:{tlist[5]}"
+            for i in range(len(tlist)):
+                s = str(tlist[i])
+                if len(s) == 1:
+                    s = '0' + s
+                tlist[i] = s
+            return f"{tlist[0]}-{tlist[1]}-{tlist[2]} {tlist[3]}:{tlist[4]}:{tlist[5]}"
 
     def wrap_self(self):
         payload = {

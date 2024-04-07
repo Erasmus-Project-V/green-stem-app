@@ -5,6 +5,7 @@ import plyer
 from kivy import platform
 from kivy.clock import Clock
 from kivy.network.urlrequest import UrlRequest
+from kivy.properties import BooleanProperty
 from scripts.activity_manager import ActivityManager
 from scripts.sql_manager import SQLManager
 
@@ -39,6 +40,7 @@ class UserManager:
         self.activity_manager = None
         self.sql_manager = None
         self.wifi_check_event = None
+        self.uploading_in_progress = BooleanProperty(False)
 
     def load_user_data(self):
         if platform == "android":
@@ -95,15 +97,19 @@ class UserManager:
             print("Checking for new entries")
             if self.sql_manager.has_new and not self.sql_manager.in_writing:
                 print("Uploading to base!")
+                self.uploading_in_progress = True
                 self.upload_to_base()
+        return self.METERED_CONNECTION
 
     def __upload_to_base(self,*args):
         self.index += 1
         if self.index >= self.length:
             print("finished successfully, clearing local storage...")
             self.sql_manager.clear_base()
+            self.uploading_in_progress = False
             return
         i = self.index
+        print(self.a[i][2])
         payload_one = {
             "type": self.a[i][0],
             "user": self.a[i][1],
