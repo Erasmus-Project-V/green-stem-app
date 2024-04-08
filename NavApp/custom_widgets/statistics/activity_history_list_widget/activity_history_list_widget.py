@@ -7,11 +7,14 @@ from custom_widgets.statistics.activity_history_card_widget.activity_history_car
 
 class ActivityHistoryListWidget(MDRelativeLayout):
     activity_history_elements = ListProperty()
+    img_root = "assets/images/home/home_*_1.png"
+
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.activity_cards = []
         self.filled = False
+
 
         Clock.schedule_once(self.build_self, 0)
 
@@ -20,9 +23,18 @@ class ActivityHistoryListWidget(MDRelativeLayout):
         self.add_activity_cards()
         self.filled = True
 
-    def reargument(self, widget_instructions):
+    def receive_activity_data(self, items, n_items,acfunc):
         if self.filled:
             return False
+        widget_instructions = []
+        for i in range(len(items)):
+            dct = {"img_path":self.img_root.replace("*",items[i]["type"]),
+                   "activity_name":items[i]["type"],
+                   "activity_time":items[i]["time_started"].split(" ")[-1][:8],
+                   "card_function": acfunc,
+                   "other": items[i]
+                   }
+            widget_instructions.append(dct)
         self.activity_history_elements = widget_instructions
         self.add_activity_cards()
         self.filled =True
@@ -34,6 +46,7 @@ class ActivityHistoryListWidget(MDRelativeLayout):
             history_card.activity_name = activity["activity_name"]
             history_card.activity_time = activity["activity_time"]
             history_card.activity_card_function = activity["card_function"]
+            history_card.activity_data = activity["other"]
             self.scrollable_column.add_widget(history_card)
             self.activity_cards.append(history_card)
 

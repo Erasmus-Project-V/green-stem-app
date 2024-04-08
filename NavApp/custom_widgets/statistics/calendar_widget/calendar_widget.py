@@ -17,8 +17,10 @@ class CalendarWidget(MDRelativeLayout):
         super().__init__(*args, **kwargs)
 
         self.container_ref = None
+        self.fetcher_ref = None
+        self.built = False
 
-        Clock.schedule_once(self.build_self, 0)
+        Clock.schedule_once(self.build_self, 0.1)
 
     def build_self(self, dt=None):
         scrollable_row = self.ids["scrollable_days"]
@@ -29,7 +31,16 @@ class CalendarWidget(MDRelativeLayout):
         for day in days_in_month:
             day_widget = OvalDayWidget()
             day_widget.day_in_week = day[0][0]
-            day_widget.date = str(day[1])
+
+            m = str(self.months.index(self.current_month)+1)
+            if len(m) == 1:
+                m = "0" + m
+            d = str(day[1])
+            if len(d) == 1:
+                d = "0" + d
+
+            day_widget.date = str(self.current_year) + "-" + m + "-" + d
+            day_widget.day = str(day[1])
             day_widget.id = str(day[1])
             day_widget.release_func = self.color_date
             scrollable_row.add_widget(day_widget)
@@ -42,8 +53,9 @@ class CalendarWidget(MDRelativeLayout):
                 scroll_view.scroll_x = 1
             elif cur_d > 4:
                 scroll_view.scroll_x = (cur_d/len(days_in_month))
-
-            self.color_date(self.current_date)
+            print(datetime.today().date())
+            self.color_date(datetime.today().date())
+        self.built = True
 
     def set_container_ref(self,ref):
         self.container_ref = ref
@@ -97,6 +109,10 @@ class CalendarWidget(MDRelativeLayout):
         children = scrollable_row.children
         for child in children:
             child.day_color = self.dark_gray_container
-            if child.date == date:
+            if str(child.date) == str(date):
                 child.day_color = self.blue_container
+        if self.built:
+            self.fetcher_ref(current_date=date)
+
+
 

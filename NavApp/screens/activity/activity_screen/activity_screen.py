@@ -153,7 +153,8 @@ class ActivityScreen(MDScreen):
                     self.open_gps_access_popup()
 
             request_permissions([Permission.ACCESS_COARSE_LOCATION,
-                                 Permission.ACCESS_FINE_LOCATION], callback)
+                                 Permission.ACCESS_FINE_LOCATION,
+                                 Permission.ACCESS_BACKGROUND_LOCATION], callback)
 
 
 

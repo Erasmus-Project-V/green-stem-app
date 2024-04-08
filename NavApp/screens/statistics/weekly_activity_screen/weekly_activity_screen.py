@@ -1,7 +1,7 @@
 from kivy.animation import Animation
 from kivy.clock import Clock
 from kivymd.uix.screen import MDScreen
-
+from scripts.utilities import calculate_steps
 
 class WeeklyActivityScreen(MDScreen):
     activity = None
@@ -35,12 +35,28 @@ class WeeklyActivityScreen(MDScreen):
 
     def change_labels(self, activity):
         if activity in "Hiking, Running, Walking":
-            self.measurement_type = "STEPS"
+            self.measurement_type = "DISTANCE"
         else:
-            self.measurement_type = "KM"
+            self.measurement_type = "DISTANCE"
 
         label = self.ids["label"]
         label.text = self.measurement_type
 
         quantity_display = self.ids["changeable_unit_quantity"]
         quantity_display.title = self.measurement_type
+
+    def receive_activity_data(self,items,n_items):
+        print(f"received {n_items}")
+        total_distance = 0
+        for i in range(n_items):
+            total_distance += items[i]["total_distance"]
+
+        height = self.manager.active_user.get_user_attribute("height")
+        gender = self.manager.active_user.get_user_attribute("gender")
+        total_steps = str(int(calculate_steps(total_distance, gender,height)))
+        self.calorie_count = total_steps
+        if total_distance > 1000:
+            total_distance = str(int(total_distance / 1000)) + " km"
+        else:
+            total_distance = str(int(total_distance)) + " m"
+        self.unit_quantity = total_distance

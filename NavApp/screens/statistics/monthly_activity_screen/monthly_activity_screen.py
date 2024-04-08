@@ -8,3 +8,6 @@ class MonthlyActivityScreen(MDScreen):
         print(self.activity)
         self.ids["top_bar"].title = activity_type
         # self.change_labels(activity_type)
+
+    def receive_activity_data(self,items,n_items):
+        print(f"received {n_items}")

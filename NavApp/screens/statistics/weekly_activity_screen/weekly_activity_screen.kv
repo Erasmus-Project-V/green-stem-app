@@ -6,8 +6,8 @@
     id: was
     md_bg_color: app.primary_colors["black"]
     heroes_to: [hero_to]
-    unit_quantity: "[quantity]"
-    calorie_count: "[quantity]"
+    unit_quantity: "0"
+    calorie_count: "0"
     MDHeroTo:
         id: hero_to
         tag: "hero"
@@ -56,7 +56,7 @@
                 pos_hint: {"center_x":0.28,"center_y":0.32}
 
             QuantityDisplayWidget:
-                title: "CALORIES"
+                title: "STEPS"
                 quantity: root.calorie_count
                 dimension: "small"
                 pos_hint: {"center_x":0.74,"center_y":0.32}

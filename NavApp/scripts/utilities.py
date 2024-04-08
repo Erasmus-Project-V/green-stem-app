@@ -341,3 +341,9 @@ def filterAccelerometerData(acceleration: Vector
 
 
 
+def calculate_steps(delta_path, gender, height):
+    # za sada bez brzine, nije dovoljno tocna
+    c1 = 0.415 if gender == "male" else 0.413
+    stride_length = c1 * height / 100
+    steps = delta_path / stride_length
+    return steps

@@ -3,6 +3,7 @@
 <OvalDayWidget>:
     day_in_week: "?"
     date: "?"
+    day: "?"
     day_color: (71 / 255, 71 / 255, 71 / 255, 0.5)
     release_func: root.pressed
     size_hint: None, None
@@ -25,4 +26,4 @@
         text: root.day_in_week
     MDLabel:
         pos_hint: {"center_x":0.78,"center_y":0.35} if len(root.date) == 2 else {"center_x":0.89,"center_y":0.35}
-        text: root.date
+        text: root.day

@@ -53,6 +53,9 @@ class MainStatisticScreen(MDScreen):
         Clock.schedule_once(self.futher_build, 0.1)
 
     def futher_build(self, dt):
+        self.daily_screen = self.manager.get_screen("das")
+        self.monthly_screen = self.manager.get_screen("mas")
+        self.weekly_screen = self.manager.get_screen("was")
         self.user = self.manager.active_user
         self.changeable_widget = self.ids["changeable"]
 
@@ -66,15 +69,17 @@ class MainStatisticScreen(MDScreen):
         self.user.send_request(f"/api/collections/exercises/records?filter=(type%3D%27{activity_name}%27%20%26%26%20created%3E%27{week_ago}%27)", method="GET"
                                , success_func=self.successful_fetch, error_func=self.failed_fetch)
 
-    def fetch_this_day_online(self,*args,activity_name='trcanje'):
-        current_date = datetime.date.today()
-
-        self.user.send_request(f"/api/collections/exercises/records?filter=(type%3D%27{activity_name}%27%20%26%26%20created%3D%27{current_date}%27)", method="GET"
+    def fetch_this_day_online(self,*args,current_date = None):
+        if not current_date:
+            current_date = str(datetime.date.today())
+        next_date = datetime.datetime.strptime(current_date, '%Y-%m-%d') + datetime.timedelta(days=1)
+        next_date = str(next_date).split(" ")[0]
+        self.user.send_request(f"/api/collections/exercises/records?filter=(created>='{current_date}'%20%26%26%20created<='{next_date}')", method="GET"
                                , success_func=self.successful_fetch, error_func=self.failed_fetch)
 
     def fetch_this_month_online(self,activity_name='trcanje'):
         current_date = datetime.date.today()
-        m1 = str(current_date[:-2]) + "01"
+        m1 = str(current_date)[:-2] + "01"
         self.user.send_request(f"/api/collections/exercises/records?filter=(type%3D'{activity_name}'%20%26%26%20created%3E%3D'{m1}')", method="GET"
                                , success_func=self.successful_fetch, error_func=self.failed_fetch)
 
@@ -91,7 +96,13 @@ class MainStatisticScreen(MDScreen):
         print(body)
         self.exercises = body['items']
         self.n_exercises = body['totalItems']
-
+        if self.current_layout_name != "day":
+            cs = self.weekly_screen
+            cs.receive_activity_data(self.exercises,self.n_exercises)
+        else:
+            x = self.active_layout.children[0]
+            x.clear_activity_cards()
+            x.receive_activity_data(self.exercises,self.n_exercises,self.goto_das)
 
     def failed_fetch(self, a, b):
         print(a)
@@ -124,16 +135,14 @@ class MainStatisticScreen(MDScreen):
         rl = MDRelativeLayout()
         calendar_widget = CalendarWidget(current_month=mdict[tm.month], current_year=str(tm.year),
                                          current_date=str(tm.day))
+        calendar_widget.fetcher_ref = self.fetch_this_day_online
         calendar_widget.pos_hint = {"center_x": 0.5, "center_y": 0.81}
         rl.add_widget(calendar_widget)
 
         history_widget = ActivityHistoryListWidget()
         calendar_widget.set_container_ref(history_widget)
         history_widget.pos_hint = {"center_x": 0.5, "center_y": 0.45}
-        history_widget.activity_history_elements = [
-            {"img_path": "assets/images/home/home_trcanje_1.png", "activity_name": "Trcanje", "activity_time": "20:20",
-             "card_function": self.goto_das},
-            ]
+        history_widget.activity_history_elements = []
         rl.add_widget(history_widget)
         return rl
 
@@ -170,10 +179,14 @@ class MainStatisticScreen(MDScreen):
         # goto screen doesnt work
         self.manager.current = "was"
 
+
     def transit_hero(self, btn):
         actdict = {"Running":"trcanje","Walking":"hodanje","Cycling":"bicikliranje","Skating":"rolanje","Hiking":"planinarenje"}
         if self.connected:
-            self.fetch_this_week_online(activity_name=actdict[btn.activity_type])
+            if self.current_layout_name == "week":
+                self.fetch_this_week_online(activity_name=actdict[btn.activity_type])
+            else:
+                self.fetch_this_month_online(activity_name=actdict[btn.activity_type])
         else:
             self.fetch_this_week_offline()
         self.current_hero_tag = btn.hero_tag
@@ -194,13 +207,14 @@ class MainStatisticScreen(MDScreen):
         self.changeable_widget.manager = self.manager
 
     def build_chosen_day(self):
+        self.fetch_this_day_online()
         changeable = self.ids["changeable"]
         self.rectangle_radius = [20, 20, 0, 0]
         self.rectangle_height = dp(200)
         self.active_layout = self.layouts["day"]
         changeable.add_widget(self.active_layout)
 
-    def goto_das(self, activity_name, time, activity_data=None):
+    def goto_das(self, activity_name="None", time=0, activity_data=None):
         das = self.manager.get_screen("das")
-        das.start_up_screen(activity_name, time)
+        das.start_up_screen(activity_name, time,activity_data)
         self.manager.current = "das"

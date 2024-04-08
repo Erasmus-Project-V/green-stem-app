@@ -5,36 +5,12 @@
     name: "das"
     id: das
     heroes_to: [hero_to]
-    canvas:
-        Color:
-            rgba: app.primary_colors["dark_grey"]
-        RoundedRectangle:
-            id: rounded_rectangle
-            pos: (dp(20), dp(500))  # Position the rectangle at the widget's position
-            size: (root.width - dp(40), dp(190))
-            radius: [40, 40, 40, 40]  # Set the radius of the corners
-
-    MDRelativeLayout:
-        pos_hint: {"center_x":0.5,"center_y":0.75}
-        MDLabel:
-            halign: "center"
-            valign: "top"
-            text: "KARTA"
-
-    MDHeroTo:
-        id: hero_to
-        tag: "hero"
-        size: "320dp", "320dp"
-        size_hint: None, None
-        pos_hint: {"center_x":0.5,"center_y":0.67}
-
     MDTopAppBar:
         id: top_bar
         pos_hint: {"top": 1}
         # title: "null"
         md_bg_color: app.primary_colors["dark_grey"]
         left_action_items: [["chevron-left", lambda x: root.back_arrow()]]
-
 
     MDBoxLayout:
         orientation: "horizontal"
@@ -55,23 +31,72 @@
             text: "Time"
             font_size: dp(15)
 
-    QuantityDisplayWidget:
-        id: changeable_unit_quantity
-        title: "KALORIJE"
-        quantity: "1550"
-        dimension: "medium"
-        pos_hint: {"center_x":0.5,"center_y":0.47}
+    MDScrollView:
+        id: stat_scroller
+        pos_hint: {"center_x":0.5,"center_y":0.45}
+        size_hint: 1,.9
+        bar_width: 0
+        always_overscroll: False
+        smooth_scroll_end: 0
+        MDRelativeLayout:
+            md_bg_color: (1,0,0,0)
+            id: scroller_child
+            size_hint_y: None
+            height: self.parent.height * 1.5
+            size_hint_x: 1
+            canvas:
+                Color:
+                    rgba: app.primary_colors["dark_grey"]
+                RoundedRectangle:
+                    id: rounded_rectangle
+                    pos: (dp(20), dp(800))  # Position the rectangle at the widget's position
+                    size: (root.width - dp(40), dp(190))
+                    radius: [40, 40, 40, 40]  # Set the radius of the corners
 
-    QuantityDisplayWidget:
-        id: time_quantity
-        title: "VRIJEME"
-        quantity: "1550"
-        dimension: "small"
-        pos_hint: {"center_x":0.26,"center_y":0.23}
+            MDRelativeLayout:
+                pos_hint: {"center_x":0.5,"center_y":0.8}
+                MDLabel:
+                    halign: "center"
+                    valign: "top"
+                    text: "KARTA"
 
-    QuantityDisplayWidget:
-        id: distance_quantity
-        title: "KM"
-        quantity: "1550"
-        dimension: "small"
-        pos_hint: {"center_x":0.74,"center_y":0.23}
+            MDHeroTo:
+                id: hero_to
+                tag: "hero"
+                size: "320dp", "320dp"
+                size_hint: None, None
+                pos_hint: {"center_x":0.5,"center_y":0.8}
+
+            QuantityDisplayWidget:
+                id: changeable_unit_quantity
+                title: "CALORIES"
+                quantity: "0"
+                dimension: "medium"
+                pos_hint: {"center_x":0.5,"center_y":0.625}
+
+            QuantityDisplayWidget:
+                id: time_quantity
+                title: "TIME"
+                quantity: "0"
+                dimension: "small"
+                pos_hint: {"center_x":0.26,"center_y":0.45}
+
+            QuantityDisplayWidget:
+                id: distance_quantity
+                title: "DISTANCE"
+                quantity: "0"
+                dimension: "small"
+                pos_hint: {"center_x":0.74,"center_y":0.45}
+
+            QuantityDisplayWidget:
+                id: velocity_quantity
+                title: "VELOCITY"
+                quantity: "0"
+                dimension: "small"
+                pos_hint: {"center_x":0.26,"center_y":0.3}
+            QuantityDisplayWidget:
+                id: util
+                title: "Steps?"
+                quantity: "0"
+                dimension: "small"
+                pos_hint: {"center_x":0.74,"center_y":0.3}
