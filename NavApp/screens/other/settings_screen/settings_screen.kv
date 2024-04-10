@@ -4,6 +4,8 @@
 <SettingsScreen>:
     name: "stg"
     id: stg
+    md_bg_color: app.primary_colors["black"]
+    blue_ref: app.primary_colors["light_blue"]
     TopReturnButtonWidget:
         release_func: root.return_to_profile
     MDLabel:
@@ -13,5 +15,14 @@
         font_name: app.fonts["sans_bold"]
         halign: "center"
     MDBoxLayout:
-        MDLabel:
-            text: "Settings"
+        orientation: "vertical"
+        pos_hint: {"center_x":0.5,"center_y":0.4}
+        size_hint: (0.85,0.4)
+        md_bg_color: (1,0,0,0)
+        ProfileBarWidget:
+            bar_text: "Notifications"
+            release_func: root.open_notifications
+        ProfileBarWidget:
+            bar_text: "Personalisation"
+        ProfileBarWidget:
+            bar_text: "Contact us"
