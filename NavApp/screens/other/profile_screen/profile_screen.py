@@ -39,3 +39,6 @@ class ProfileScreen(MDScreen):
 
     def edit_settings(self,button):
         self.manager.goto_screen("stg")
+
+    def open_privacy(self,button):
+        self.manager.goto_screen("tis")

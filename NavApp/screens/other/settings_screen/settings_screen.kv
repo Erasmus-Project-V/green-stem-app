@@ -16,13 +16,14 @@
         halign: "center"
     MDBoxLayout:
         orientation: "vertical"
-        pos_hint: {"center_x":0.5,"center_y":0.4}
-        size_hint: (0.85,0.4)
+        pos_hint: {"center_x":0.5,"center_y":0.7}
+        # tri ikone, svaka je 0.08
+        size_hint: (0.85,0.08 * 3)
         md_bg_color: (1,0,0,0)
         ProfileBarWidget:
             bar_text: "Notifications"
             release_func: root.open_notifications
         ProfileBarWidget:
-            bar_text: "Personalisation"
+            bar_text: "Personalization"
         ProfileBarWidget:
             bar_text: "Contact us"

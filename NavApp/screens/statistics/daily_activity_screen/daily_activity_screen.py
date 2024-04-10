@@ -1,5 +1,4 @@
 import time
-import mapnik
 from kivymd.uix.screen import MDScreen
 
 
