@@ -1,10 +1,10 @@
 [app]
 
 # (str) Title of your application
-title = Fitness app
+title = Go outside
 
 # (str) Package name
-package.name = fran_fitness_app
+package.name = ultimativni_fitness_app
 
 # (str) Package domain (needed for android/ios packaging)
 package.domain = org.vgim
@@ -29,7 +29,7 @@ source.include_exts = py,png,jpg,kv,atlas,kg,ttf,zip
 #source.exclude_patterns = license,images/*/*.jpg
 
 # (str) Application versioning (method 1)
-version = 0.2
+version = 0.3
 
 # (str) Application versioning (method 2)
 # version.regex = __version__ = ['"](.*)['"]

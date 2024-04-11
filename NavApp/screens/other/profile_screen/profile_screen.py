@@ -5,6 +5,11 @@ from custom_widgets.miscellaneous.dialog_widget.dialog_widget import DialogWidge
 
 
 class ProfileScreen(MDScreen):
+
+
+    def start_up_screen(self):
+        au = self.manager.active_user
+        self.ids["uname"].text = au.get_user_attribute("username")
     def sign_out(self, button):
         self.sign_out_dialog = DialogWidget(title="Do you really want to sign out?",
                                             buttons=[

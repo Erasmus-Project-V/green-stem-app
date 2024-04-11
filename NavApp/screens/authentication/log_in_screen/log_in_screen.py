@@ -18,9 +18,8 @@ class LogInScreen(MDScreen):
 
     def open_loading(self,dt):
         ls = self.manager.get_screen("uls")
-        hs = self.manager.get_screen("hme")
         self.check_local_sign_in(0)
-        ls.start(None,self.finish_procedure,.5)
+        ls.start(None,self.finish_procedure,5)
         self.manager.goto_screen("uls")
 
     def check_local_sign_in(self, dt):

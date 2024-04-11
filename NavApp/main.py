@@ -42,6 +42,7 @@ class MainScreenManager(MDScreenManager):
         self.screen_refs = {i: self.screen_names[i] for i in range(len(self.screen_names))}
         self.window_subroutines()
         self.key_history = ["-"]
+        self.transition = FadeTransition()
 
     def add_process(self, ref):
         self.running_processes.append(ref)
@@ -67,8 +68,9 @@ class MainScreenManager(MDScreenManager):
             scrn_ref.start_repeatable_intervals()
         if hasattr(scrn_ref, "start_up_screen"):
             scrn_ref.start_up_screen()
+        if not scrn in ("act"):
+            self.transition = FadeTransition()
         self.current = scrn
-        self.transition = FadeTransition()
 
     def tamper_hero_data(self, widget):
         self._create_heroes_data(widget)
