@@ -109,4 +109,4 @@ class SelectorBehaviorWidget(ScrollView):
             self.bindable_event(self.enumeration_min + self.selected_value)
 
     def get_selected_value(self):
-        return self.enumeration_min + self.selected_value
+        return self.enumeration_min + self.selected_value + 1

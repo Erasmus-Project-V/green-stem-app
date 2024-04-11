@@ -7,17 +7,23 @@
     blue_container: app.primary_colors["light_blue"]
     release_func: root.send_to_email
     MDLabel:
-        text: "bok"
-        pos_hint: {"center_x":0.5,"center_y":0.5}
-    MDLabel:
-        text: "Otvori svoj email"
+        font_name: app.fonts["sans_semi_bold"]
+        color: app.primary_colors["error_color"]
+        font_size: dp(18)
+        text: "Molimo potvrdite svoj e-mail preko poruke koju ste dobili u Vaš inbox."
         halign: "center"
-        pos_hint: {"center_x":0.5,"center_y":0.3}
-    OvalBlueButtonWidget:
-        id: bottom_button
-        button_text: "Send"
-        type: "full"
-        pos_hint: {'center_x': 0.5, 'center_y': 0.2}
-        size_hint: (1,0.1)
-        release_func: root.release_func
-
+        pos_hint: {"center_x":0.5,"center_y":0.8}
+    MDIconButton:
+        icon: "gmail"
+        icon_color: app.primary_colors["light_blue"]
+        icon_size: "256dp"
+        ripple_alpha: 0
+        on_release: root.release_func(self)
+        pos_hint:  {'center_x': 0.5, 'center_y': 0.5}
+    MDLabel:
+        font_name: app.fonts["sans_regular"]
+        font_size: "18dp"
+        text: "Odvedi me na email (pritiskom na ikonu iznad)"
+        color: app.primary_colors["light_blue"]
+        halign: "center"
+        pos_hint: {"center_x":0.5,"center_y":0.27}

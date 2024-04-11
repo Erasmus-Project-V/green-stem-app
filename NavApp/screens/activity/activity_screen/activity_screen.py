@@ -262,7 +262,11 @@ class ActivityScreen(MDScreen):
             self.active_activity = None
 
     def quit_activity(self, button=None, *args):
+        b = self.ids["stop_button"].ids["btn_in"]
         if platform == "android":
             self.stop_service()
         self.manager.transition = FadeTransition()
         self.manager.goto_screen("hme")
+        print(b._tooltip)
+        if b._tooltip:
+            b.remove_tooltip()

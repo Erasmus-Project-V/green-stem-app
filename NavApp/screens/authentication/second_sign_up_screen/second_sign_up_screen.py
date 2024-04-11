@@ -1,5 +1,7 @@
 import json
 
+from kivy.animation import Animation
+from kivy.clock import Clock
 from kivy.network.urlrequest import UrlRequest
 from kivymd.uix.screen import MDScreen
 from custom_widgets.authentication.gender_selector_widget.gender_selector_widget import GenderSelectorWidget
@@ -22,6 +24,7 @@ class SecondSignUpScreen(MDScreen):
         self.return_button = None
         self.active = None
         self.widgets = {}
+        self.loaded_widgets = 5
         self.phase_ref = {1: self.activate_mail_verification,
                           2: self.activate_gender,
                           3: self.activate_selector,
@@ -37,18 +40,42 @@ class SecondSignUpScreen(MDScreen):
             "height": None,
         }
 
+
+    def initialize_widgets(self,dt):
+        self.widgets = \
+            {1: MailVerificationWidget(repeatable_method=self.mail_ping),
+             2: None,  # gender selector
+             3: None,  # age selector
+             4: None,  # weight selector
+             5: None,  # height selector
+             }
+        Clock.schedule_once(self.initialize_gww, 0)
+        Clock.schedule_once(self.initialize_asw, 0.5)
+        Clock.schedule_once(self.initialize_asw2, 1)
+        Clock.schedule_once(self.initialize_waw, 2)
+
+    def initialize_gww(self,dt=0):
+        self.widgets[2] = GenderSelectorWidget(bindable=self.enable_progression)
+        self.loaded_widgets += 1
+
+    def initialize_asw(self,dt=0):
+        self.widgets[3] = AgeSelectorWidget()
+        self.loaded_widgets += 1
+
+    def initialize_asw2(self,dt=0):
+        self.widgets[5] = AgeSelectorWidget()
+        self.widgets[5].re_argument(enumeration_min=100, button_num=120)
+        self.loaded_widgets += 1
+
+    def initialize_waw(self,dt=0):
+        self.widgets[4] = WeightSelectorWidget()
+        self.loaded_widgets += 1
+
     def start_repeatable_intervals(self):
         ## ovo se jako dugo učitava!
         ## mozda raspodijeliti?
-        self.widgets = \
-            {1: MailVerificationWidget(repeatable_method=self.mail_ping),
-             2: GenderSelectorWidget(bindable=self.enable_progression),  # gender selector
-             3: AgeSelectorWidget(),  # age selector
-             4: WeightSelectorWidget(),  # weight selector
-             5: AgeSelectorWidget(),  # height selector
-             }
-        self.widgets[5].re_argument(enumeration_min=100, button_num=120)
         self.start_up()
+
 
     def mail_ping(self, dt):
 
@@ -80,13 +107,26 @@ class SecondSignUpScreen(MDScreen):
 
     def activate_current(self):
         if self.active:
+            anim1 = Animation(opacity=0,duration=0.5)
+            anim1.bind(on_complete=self.ac01)
+            anim1.start(self.active)
+        else:
+            self.ac01()
+
+
+    def ac01(self,*args):
+        if self.active:
             self.active.stop_repeatable_intervals()
             self.changeable.remove_widget(self.active)
+        anim2 = Animation(opacity=1,duration=0.5)
         if self.phase <= len(self.widgets):
             self.active = self.widgets[self.phase]
+            self.active.opacity = 0
             self.changeable.add_widget(self.active)
             self.active.start_repeatable_intervals()
         self.phase_ref[self.phase]()
+        anim2 = Animation(opacity=1,duration=0.5)
+        anim2.start(self.active)
 
     def activate_mail_verification(self):
         self.return_button.opacity = 0.0

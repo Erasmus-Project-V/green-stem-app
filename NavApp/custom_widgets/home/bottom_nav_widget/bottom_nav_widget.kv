@@ -39,6 +39,11 @@
         icon_color: app.primary_colors["white"] if root.selected == 3 else app.primary_colors["dark_grey"]
         on_release:
             root.selector_pressed(self)
+    MDRelativeLayout:
+    Image:
+        pos_hint: {"center_x":0.90,"center_y":0.5}
+        source: "assets/images/profile_icon.png"
+        size_hint: (0.1,0.5)
     MDIconButton:
         name: "account_button"
         id: account
@@ -50,7 +55,3 @@
         icon_color: app.primary_colors["white"] if root.selected == 4 else app.primary_colors["darker_grey"]
         on_release:
             root.selector_pressed(self)
-    Image:
-        pos_hint: {"center_x":0.90,"center_y":0.5}
-        source: "assets/images/sample_profile_picture.png"
-        size_hint: (0.1,0.5)

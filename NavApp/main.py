@@ -37,7 +37,6 @@ class MainScreenManager(MDScreenManager):
         super().__init__(**kwargs)
         print(self.screen_names)
         self.active_user = UserManager()
-        self.current = "lgn"
         self.dimensions = (Config.get("graphics", "width"), Config.get("graphics", "height"))
         self.running_processes = []
         self.screen_refs = {i: self.screen_names[i] for i in range(len(self.screen_names))}
@@ -108,9 +107,6 @@ class FitnessApp(MDApp):
     def on_pause(self):
         print('paused!')
         return True
-
-
-
 
     def on_resume(self):
         print("resumed!")
