@@ -1,0 +1,79 @@
+#File name: quick_friend_activity_widget.kv
+
+<QuickFriendActivityWidget>:
+    img_path: "assets/images/sample_profile_picture.png"
+    size_hint: None, None
+    size: (dp(340), dp(280))
+    friend_name: "jakov35"
+    like_count: "0"
+    canvas.before:
+        Color:
+            rgba: app.primary_colors["dark_grey"]
+        RoundedRectangle:
+            pos: (0, 0)  # Position the rectangle at the widget's position
+            size: (root.width, root.height)  # Set the rectangle size to the widget's size
+            radius: [28, 28, 28, 28]  # Set the radius of the corners
+
+    MDRelativeLayout:
+        size_hint: None, None
+        size: (dp(37.6), dp(37.8))
+        pos_hint: {"center_x":0.15,"center_y":0.9}
+        FitImage:
+            size_hint:  1, 1
+            fit_mode: "fill"
+            opacity: 0.7
+            pos_hint: {"center_x": 0.5, "center_y": 0.5}
+            source: root.img_path
+            radius: [20, 20, 20, 20]
+
+    MDRelativeLayout:
+        size_hint: 1, 0.2
+        pos_hint: {"center_x":0.73,"center_y":0.9}
+        MDLabel:
+            text: root.friend_name
+        MDRelativeLayout:
+            size_hint: None, None
+            size: (dp(20), dp(18))
+            pos_hint: {"center_x":0.6,"center_y":0.5}
+            Button:
+                background_color: 0, 0, 0, 0
+                size_hint: 1, 1
+                on_press:
+                    root.change_heart_color()
+                FitImage:
+                    id: heart_icon
+                    size_hint: None, None
+                    size: self.parent.size
+                    allow_stretch: False
+                    source: "assets/images/sprites/Heart_empty.png"
+                    opacity: 1
+
+        Label:
+            text: root.like_count
+            pos_hint: {"center_x":0.67,"center_y":0.5}
+
+    MDStackLayout:
+        orientation: "tb-lr"
+        spacing: dp(-260)
+        size_hint: 1, 0.2
+        pos_hint: {"center_x":0.58,"center_y":0.77}
+        MDLabel:
+            text: "Trcanje"
+            font_size: dp(18)
+
+        MDLabel:
+            text: "15:30"
+            font_size: dp(14)
+            color: app.primary_colors["light_blue"]
+
+    QuantityDisplayWidget:
+        title: "STEPS"
+        quantity: "1520"
+        pos_hint: {"center_x":0.25,"center_y":0.4}
+        dimension: "small"
+
+    QuantityDisplayWidget:
+        title: "TEMPO"
+        quantity: "8"
+        pos_hint: {"center_x":0.75,"center_y":0.4}
+        dimension: "small"
