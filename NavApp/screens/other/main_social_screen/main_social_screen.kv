@@ -4,8 +4,65 @@
     name: "mso"
     md_bg_color: app.primary_colors["black"]
     id: mso
-    MDBoxLayout:
-        MDLabel:
-            text: "Social Screen"
+    MDRelativeLayout:
+        size_hint: (0.92,0.1)
+        pos_hint: {"center_x":0.5,"center_y":0.98}
+        InputWidget:
+            id: friend_name
+            placeholder_text: "Add a friend"
+            is_password: False
+
+    MDScrollView:
+        id: stat_scroller
+        pos_hint: {"center_x":0.5,"center_y":0.45}
+        size_hint: 1,.9
+        bar_width: 0
+        #always_overscroll: False
+        #smooth_scroll_end: 0
+        MDRelativeLayout:
+            md_bg_color: (1,0,0,0)
+            id: scroller_child
+            size_hint_y: None
+            height: self.parent.height
+            size_hint_x: 1
+
+            TitleSeparatorWidget:
+                pos_hint: {"center_x":0.5,"center_y":0.95}
+                title_text: "LEADERBOARD"
+
+            ActivityHistoryCardWidget:
+                img_path:"assets/images/home/home_trcanje_1.png"
+                activity_name: "Public Leaderboard"
+                activity_time: "users from all schools"
+                card_function: root.tmp_function()
+                pos_hint: {"center_x":0.5,"center_y":0.85}
+
+            ActivityHistoryCardWidget:
+                img_path:"assets/images/home/home_bicikliranje_1.png"
+                activity_name: "Friends Leaderboard"
+                activity_time: "only your friends"
+                card_function: root.tmp_function()
+                longer_text: True
+                pos_hint: {"center_x":0.5,"center_y":0.73}
+
+            TitleSeparatorWidget:
+                pos_hint: {"center_x":0.5,"center_y":0.6}
+                title_text: "YOUR ACTIVITY"
+
+            ActivityHistoryCardWidget:
+                img_path:"assets/images/sprites/share.png"
+                activity_name: "Share your activity"
+                activity_time: "to all users"
+                card_function: root.tmp_function()
+                pos_hint: {"center_x":0.5,"center_y":0.5}
+                is_icon_image: True
+
+            TitleSeparatorWidget:
+                pos_hint: {"center_x":0.5,"center_y":0.38}
+                title_text: "FRIEND ACTIVITY"
+
+            QuickFriendActivityWidget:
+                pos_hint: {"center_x":0.5,"center_y":0.12}
+
     BottomNavWidget:
         selected: 3
