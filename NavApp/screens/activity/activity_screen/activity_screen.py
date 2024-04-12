@@ -150,11 +150,11 @@ class ActivityScreen(MDScreen):
                     print("Got all permissions!")
                     self.start_service()
                 else:
-                    self.open_gps_access_popup()
+                    self.manager.goto_screen("hme")
 
             request_permissions([Permission.ACCESS_COARSE_LOCATION,
                                  Permission.ACCESS_FINE_LOCATION,
-                                 Permission.ACCESS_BACKGROUND_LOCATION], callback)
+                                 ], callback)
 
 
 
