@@ -29,7 +29,7 @@ class SignUpScreen(MDScreen):
             comp_text = comp.return_text()
             if comp.name == "password":
                 pass_holder = comp
-            if len(comp_text) < 4:
+            if len(comp_text) < 8:
                 comp.enter_error_mode(f"{comp.name.capitalize()} je prazan ili prekratak!")
                 continue
             elif len(comp_text) > 24:

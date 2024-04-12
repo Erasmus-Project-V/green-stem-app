@@ -1,7 +1,8 @@
 from kivy.clock import Clock
-from kivymd.uix.button import MDRaisedButton, MDFillRoundFlatButton
+from kivymd.uix.button import MDRaisedButton, MDFillRoundFlatButton, MDIconButton
 from kivymd.uix.relativelayout import MDRelativeLayout
 from kivy.properties import StringProperty
+from kivymd.uix.tooltip import MDTooltip
 
 
 class PausePlayButtonWidget(MDRelativeLayout):
@@ -13,7 +14,7 @@ class PausePlayButtonWidget(MDRelativeLayout):
         super().__init__(*args, **kwargs)
         self.md_bg_color = (1, 1, 1, 1)
         self.checker = None
-        self.hold_timeout = 3
+        self.hold_timeout = 2
 
     def hold_complete(self, dt):
         print("Implement custom hold command! (or just placeholder)")

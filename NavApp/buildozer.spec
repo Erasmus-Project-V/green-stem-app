@@ -1,10 +1,10 @@
 [app]
 
 # (str) Title of your application
-title = Fitness app
+title = Go outside
 
 # (str) Package name
-package.name = fran_fitness_app
+package.name = ultimativni_fitness_app
 
 # (str) Package domain (needed for android/ios packaging)
 package.domain = org.vgim
@@ -13,7 +13,7 @@ package.domain = org.vgim
 source.dir = .
 
 # (list) Source files to include (let empty to include all the files)
-source.include_exts = py,png,jpg,kv,atlas,kg,ttf
+source.include_exts = py,png,jpg,kv,atlas,kg,ttf,zip
 
 # (list) List of inclusions using pattern matching
 #source.include_patterns = assets/*,images/*.png
@@ -29,7 +29,7 @@ source.include_exts = py,png,jpg,kv,atlas,kg,ttf
 #source.exclude_patterns = license,images/*/*.jpg
 
 # (str) Application versioning (method 1)
-version = 0.2
+version = 0.3
 
 # (str) Application versioning (method 2)
 # version.regex = __version__ = ['"](.*)['"]
@@ -43,7 +43,7 @@ requirements = python3,kivy,kivymd==1.2.0,https://github.com/HyTurtle/plyer/arch
 # requirements.source.kivy = ../../kivy
 
 # (str) Presplash of the application
-presplash.filename = %(source.dir)s/assets/images/auth_background.png
+presplash.filename = %(source.dir)s/assets/videos/loading.zip
 
 # (str) Icon of the application
 icon.filename = %(source.dir)s/assets/images/placeholder_icon.png

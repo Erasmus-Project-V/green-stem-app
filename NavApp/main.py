@@ -37,12 +37,12 @@ class MainScreenManager(MDScreenManager):
         super().__init__(**kwargs)
         print(self.screen_names)
         self.active_user = UserManager()
-        self.current = "lgn"
         self.dimensions = (Config.get("graphics", "width"), Config.get("graphics", "height"))
         self.running_processes = []
         self.screen_refs = {i: self.screen_names[i] for i in range(len(self.screen_names))}
         self.window_subroutines()
         self.key_history = ["-"]
+        self.transition = FadeTransition()
 
     def add_process(self, ref):
         self.running_processes.append(ref)
@@ -68,8 +68,9 @@ class MainScreenManager(MDScreenManager):
             scrn_ref.start_repeatable_intervals()
         if hasattr(scrn_ref, "start_up_screen"):
             scrn_ref.start_up_screen()
+        if not scrn in ("act"):
+            self.transition = FadeTransition()
         self.current = scrn
-        self.transition = FadeTransition()
 
     def tamper_hero_data(self, widget):
         self._create_heroes_data(widget)
@@ -108,9 +109,6 @@ class FitnessApp(MDApp):
     def on_pause(self):
         print('paused!')
         return True
-
-
-
 
     def on_resume(self):
         print("resumed!")

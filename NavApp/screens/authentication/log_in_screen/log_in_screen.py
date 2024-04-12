@@ -12,8 +12,15 @@ class LogInScreen(MDScreen):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        Clock.schedule_once(self.check_local_sign_in, 0.01)
+        Clock.schedule_once(self.open_loading, 0)
         self.waiter = Clock.schedule_interval(self.start_up_screen,.2)
+        self.procedure_case = 0
+
+    def open_loading(self,dt):
+        ls = self.manager.get_screen("uls")
+        self.check_local_sign_in(0)
+        ls.start(None,self.finish_procedure,5)
+        self.manager.goto_screen("uls")
 
     def check_local_sign_in(self, dt):
         if self.manager.active_user.load_user_data():
@@ -69,6 +76,16 @@ class LogInScreen(MDScreen):
         self.manager.active_user.write_user_data(response_text["token"], response_text["record"])
         self.ids["password_text"].clear_text()
         self.check_for_unfinished_sign_up()
+        if self.procedure_case == 1:
+            ls = self.manager.get_screen("uls")
+            ls.start(None,self.finish_procedure,4)
+            self.manager.goto_screen("uls")
+        else:
+            self.finish_procedure(0)
+
+    def finish_procedure(self,dt):
+        refs = {0:"lgn",1:"sss",2:"hme"}
+        self.manager.goto_screen(refs[self.procedure_case])
 
     def check_for_unfinished_sign_up(self):
         if not self.manager.active_user.get_user_attribute("verified"):
@@ -81,11 +98,15 @@ class LogInScreen(MDScreen):
                                                       "sucess! (mail verification request)"),
                                                   error_func=self.error_sign_in,
                                                   )
-            self.manager.goto_screen("sss")
+            self.procedure_case = 1
+            sss = self.manager.get_screen("sss")
+            Clock.schedule_once(sss.initialize_widgets, 1)
         elif not self.manager.active_user.get_user_attribute("weight"):
-            self.manager.goto_screen("sss")
+            self.procedure_case = 1
         else:
-            self.manager.goto_screen("hme")
+            self.procedure_case = 2
+            hs = self.manager.get_screen("hme")
+            Clock.schedule_once(hs.set_up_user_data,0.1)
 
 
     def error_sign_in(self, thread, text):

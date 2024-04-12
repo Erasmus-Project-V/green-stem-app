@@ -1,3 +1,5 @@
+import random
+
 from kivy.animation import Animation
 from kivy.clock import Clock
 from kivy.gesture import Gesture, GestureStroke, GestureDatabase
@@ -37,6 +39,7 @@ class HomeScreen(MDScreen):
         self.top_text_widget = None
 
         self.is_built = False
+        self.user_data_is_built = False
         self.event = Clock.schedule_once(self.further_build, 0)
 
     def further_build(self, dt):
@@ -51,7 +54,7 @@ class HomeScreen(MDScreen):
         self.top_text_widget = self.ids["top_text"]
 
         self.image_swiper.component_width = dp(self.manager.dimensions[0])
-        self.image_swiper.encase_kwargs["width"] = dp(self.manager.dimensions[0]) / 3
+        self.image_swiper.encase_kwargs["width"] = dp(self.image_swiper.width * 1.3)
         self.image_swiper.build_self(None)
         self.second_image_container.opacity = 0
         self.is_built = True
@@ -60,12 +63,29 @@ class HomeScreen(MDScreen):
         if not self.is_built:
             self.event.cancel()
             self.further_build(0)
-        self.set_up_user_data()
+        if not self.user_data_is_built:
+            self.set_up_user_data()
 
-    def set_up_user_data(self):
+    def set_up_user_data(self,*args):
         username = self.manager.active_user.get_user_attribute("username")
         if username:
             self.top_text_widget.text = f"Hello, {username}!"
+        quote_id = random.randint(0,100)
+        self.manager.active_user.send_request(f"/api/collections/quotes/records?filter=(index='{quote_id}')",method="GET",
+                                              success_func=self.finish_setting_up_user_data,
+                                              headers=None,
+                                              error_func=lambda a,b: print(b))
+        self.user_data_is_built = True
+
+    def finish_setting_up_user_data(self,resp,data):
+        if not len(data["items"]) == 1:
+            print(resp)
+            return
+        quote_author = data["items"][0]["author"]
+        quote_text = data["items"][0]["text"]
+        print(quote_author,quote_text)
+        text = quote_text + " - " + quote_author
+        self.top_text_widget.text = text
 
     def handle_gesture_complete(self, surface, container: GestureContainer):
         if self.gesture_locked:

@@ -6,11 +6,27 @@
     id: pfs
     md_bg_color: app.primary_colors["black"]
     blue_ref: app.primary_colors["light_blue"]
-    MDBoxLayout:
-        orientation: "horizontal"
+    user_name: "Null"
+    MDRelativeLayout:
         pos_hint: {"center_x":0.5,"center_y":0.75}
         md_bg_color: (0,0,1,0)
         size_hint: (0.8,0.2)
+        Image:
+            source: "assets/images/profile_icon.png"
+            pos_hint: {"center_x":.25,"center_y":.5}
+            size_hint: 0.75,0.75
+        Image:
+            source: "assets/images/sprites/profile_bar_underline.png"
+            pos_hint: {"center_x":.5,"center_y":.5}
+            size_hint: 0.01,1
+            fit_mode: "fill"
+        MDLabel:
+            id: uname
+            text: root.user_name
+            font_size: dp(24)
+            font_name: app.fonts["sans_semi_bold"]
+            halign: "center"
+            pos_hint: {"center_x":.75}
     MDBoxLayout:
         orientation: "vertical"
         pos_hint: {"center_x":0.5,"center_y":0.4}

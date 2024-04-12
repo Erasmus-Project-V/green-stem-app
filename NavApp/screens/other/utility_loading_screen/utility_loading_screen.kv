@@ -1,0 +1,25 @@
+#File name: utility_loading_screen.kv
+
+
+<UtilityLoadingScreen>:
+    name: "uls"
+    id: uls
+    element_opacity: 0
+    MDRelativeLayout:
+        md_bg_color: (0,0,0,1)
+        pos_hint: {"center_x":0.5,"center_y":0.5}
+        size_hint: (1,1)
+        Image:
+            opacity: root.element_opacity
+            pos_hint: {"center_x":0.5,"center_y":0.5}
+            source: "assets/videos/loading.zip"
+            size_hint: (1,1)
+            anim_delay: 0.04
+        MDLabel:
+            id: loader
+            opacity: root.element_opacity
+            font_name: app.fonts["advent_regular"]
+            font_size: "36dp"
+            text: root.loader_text
+            halign: "center"
+            pos_hint: {"center_x":0.5,"center_y":0.25}

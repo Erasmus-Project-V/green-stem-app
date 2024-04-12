@@ -32,11 +32,13 @@
         id: changeable
         size_hint: (0.6,0.6)
         pos_hint: {"center_x":0.5,"center_y":0.5}
-        Image:
+        MDIcon:
+            icon: "arrow-right-bold-outline"
+            color: app.primary_colors["light_blue"]
             id: selector
             opacity: 0.0
-            pos_hint: {"center_x":0.5,"center_y":0.45}
-            source: "assets/images/selector.png"
+            font_size: "64dp"
+            pos_hint: {"center_x":0.125,"center_y":0.45}
             size_hint: (0.45,0.45)
         MDLabel:
             id: desc_text
@@ -51,7 +53,7 @@
             id: side_text
             opacity: 1.0
             text: "Age"
-            pos_hint: {"center_x":0.85,"center_y":0.45}
+            pos_hint: {"center_x":0.875,"center_y":0.45}
             font_size: dp(30)
             halign: "center"
             font_name:  app.fonts["actor_regular"]

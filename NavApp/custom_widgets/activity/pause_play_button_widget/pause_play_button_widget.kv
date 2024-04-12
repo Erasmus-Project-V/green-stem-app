@@ -1,6 +1,9 @@
 #:import utils kivy.utils
 #File name: pause_play_button_widget.kv
 
+<TooltipMDIconButton@MDIconButton+MDTooltip>:
+
+
 <PausePlayButtonWidget>:
     md_bg_color: (0,0,1,0)
     size_hint:(0.4,0.1)
@@ -14,14 +17,20 @@
     button_name: "None"
     button_icon: root.button_type
     button_ripple: 1
-    MDFillRoundFlatButton:
+    TooltipMDIconButton:
         id: btn_in
         ripple_alpha: 0.5 * root.button_ripple
         ripple_color: app.primary_colors["dark_grey"]
         style: "filled"
+        icon: {"play":"play", "stop":"stop"}[root.button_icon]
         md_bg_color: root.button_bg_color
         size: root.button_dims
         disabled: root.button_disabled
+        tooltip_text: "hold to exit" if root.button_type == "stop" else ""
+        tooltip_bg_color: app.primary_colors["dark_grey"]
+        tooltip_text_color: (1,1,1,1)
+        tooltip_radius: [dp(10),]
+        shift_y: dp(100)
         pos_hint: {"center_x":0.5,"center_y":0.5}
         name: root.button_name
         on_press:
@@ -29,7 +38,3 @@
         on_release:
             root.release_func(self)
             root.release_inline(self)
-    MDIcon:
-        pos_hint: {"center_x":0.5,"center_y":0.5}
-        icon_size: dp(64)
-        icon: root.button_icon

@@ -150,11 +150,11 @@ class ActivityScreen(MDScreen):
                     print("Got all permissions!")
                     self.start_service()
                 else:
-                    self.open_gps_access_popup()
+                    self.manager.goto_screen("hme")
 
             request_permissions([Permission.ACCESS_COARSE_LOCATION,
                                  Permission.ACCESS_FINE_LOCATION,
-                                 Permission.ACCESS_BACKGROUND_LOCATION], callback)
+                                 ], callback)
 
 
 
@@ -262,7 +262,11 @@ class ActivityScreen(MDScreen):
             self.active_activity = None
 
     def quit_activity(self, button=None, *args):
+        b = self.ids["stop_button"].ids["btn_in"]
         if platform == "android":
             self.stop_service()
         self.manager.transition = FadeTransition()
         self.manager.goto_screen("hme")
+        print(b._tooltip)
+        if b._tooltip:
+            b.remove_tooltip()
