@@ -2,14 +2,8 @@ from kivy.metrics import dp
 from kivymd.uix.screen import MDScreen
 
 
-class MainSocialScreen(MDScreen):
-    def goto_leaderboard(self,*args):
-        self.manager.goto_screen("lss")
-
-    def add_friends_activities(self):
-        pass
+class LeaderboardSocialScreen(MDScreen):
     def start_up_screen(self):
-        self.add_friends_activities()
         self.reheight()
 
 
