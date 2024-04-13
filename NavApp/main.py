@@ -68,8 +68,6 @@ class MainScreenManager(MDScreenManager):
             scrn_ref.start_repeatable_intervals()
         if hasattr(scrn_ref, "start_up_screen"):
             scrn_ref.start_up_screen()
-        if not scrn in ("act"):
-            self.transition = FadeTransition()
         self.current = scrn
 
     def tamper_hero_data(self, widget):

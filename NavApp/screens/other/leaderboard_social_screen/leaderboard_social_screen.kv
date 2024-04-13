@@ -1,0 +1,35 @@
+#File name: leaderboard_social_screen.kv
+
+<LeaderboardSocialScreen>:
+    name: "lss"
+    md_bg_color: app.primary_colors["black"]
+    id: lss
+    MDRelativeLayout:
+        size_hint: (0.92,0.1)
+        pos_hint: {"center_x":0.5,"center_y":0.98}
+        InputWidget:
+            id: friend_name
+            placeholder_text: "Add a friend"
+            is_search: True
+
+    MDScrollView:
+        id: stat_scroller
+        pos_hint: {"center_x":0.5,"center_y":0.54}
+        size_hint: 1,.78
+        bar_width: 0
+        always_overscroll: False
+        #smooth_scroll_end: 0
+        MDStackLayout:
+            id: ws
+            md_bg_color: (1,0,0,0)
+            id: scroller_child
+            size_hint_y: None
+            size_hint_x: 1
+            spacing: (0,"10dp")
+
+            TitleSeparatorWidget:
+                title_text: "LEADERBOARD"
+
+
+    BottomNavWidget:
+        selected: 3

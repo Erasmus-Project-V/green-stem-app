@@ -1,5 +1,6 @@
 import json
 
+import kivy.utils
 from kivy.clock import Clock
 from kivy.storage.jsonstore import JsonStore
 from kivymd.uix.screen import MDScreen
@@ -19,7 +20,8 @@ class LogInScreen(MDScreen):
     def open_loading(self,dt):
         ls = self.manager.get_screen("uls")
         self.check_local_sign_in(0)
-        ls.start(None,self.finish_procedure,5)
+        delay = 5 if kivy.utils.platform == "android" else 0.5
+        ls.start(None,self.finish_procedure,delay)
         self.manager.goto_screen("uls")
 
     def check_local_sign_in(self, dt):

@@ -3,6 +3,7 @@ import time
 
 from kivy.animation import Animation
 from kivy.clock import Clock
+from kivymd.uix.button import MDFlatButton
 from kivymd.uix.relativelayout import MDRelativeLayout
 from kivymd.uix.screen import MDScreen
 from custom_widgets.statistics.calendar_widget.calendar_widget import CalendarWidget
@@ -15,6 +16,9 @@ from kivy.metrics import dp
 from kivymd.uix.screenmanager import MDScreenManager
 from kivymd.uix.transition import MDSlideTransition, MDFadeSlideTransition
 from custom_widgets.activity_grid_widget.activity_grid_widget import ActivityGridWidget
+
+from NavApp.custom_widgets.miscellaneous.dialog_widget.dialog_widget import DialogWidget
+
 
 class MainStatisticScreen(MDScreen):
     image_root = "assets/images/home/"
@@ -100,13 +104,28 @@ class MainStatisticScreen(MDScreen):
             cs = self.weekly_screen
             cs.receive_activity_data(self.exercises,self.n_exercises)
         else:
+            if self.n_exercises == 0:
+                print("no activities for current day")
+                return
             x = self.active_layout.children[0]
             x.clear_activity_cards()
             x.receive_activity_data(self.exercises,self.n_exercises,self.goto_das)
 
     def failed_fetch(self, a, b):
-        print(a)
         print(b)
+        self.no_connection_dialog = DialogWidget(title="No connection or server down",
+                                                 text=str(b),buttons=[MDFlatButton(
+            text="Dismiss",
+            theme_text_color="Custom",
+            text_color=self.blue_ref,
+            on_release=self.close_dialog_and_retry
+
+        ),])
+        self.no_connection_dialog.open()
+
+    def close_dialog_and_retry(self,*args):
+        self.no_connection_dialog.dismiss()
+
 
     def check_for_connection(self):
         if not self.user.check_for_wifi(0):
