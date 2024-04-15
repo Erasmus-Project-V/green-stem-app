@@ -6,7 +6,6 @@ class LeaderboardSocialScreen(MDScreen):
     def start_up_screen(self):
         self.reheight()
 
-
     def reheight(self):
         sl = self.ids["stat_scroller"].children[0]
         total = 0
@@ -19,3 +18,6 @@ class LeaderboardSocialScreen(MDScreen):
             self.ids["stat_scroller"].do_scroll_y = False
         else:
             self.ids["stat_scroller"].do_scroll_y = True
+
+    def goto_main_social_screen(self,*args):
+        self.manager.goto_screen("mso")
