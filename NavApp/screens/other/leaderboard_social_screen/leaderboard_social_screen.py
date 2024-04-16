@@ -3,8 +3,9 @@ from kivymd.uix.screen import MDScreen
 
 
 class LeaderboardSocialScreen(MDScreen):
-    def start_up_screen(self):
+    def start_up_screen(self, leaderboard_type):
         self.reheight()
+        self.ids["top_bar"].title = leaderboard_type
 
     def reheight(self):
         sl = self.ids["stat_scroller"].children[0]
