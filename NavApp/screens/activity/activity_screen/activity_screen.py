@@ -14,6 +14,7 @@ from scripts.activity_manager import ActivityManager, Activity
 
 from scripts.navigation_manager import NavigationManager
 
+
 if platform == "android":
     from jnius import autoclass
     from android import mActivity
@@ -154,6 +155,7 @@ class ActivityScreen(MDScreen):
 
             request_permissions([Permission.ACCESS_COARSE_LOCATION,
                                  Permission.ACCESS_FINE_LOCATION,
+                                 Permission.POST_NOTIFICATIONS,
                                  ], callback)
 
 
