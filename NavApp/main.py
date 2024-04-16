@@ -69,6 +69,7 @@ class MainScreenManager(MDScreenManager):
         if hasattr(scrn_ref, "start_up_screen"):
             scrn_ref.start_up_screen()
         self.current = scrn
+        self.transition = FadeTransition()
 
     def tamper_hero_data(self, widget):
         self._create_heroes_data(widget)
