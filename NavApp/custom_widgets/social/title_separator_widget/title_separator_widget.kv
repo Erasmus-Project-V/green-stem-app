@@ -1,7 +1,8 @@
 #File name: title_separator_widget.kv
 
 <TitleSeparatorWidget>:
-    size_hint: (0.92,0.1)
+    size_hint: (0.92,None)
+    height: "50dp"
     title_text: "Enter text"
     MDLabel:
         pos_hint: {"center_x":0.85,"center_y":0.7}
@@ -9,8 +10,8 @@
         text: root.title_text
         color: [1, 1, 1, 0.65]
 
-    MDLabel:
+    Image:
+        source: "assets/images/sprites/Separator_line.png"
         pos_hint: {"center_x":0.5,"center_y":0.5}
-        id: label
-        text: "__________________________________________________"
-        color: [1, 1, 1, 0.6]
+        size_hint: (1,0.01)
+        opacity: 0.3
