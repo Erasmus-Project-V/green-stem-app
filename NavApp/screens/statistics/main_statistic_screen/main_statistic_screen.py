@@ -17,7 +17,7 @@ from kivymd.uix.screenmanager import MDScreenManager
 from kivymd.uix.transition import MDSlideTransition, MDFadeSlideTransition
 from custom_widgets.activity_grid_widget.activity_grid_widget import ActivityGridWidget
 
-from NavApp.custom_widgets.miscellaneous.dialog_widget.dialog_widget import DialogWidget
+from custom_widgets.miscellaneous.dialog_widget.dialog_widget import DialogWidget
 
 
 class MainStatisticScreen(MDScreen):
