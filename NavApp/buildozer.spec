@@ -13,10 +13,10 @@ package.domain = org.vgim
 source.dir = .
 
 # (list) Source files to include (let empty to include all the files)
-source.include_exts = py,png,jpg,kv,atlas,kg,ttf,zip
+source.include_exts = py,png,jpg,kv,atlas,kg,ttf,zip,html,css,js,ts
 
 # (list) List of inclusions using pattern matching
-#source.include_patterns = assets/*,images/*.png
+source.include_patterns = assets/*,images/*.png
 
 # (list) Source files to exclude (let empty to not exclude anything)
 #source.exclude_exts = spec
@@ -37,7 +37,7 @@ version = 0.3
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = python3,kivy,kivymd==1.2.0,https://github.com/HyTurtle/plyer/archive/master.zip,pillow,android,python-for-android,sqlite3,oscpy
+requirements = python3,kivy,kivymd==1.2.0,https://github.com/HyTurtle/plyer/archive/master.zip,pillow,android,python-for-android,sqlite3,oscpy,webview-android
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
 # requirements.source.kivy = ../../kivy
@@ -176,7 +176,7 @@ android.permissions = android.permission.INTERNET, android.permission.ACCESS_COA
 
 # (list) List of Java files to add to the android project (can be java or a
 # directory containing the files)
-#android.add_src =
+android.add_src = ./webview/src/main/java
 
 # (list) Android AAR archives to add
 #android.add_aars =
@@ -185,7 +185,7 @@ android.permissions = android.permission.INTERNET, android.permission.ACCESS_COA
 # Either form may be used, and assets need not be in 'source.include_exts'.
 # 1) android.add_assets = source_asset_relative_path
 # 2) android.add_assets = source_asset_path:destination_asset_relative_path
-#android.add_assets =
+android.add_assets = ./assets/index.html:./,./assets/stylesheet.css:./,./assets/main.js:./,./assets/maplibre-gl.js:./,./assets/maplibre-gl.css:./
 
 # (list) Put these files or directories in the apk res directory.
 # The option may be used in three ways, the value may contain one or zero ':'

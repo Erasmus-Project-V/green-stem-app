@@ -59,8 +59,10 @@
                     halign: "center"
                     valign: "top"
                     text: "KARTA"
-                ActivityMapWidget:
-                    f2: "Times New Roman"
+                MDFlatButton:
+                    text: "Open Map"
+                    #pos_hint: {"center_x": .5, "center_y": .4}
+                    on_press: root.open_map_view(root.activity_data)
 
             MDHeroTo:
                 id: hero_to
