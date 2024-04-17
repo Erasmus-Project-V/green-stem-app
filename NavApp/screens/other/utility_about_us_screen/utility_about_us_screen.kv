@@ -1,0 +1,27 @@
+#File name: utility_about_us_screen.kv
+
+
+<UtilityAboutUsScreen>:
+    name: "abt"
+    id: abt
+    md_bg_color: app.primary_colors["black"]
+    blue_ref: app.primary_colors["light_blue"]
+    TopReturnButtonWidget:
+        release_func: root.return_to_settings
+    MDLabel:
+        pos_hint: {"center_x":0.5,"center_y":0.9}
+        text: "About Us"
+        font_size: "28dp"
+        font_name: app.fonts["sans_bold"]
+        halign: "center"
+    MDBoxLayout:
+        orientation: "vertical"
+        pos_hint: {"center_x":0.5,"center_y":0.7}
+        size_hint: (0.85,0.08 * 3)
+        md_bg_color: (1,0,0,0)
+        ProfileBarWidget:
+            bar_text: "Credits"
+            release_func: root.goto_credits_screen
+
+        ProfileBarWidget:
+            bar_text: "Contact Us"

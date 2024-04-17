@@ -1,0 +1,183 @@
+#File name: utility_credits_screen.kv
+
+<Content>:
+    orientation: "vertical"
+    size_hint_y: None
+    height: self.minimum_height
+
+<UtilityCreditsScreen>:
+    name: "crd"
+    id: crd
+    TopReturnButtonWidget:
+        release_func: root.goto_about_us
+    MDLabel:
+        id: top_text
+        pos_hint: {"center_x":0.5,"center_y":0.9}
+        text:  "Credits"
+        font_size: "28dp"
+        font_name: app.fonts["sans_bold"]
+        halign: "center"
+
+
+    MDBoxLayout:
+        orientation: "vertical"
+        pos_hint: {"center_x": 0.5, "center_y": 0.35}
+
+        MDScrollView:
+            Content:
+                orientation: "vertical"
+                size_hint_y: None
+                height: self.minimum_height
+                spacing: dp(30)
+
+                MDBoxLayout:
+                    orientation: "vertical"
+                    spacing: dp(10)
+                    size_hint_y: None
+                    height: self.minimum_height
+
+                    MDLabel:
+                        text: "Mentor and Coordinator"
+                        size_hint_y: None
+                        height: self.texture_size[1]
+                        halign: "center"
+
+                    MDLabel:
+                        text: "Predrag Brođanac"
+                        size_hint_y: None
+                        height: self.texture_size[1]
+                        font_name: app.fonts["sans_bold"]
+                        halign: "center"
+
+                MDBoxLayout:
+                    orientation: "vertical"
+                    spacing: dp(10)
+                    size_hint_y: None
+                    height: self.minimum_height
+
+                    MDLabel:
+                        text: "Team Leader & Chief Software Engineer"
+                        size_hint_y: None
+                        height: self.texture_size[1]
+                        halign: "center"
+
+                    MDLabel:
+                        text: "Gabriel Janđel"
+                        size_hint_y: None
+                        height: self.texture_size[1]
+                        font_name: app.fonts["sans_bold"]
+                        halign: "center"
+
+                MDBoxLayout:
+                    orientation: "vertical"
+                    spacing: dp(10)
+                    size_hint_y: None
+                    height: self.minimum_height
+
+                    MDLabel:
+                        text: "Chief Designer & Marketing Lead"
+                        size_hint_y: None
+                        height: self.texture_size[1]
+                        halign: "center"
+
+                    MDLabel:
+                        text: "Fran Glušac"
+                        size_hint_y: None
+                        height: self.texture_size[1]
+                        font_name: app.fonts["sans_bold"]
+                        halign: "center"
+
+                MDBoxLayout:
+                    orientation: "vertical"
+                    spacing: dp(10)
+                    size_hint_y: None
+                    height: self.minimum_height
+
+                    MDLabel:
+                        text: "DevOps & Full-stack Software Engineer"
+                        size_hint_y: None
+                        height: self.texture_size[1]
+                        halign: "center"
+
+                    MDLabel:
+                        text: "Karlo Vizec"
+                        size_hint_y: None
+                        height: self.texture_size[1]
+                        font_name: app.fonts["sans_bold"]
+                        halign: "center"
+
+                MDBoxLayout:
+                    orientation: "vertical"
+                    spacing: dp(10)
+                    size_hint_y: None
+                    height: self.minimum_height
+
+                    MDLabel:
+                        text: "Front-end Software Engineer"
+                        size_hint_y: None
+                        height: self.texture_size[1]
+                        halign: "center"
+
+                    MDLabel:
+                        text: "Sven Matković"
+                        size_hint_y: None
+                        height: self.texture_size[1]
+                        font_name: app.fonts["sans_bold"]
+                        halign: "center"
+
+                MDBoxLayout:
+                    orientation: "vertical"
+                    spacing: dp(10)
+                    size_hint_y: None
+                    height: self.minimum_height
+
+                    MDLabel:
+                        text: "Front-end Software Engineer"
+                        size_hint_y: None
+                        height: self.texture_size[1]
+                        halign: "center"
+
+                    MDLabel:
+                        text: "Sven Matić"
+                        size_hint_y: None
+                        height: self.texture_size[1]
+                        font_name: app.fonts["sans_bold"]
+                        halign: "center"
+
+                MDBoxLayout:
+                    orientation: "vertical"
+                    spacing: dp(10)
+                    size_hint_y: None
+                    height: self.minimum_height
+
+                    MDLabel:
+                        text: "Front-end Software Engineer"
+                        size_hint_y: None
+                        height: self.texture_size[1]
+                        halign: "center"
+
+                    MDLabel:
+                        text: "Fran Češljaš"
+                        size_hint_y: None
+                        height: self.texture_size[1]
+                        font_name: app.fonts["sans_bold"]
+                        halign: "center"
+
+                MDBoxLayout:
+                    orientation: "vertical"
+                    spacing: dp(10)
+                    size_hint_y: None
+                    height: self.minimum_height
+
+                    MDLabel:
+                        text: "Front-end Software Engineer"
+                        size_hint_y: None
+                        height: self.texture_size[1]
+                        halign: "center"
+
+                    MDLabel:
+                        text: "Filip Sekelj"
+                        size_hint_y: None
+                        height: self.texture_size[1]
+                        font_name: app.fonts["sans_bold"]
+                        halign: "center"
