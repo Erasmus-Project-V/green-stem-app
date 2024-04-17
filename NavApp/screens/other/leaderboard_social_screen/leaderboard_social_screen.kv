@@ -25,9 +25,11 @@
             id: scroller_child
             size_hint_y: None
             size_hint_x: 1
-            spacing: (0,"10dp")
+            spacing: (0,"12dp")
             MDRelativeLayout:
                 # md_bg_color: (1, 1, 0, 0.3)
+                size_hint: 1,None
+                height: dp(50)
                 MDRelativeLayout:
                     pos_hint: {"center_x":0.56,"center_y":0.67}
                     MDLabel:
@@ -42,12 +44,42 @@
                         font_size: dp(15)
                         font: app.fonts["sans_bold"]
                         color: app.primary_colors["light_blue"]
+            MDStackLayout:
+                spacing: (0,"10dp")
+                FriendCardWidget:
+                    quantity_one: ""
+                    quantity_two: "5"
+                    friend_name: "josip320"
+                    index_num: "5."
+                    img_path: "assets/images/profile_icon.png"
 
-            #FriendCardWidget:
-            #    quantity_one: ""
-            #    quantity_two: "5"
-            #    friend_name: "josip320"
-                #index_num: "5."
-                #img_path: "assets/images/profile_icon.png"
+                FriendCardWidget:
+                    quantity_one: ""
+                    quantity_two: "5"
+                    friend_name: "josip320"
+                    index_num: "5."
+                    img_path: "assets/images/profile_icon.png"
+
+                FriendCardWidget:
+                    quantity_one: ""
+                    quantity_two: "5"
+                    friend_name: "josip320"
+                    index_num: "5."
+                    img_path: "assets/images/profile_icon.png"
+
+                FriendCardWidget:
+                    quantity_one: ""
+                    quantity_two: "5"
+                    friend_name: "josip320"
+                    index_num: "5."
+                    img_path: "assets/images/profile_icon.png"
+
+            MDLabel:
+                id: link
+                text: "See All Friends"
+                font_size: dp(15)
+                font: app.fonts["sans_bold"]
+                color: app.primary_colors["light_blue"]
+
     BottomNavWidget:
         selected: 3

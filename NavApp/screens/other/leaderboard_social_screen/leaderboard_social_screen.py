@@ -6,6 +6,10 @@ class LeaderboardSocialScreen(MDScreen):
     def start_up_screen(self, leaderboard_type):
         self.reheight()
         self.ids["top_bar"].title = leaderboard_type
+        if leaderboard_type == "Friends Leaderboard":
+            self.ids["link"].text = "See All Friends"
+        else:
+            self.ids["link"].text = "See Top 100"
 
     def reheight(self):
         sl = self.ids["stat_scroller"].children[0]
@@ -22,3 +26,6 @@ class LeaderboardSocialScreen(MDScreen):
 
     def goto_main_social_screen(self,*args):
         self.manager.goto_screen("mso")
+
+    def tmp(self):
+        print("tmp")
