@@ -1,4 +1,6 @@
 import time
+
+from kivy import platform
 from kivymd.uix.screen import MDScreen
 
 
@@ -26,13 +28,21 @@ class DailyActivityScreen(MDScreen):
         mss = self.manager.get_screen("mss")
         # mss.bind(on_enter=mss.reenter_hero)
 
-    def open_map_view(self, activity_data):
-        # self.manager.active_user.send_request(path=f"/api/collections/locations/records?filter=(exercise%3D'{activity_data.id}')", success_func=self.fetch_location_success)
+    def do_open(self):
+        self.open_map_view(self.activity_data)
 
-        self.manager.transition.direction = "right"
-        rms = self.manager.get_screen("rms")
-        rms.open_webview()
+    def open_map_view(self, activity_data):
+        if platform != "android":
+            return
+        self.manager.active_user.send_request(path=f"/api/collections/locations/records?filter=(exercise%3D'{activity_data['id']}')", success_func=self.fetch_location_success)
 
     def fetch_location_success(self, req, res):
+        self.manager.transition.direction = "right"
+        rms = self.manager.get_screen("rms")
+
+        location_id = res["items"][0]["id"]
+
+        rms.open_webview(location_id)
+        print(f"Open map response: {res}")
         print(f"Open map response: {dir(res)}")
         print(f"Open map response: {res.keys()}")

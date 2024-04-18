@@ -55,14 +55,19 @@
 
             MDRelativeLayout:
                 pos_hint: {"center_x":0.5,"center_y":0.8}
-                MDLabel:
+                #MDLabel:
+                    #halign: "center"
+                    #valign: "top"
+                    #text: "KARTA"
+                OvalBlueButtonWidget:
+                    id: open_map_button
                     halign: "center"
                     valign: "top"
-                    text: "KARTA"
-                MDFlatButton:
-                    text: "Open Map"
-                    #pos_hint: {"center_x": .5, "center_y": .4}
-                    on_press: root.open_map_view(root.activity_data)
+                    button_text: "View Route"
+                    size_hint: (0.55,0.1)
+                    pos_hint: {"center_x": .5, "center_y": .5}
+                    release_func:
+                        root.do_open
 
             MDHeroTo:
                 id: hero_to
