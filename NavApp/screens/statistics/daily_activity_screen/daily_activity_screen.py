@@ -28,7 +28,7 @@ class DailyActivityScreen(MDScreen):
         mss = self.manager.get_screen("mss")
         # mss.bind(on_enter=mss.reenter_hero)
 
-    def do_open(self):
+    def do_open(self, *args):
         self.open_map_view(self.activity_data)
 
     def open_map_view(self, activity_data):
