@@ -46,7 +46,7 @@ function displayMap(coords, center) {
         style:
             'https://api.maptiler.com/maps/streets/style.json?key=lY1bvvaxXQRRVYw8tOll',
         center: center,
-        zoom: 15
+        zoom: 35
     });
 
     console.log(coords);
