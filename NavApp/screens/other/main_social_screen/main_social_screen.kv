@@ -15,7 +15,7 @@
 
     MDScrollView:
         id: stat_scroller
-        pos_hint: {"center_x":0.5,"center_y":0.54}
+        pos_hint: {"center_x":0.5,"center_y":0.52}
         size_hint: 1,.78
         bar_width: 0
         always_overscroll: False
@@ -35,13 +35,13 @@
                 img_path:"assets/images/home/home_trcanje_1.png"
                 activity_name: "Public Leaderboard"
                 activity_time: "users from all schools"
-                activity_card_function: root.goto_leaderboard
+                activity_card_function: lambda instance, *_: root.goto_leaderboard("Public Leaderboard")
 
             ActivityHistoryCardWidget:
                 img_path:"assets/images/home/home_bicikliranje_1.png"
                 activity_name: "Friends Leaderboard"
                 activity_time: "only your friends"
-                activity_card_function: root.goto_leaderboard
+                activity_card_function: lambda instance, *_: root.goto_leaderboard("Friends Leaderboard")
                 longer_text: True
 
             TitleSeparatorWidget:

@@ -6,6 +6,8 @@
     quantity_one: "1.Quantity"
     quantity_two: "2.Quantity"
     friend_name: "[Name]"
+    img_path: "None"
+    index_num: "None"
     canvas:
         Color:
             rgba: app.primary_colors["dark_grey"]
@@ -16,10 +18,29 @@
             radius: [60, 60, 60, 60]  # Set the radius of the corners
 
     MDLabel:
-        text: root.friend_name
+        text: root.index_num
         pos_hint: {"center_y":0.5}
+        pos: (dp(25), dp(31))
+        font_name: app.fonts["sans_semi_bold"]
+        #font_size: dp(15)
         color: [1, 1, 1, 0.65]
-        pos: (dp(30), dp(30))
+        opacity: 1 if root.index_num != "None" else 0
+
+    MDRelativeLayout:
+        size_hint: None, None
+        size: (dp(160), dp(55))
+        pos_hint: {"center_x": 0.32, "center_y":0.5} if root.index_num == "None" else {"center_x": 0.40, "center_y":0.5}
+        Image:
+            source: root.img_path
+            pos: (dp(-43), dp(8))
+            size_hint: 0.75,0.75
+            opacity: 1 if root.img_path != "None" else 0
+
+        MDLabel:
+            text: root.friend_name
+            pos_hint: {"center_y":0.5}
+            color: [1, 1, 1, 0.65]
+            pos: (dp(52), dp(30)) if root.img_path != "None" else (dp(5), dp(30))
 
     MDLabel:
         text: root.quantity_one

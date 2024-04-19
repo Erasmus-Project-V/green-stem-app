@@ -6,8 +6,13 @@ from custom_widgets.miscellaneous.dialog_widget.dialog_widget import DialogWidge
 
 
 class MainSocialScreen(MDScreen):
-    def goto_leaderboard(self, *args):
-        self.manager.goto_screen("lss")
+
+    def goto_leaderboard(self, leaderboard_type, *args):
+        lss = self.manager.get_screen("lss")
+        print("LeaDER BOARD TYPE:", leaderboard_type)
+        lss.start_up_screen(leaderboard_type)
+        # self.manager.goto_screen("lss")
+        self.manager.current = "lss"
 
     def add_friends_activities(self):
         pass
