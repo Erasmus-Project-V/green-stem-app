@@ -40,6 +40,11 @@ class ActivityHistoryListWidget(MDRelativeLayout):
         self.filled =True
 
     def add_activity_cards(self):
+        # if len(self.activity_history_elements) == 0:
+        #     self.activity_cards.clear()
+        #     self.scrollable_column.clear_widgets()
+        #     return
+
         for activity in self.activity_history_elements:
             history_card = ActivityHistoryCardWidget()
             history_card.img_path = activity["img_path"]

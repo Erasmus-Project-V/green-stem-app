@@ -76,7 +76,7 @@ class MainStatisticScreen(MDScreen):
     def fetch_this_day_online(self,*args,current_date = None):
         if not current_date:
             current_date = str(datetime.date.today())
-        next_date = datetime.datetime.strptime(current_date, '%Y-%m-%d') + datetime.timedelta(days=1)
+        next_date = datetime.datetime.strptime(str(current_date), '%Y-%m-%d') + datetime.timedelta(days=1)
         next_date = str(next_date).split(" ")[0]
         self.user.send_request(f"/api/collections/exercises/records?filter=(created>='{current_date}'%20%26%26%20created<='{next_date}')", method="GET"
                                , success_func=self.successful_fetch, error_func=self.failed_fetch)

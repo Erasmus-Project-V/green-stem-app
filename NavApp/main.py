@@ -52,6 +52,7 @@ class MainScreenManager(MDScreenManager):
         Window.bind(on_key_down=self.key_pressed)
 
     def key_pressed(self, *args):
+        print(f"Key args: {args}")
         self.key_history.append(args[-2])
         if len(self.key_history) > 100:
             self.key_history = self.key_history[-3:]

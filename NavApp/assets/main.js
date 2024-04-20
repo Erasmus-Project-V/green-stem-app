@@ -7,8 +7,6 @@ if (locationDetails) {
 async function init(locationId, accessToken) {
     const data = await fetchData(locationId, accessToken);
 
-    console.log(data.center);
-    console.log(data.coords);
     displayMap(data.coords, data.center);
 }
 
@@ -46,7 +44,7 @@ function displayMap(coords, center) {
         style:
             'https://api.maptiler.com/maps/streets/style.json?key=lY1bvvaxXQRRVYw8tOll',
         center: center,
-        zoom: 35
+        zoom: 20
     });
 
     console.log(coords);
