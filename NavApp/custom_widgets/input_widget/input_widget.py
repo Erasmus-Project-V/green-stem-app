@@ -4,6 +4,7 @@ from kivymd.uix.button import MDIconButton
 from kivymd.uix.relativelayout import MDRelativeLayout
 from kivymd.uix.textfield import MDTextField
 
+
 class InputWidget(MDRelativeLayout):
     field: MDTextField
     placeholder_text = StringProperty("Piši ovdje")

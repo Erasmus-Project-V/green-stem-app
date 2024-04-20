@@ -4,32 +4,82 @@
     name: "lss"
     md_bg_color: app.primary_colors["black"]
     id: lss
-    MDRelativeLayout:
-        size_hint: (0.92,0.1)
-        pos_hint: {"center_x":0.5,"center_y":0.98}
-        InputWidget:
-            id: friend_name
-            placeholder_text: "Add a friend"
-            is_search: True
+    MDTopAppBar:
+        id: top_bar
+        pos_hint: {"top": 1}
+        title: "null"
+        md_bg_color: app.primary_colors["dark_grey"]
+        left_action_items: [["chevron-left", lambda x: root.goto_main_social_screen()]]
 
     MDScrollView:
         id: stat_scroller
-        pos_hint: {"center_x":0.5,"center_y":0.54}
+        pos_hint: {"center_x":0.5,"center_y":0.52}
         size_hint: 1,.78
         bar_width: 0
         always_overscroll: False
         #smooth_scroll_end: 0
+        #md_bg_color: (0, 1, 0, 0.3)
         MDStackLayout:
             id: ws
             md_bg_color: (1,0,0,0)
             id: scroller_child
             size_hint_y: None
             size_hint_x: 1
-            spacing: (0,"10dp")
+            spacing: (0,"12dp")
+            MDRelativeLayout:
+                # md_bg_color: (1, 1, 0, 0.3)
+                size_hint: 1,None
+                height: dp(50)
+                MDRelativeLayout:
+                    pos_hint: {"center_x":0.56,"center_y":0.67}
+                    MDLabel:
+                        text: "Total points"
+                        font_size: dp(19)
+                        font: app.fonts["sans_bold"]
 
-            TitleSeparatorWidget:
-                title_text: "LEADERBOARD"
+                MDRelativeLayout:
+                    pos_hint: {"center_x":0.56,"center_y":0.05}
+                    MDLabel:
+                        text: "How do points work?"
+                        font_size: dp(15)
+                        font: app.fonts["sans_bold"]
+                        color: app.primary_colors["light_blue"]
+            MDStackLayout:
+                spacing: (0,"10dp")
+                FriendCardWidget:
+                    quantity_one: ""
+                    quantity_two: "5"
+                    friend_name: "josip320"
+                    index_num: "5."
+                    img_path: "assets/images/profile_icon.png"
 
+                FriendCardWidget:
+                    quantity_one: ""
+                    quantity_two: "5"
+                    friend_name: "josip320"
+                    index_num: "5."
+                    img_path: "assets/images/profile_icon.png"
+
+                FriendCardWidget:
+                    quantity_one: ""
+                    quantity_two: "5"
+                    friend_name: "josip320"
+                    index_num: "5."
+                    img_path: "assets/images/profile_icon.png"
+
+                FriendCardWidget:
+                    quantity_one: ""
+                    quantity_two: "5"
+                    friend_name: "josip320"
+                    index_num: "5."
+                    img_path: "assets/images/profile_icon.png"
+
+            MDLabel:
+                id: link
+                text: "See All Friends"
+                font_size: dp(15)
+                font: app.fonts["sans_bold"]
+                color: app.primary_colors["light_blue"]
 
     BottomNavWidget:
         selected: 3
