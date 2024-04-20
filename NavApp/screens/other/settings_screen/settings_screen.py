@@ -7,3 +7,6 @@ class SettingsScreen(MDScreen):
 
     def open_notifications(self,*args):
         self.manager.goto_screen("uss")
+
+    def open_about_us(self,*args):
+        self.manager.goto_screen("abt")
