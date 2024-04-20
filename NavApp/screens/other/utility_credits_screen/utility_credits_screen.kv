@@ -24,8 +24,8 @@
         pos_hint: {"center_x": 0.5, "center_y": 0.35}
 
         MDScrollView:
-            Content:
-                orientation: "vertical"
+            MDList:
+                id: scroll_view_content
                 size_hint_y: None
                 height: self.minimum_height
                 spacing: dp(30)

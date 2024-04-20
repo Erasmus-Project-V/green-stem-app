@@ -9,7 +9,41 @@
     MDLabel:
         id: top_text
         pos_hint: {"center_x":0.5,"center_y":0.9}
-        text: "NULL"
+        text: "Privacy"
         font_size: "28dp"
         font_name: app.fonts["sans_bold"]
         halign: "center"
+
+    MDBoxLayout:
+        orientation: "vertical"
+        pos_hint: {"center_x": 0.5, "center_y": 0.35}
+        padding: dp(20)
+        spacing: dp(10)  # Adjust this value to change the spacing
+
+        MDScrollView:
+            MDList:
+                id: scroll_view_content
+                size_hint_y: None
+                height: self.minimum_height
+
+                MDLabel:
+                    id: privacy_heading
+                    text: "Da ne upadnemo u probleme haha"
+                    font_size: "16dp"
+                    font_name: app.fonts["sans_bold"]
+                    halign: "left"
+                    size_hint_y: None
+                    height: self.texture_size[1]
+
+                Widget:
+                    size_hint_y: None
+                    height: dp(10)
+
+                MDLabel:
+                    id: privacy_paragraph
+                    text: "Fran je presmash!!!"
+                    font_size: "16dp"
+                    font_name: app.fonts["sans_regular"]
+                    halign: "left"
+                    size_hint_y: None
+                    height: self.texture_size[1]
