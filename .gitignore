@@ -140,7 +140,14 @@ venv.bak/
 # mkdocs documentation
 /site
 
-bin
+bin/
+activites.db
+user_data.json
+__pycache__/
+.github/
+dist
+.dist
+
 
 # mypy
 .mypy_cache/
