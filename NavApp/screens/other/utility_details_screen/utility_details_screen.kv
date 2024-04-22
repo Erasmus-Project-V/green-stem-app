@@ -1,0 +1,35 @@
+#File name: utility_details_screen.kv
+
+<Content>:
+    orientation: "vertical"
+    size_hint_y: None
+    height: self.minimum_height
+
+<UtilityDetailsScreen>:
+    name: "dtl"
+    id: dtl
+    TopReturnButtonWidget:
+        release_func: root.goto_credits
+    MDLabel:
+        id: top_text
+        pos_hint: {"center_x":0.5,"center_y":0.9}
+        text:  "Credits"
+        font_size: "28dp"
+        font_name: app.fonts["sans_bold"]
+        halign: "center"
+
+    MDBoxLayout:
+        orientation: "vertical"
+        pos_hint: {"center_x": 0.85, "center_y": 0.35}
+
+        MDScrollView:
+
+            FitImage:
+                id: pfp_image
+                source: None
+                size_hint_y: 0.125
+                size_hint_x: 0.25
+                radius: "60dp", "60dp", "60dp", "60dp"
+
+
+
