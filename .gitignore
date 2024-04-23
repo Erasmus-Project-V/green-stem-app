@@ -141,8 +141,9 @@ venv.bak/
 /site
 
 bin/
-activites.db
-user_data.json
+NavApp/bin/
+NavApp/activites.db
+NavApp/user_data.json
 __pycache__/
 dist
 .dist
