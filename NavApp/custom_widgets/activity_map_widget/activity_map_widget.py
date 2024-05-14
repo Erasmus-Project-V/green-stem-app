@@ -1,9 +1,12 @@
-from jnius import autoclass
 from kivy.clock import Clock
 from kivy.uix.widget import Widget
 from kivymd.uix.relativelayout import MDRelativeLayout
 from kivymd.uix.widget import MDWidget
-# from android.runnable import run_on_ui_thread
+from kivy.utils import platform
+
+if platform == "android":
+    from jnius import autoclass
+    from android.runnable import run_on_ui_thread
 
 
 class ActivityMapWidget(Widget):

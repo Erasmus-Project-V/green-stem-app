@@ -1,7 +1,11 @@
+import kivy
 from kivy import platform
 from kivy.clock import Clock
 from kivymd.uix.screen import MDScreen
-from jnius import autoclass
+from kivy.utils import platform
+
+if platform == "android":
+    from jnius import autoclass
 
 class RouteMapScreen(MDScreen):
     def __init__(self, *args, **kwargs):

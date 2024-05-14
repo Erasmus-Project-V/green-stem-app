@@ -104,11 +104,11 @@ class MainStatisticScreen(MDScreen):
             cs = self.weekly_screen
             cs.receive_activity_data(self.exercises,self.n_exercises)
         else:
+            x = self.active_layout.children[0]
+            x.clear_activity_cards()
             if self.n_exercises == 0:
                 print("no activities for current day")
                 return
-            x = self.active_layout.children[0]
-            x.clear_activity_cards()
             x.receive_activity_data(self.exercises,self.n_exercises,self.goto_das)
 
     def failed_fetch(self, a, b):
